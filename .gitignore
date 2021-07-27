@@ -1,0 +1,11 @@
+**/*.tgz*
+build
+autom4te.cache
+test-driver
+compile
+.kdev4
+DiagHam_latest.kdev4
+.idea
+run
+.svn
+**/*.deps
