@@ -171,18 +171,18 @@ double ParticleOnTorusPerturbedCoulombHamiltonian::EvaluateInteractionCoefficien
       if (N2 != 0.0)
         {
           Coefficient = this->GetVofQ(PIOnM*Q2, Precision); // Coulomb terms
-          cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Coefficient << endl;
+          // cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Coefficient << endl;
         }
       else
         {
           Coefficient = this->GetVofQ(PIOnM*Q2, Precision);  // yields non-zero terms only for non-singular interactions
-          cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Coefficient << endl;
+          // cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Coefficient << endl;
         }
       while ((fabs(Coefficient) + Precision) != fabs(Coefficient))
         {
           Q2 = this->InvRatio * N1 * N1 + this->Ratio * N2 * N2;
           Coefficient += 2.0 * this->GetVofQ(PIOnM*Q2, Precision) * cos (N1 * Factor);
-          cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Precision * cos (N1 * Factor) << endl;
+          // cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Precision * cos (N1 * Factor) << endl;
           N1 += 1.0;
         }
       Sum += Coefficient;
@@ -197,24 +197,24 @@ double ParticleOnTorusPerturbedCoulombHamiltonian::EvaluateInteractionCoefficien
       if (N2 != 0.0)
         {
           Coefficient =  this->GetVofQ(PIOnM*Q2, Precision);
-          cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Coefficient << endl;
+          // cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Coefficient << endl;
         }
       else
         {
 	      Coefficient = this->GetVofQ(PIOnM*Q2, Precision); // yields non-zero terms only for non-singular interactions
-          cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Coefficient << endl;
+          // cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Coefficient << endl;
 	    }
       while ((fabs(Coefficient) + Precision) != fabs(Coefficient))
 	    {
 	      Q2 = this->InvRatio * N1 * N1 + this->Ratio * N2 * N2;
 	      Coefficient += 2.0 * this->GetVofQ(PIOnM*Q2, Precision) * cos (N1 * Factor);
-          cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Precision * cos (N1 * Factor) << endl;
+          // cout << m1 << " " << m2 << " " << m3 << " " << m4 << " " << N1 << " " << N2 << " " << Precision * cos (N1 * Factor) << endl;
 	      N1 += 1.0;
 	    }
       Sum += Coefficient;
       N2 -= this->NbrLzValue;
     }
-  cout << "Interaction coefficient for m = (" << m1 << ", " << m2 << ", " << m3 << ", " << m4 << ") = " << (Sum / (2.0 * this->NbrLzValue)) << endl;
+  // cout << "Interaction coefficient for m = (" << m1 << ", " << m2 << ", " << m3 << ", " << m4 << ") = " << (Sum / (2.0 * this->NbrLzValue)) << endl;
   return (Sum / (2.0 * this->NbrLzValue));
 }
 
