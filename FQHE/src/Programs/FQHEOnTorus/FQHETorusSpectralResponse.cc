@@ -103,7 +103,7 @@ int main ( int argc, char** argv )
     Manager += PrecalculationGroup;
     Manager += MiscGroup;
 
-    ( *SystemGroup ) += new SingleStringOption ( '\0', "state", "name of the vector file describing the state whose density has to be plotted" );
+    (*SystemGroup) += new SingleStringOption ( '\0', "state", "name of the vector file describing the state whose density has to be plotted" );
     (*SystemGroup) += new SingleStringOption ('\n', "interaction-file", "file describing the 2-body interaction in terms of the pseudo-potential");
     (*SystemGroup) += new SingleStringOption ('\n', "interaction-name", "interaction name (as it should appear in output files)", "unknown");
     
@@ -118,7 +118,7 @@ int main ( int argc, char** argv )
     (*CoulombGroup) += new BooleanOption ('\n', "use-coulomb", "allocate a Coulomb Hamiltonian instead of a generic Hamiltonian");
     (*CoulombGroup) += new SingleIntegerOption ('\n', "coulomb-LL", "Landau-level parameter for Coulomb Hamiltonian",0);
     (*CoulombGroup) += new SingleDoubleOption ('\n', "coulomb-strength", "relative strength of Coulomb interaction", 1.0);
-    (*SystemGroup) += new SingleDoubleOption ('\n', "yukawa-mass", "mass parameter modifing Coulomb to Yukawa interaction with exponential decay V(r) = exp(-m r) e^2/r", 0.0);
+    (*CoulombGroup) += new SingleDoubleOption ('\n', "yukawa-mass", "mass parameter modifing Coulomb to Yukawa interaction with exponential decay V(r) = exp(-m r) e^2/r", 0.0);
     (*CoulombGroup) += new SingleStringOption ('\n', "perturbation-file", "file describing an additional 2-body perturbation in terms of its pseudo-potentials (should include Name=)");
     (*CoulombGroup) += new SingleDoubleOption ('\n', "perturbation-strength", "relative strength of the additional perturbation", 1.0);
     (*CoulombGroup) += new SingleIntegerOption ('\n', "nbr-perturbation", "maximum number of pseudopotentials to consider (-1=all)", -1);
