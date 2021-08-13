@@ -39,6 +39,7 @@
 #include "Architecture/AbstractArchitecture.h"
 #include "Architecture/ArchitectureOperation/OperatorMatrixElementOperation.h"
 #include "Architecture/ArchitectureOperation/VectorOperatorMultiplyOperation.h" //added by ba340
+#include "Architecture/ArchitectureOperation/VectorHamiltonianMultiplyOperation.h" //added by ba340
 #include "Architecture/ArchitectureOperation/MainTaskOperation.h" //added by ba340
 
 #include <iostream>
@@ -102,10 +103,12 @@ int main ( int argc, char** argv )
     Lanczos.AddOptionGroup(&Manager);
     Manager += PrecalculationGroup;
     Manager += MiscGroup;
-
+    
+    
     (*SystemGroup) += new SingleStringOption ( '\0', "state", "name of the vector file describing the state whose density has to be plotted" );
     (*SystemGroup) += new SingleStringOption ('\n', "interaction-file", "file describing the 2-body interaction in terms of the pseudo-potential");
     (*SystemGroup) += new SingleStringOption ('\n', "interaction-name", "interaction name (as it should appear in output files)", "unknown");
+    (*SystemGroup) += new SingleStringOption ( '\n', "reference-state", "name of the vector file describing the reference state which we use to compute the matrix element of Hamiltonian" );
     
     (*SystemGroup) += new SingleIntegerOption ('\n', "sr-save-interval", "number of Lanczos iterations after which the spectral response is printed, -1 for final only (default = -1)",-1);
     (*SystemGroup) += new SingleDoubleOption ('\n', "sr-omega-min", "spectral response omega min (default = 0.0)",0.0);
@@ -156,7 +159,6 @@ int main ( int argc, char** argv )
         return -1;
     }
 
-
     int NbrParticles = 0;
     int NbrFluxQuanta = 0;
     int Momentum = 0;
@@ -172,14 +174,39 @@ int main ( int argc, char** argv )
       cout << "error while retrieving system parameters from file name " << Manager.GetString("state") << endl;
       return -1;
     }
-   
+    
     cout << setw ( 20 ) << std::left << "NbrParticles" << setw ( 20 ) << std::left << NbrParticles << endl;
     cout << setw ( 20 ) << std::left << "NbrFluxQuanta" << setw ( 20 ) << std::left << NbrFluxQuanta << endl;
     cout << setw ( 20 ) << std::left << "Momentum" << setw ( 20 ) << std::left << Momentum << endl;
     cout << setw ( 20 ) << std::left << "Ratio" << setw ( 20 ) << std::left << Ratio << endl;
     cout << setw ( 20 ) << std::left << "Statistics" << setw ( 20 ) << std::left << Statistics << endl;
-
-
+    
+    int NbrParticles2 = 0;
+    int NbrFluxQuanta2 = 0;
+    int Momentum2 = 0;
+    double Ratio2 = 0;
+    bool Statistics2 = false;
+    
+    if (Manager.GetString("reference-state") != 0)
+    {
+        if (FQHEOnTorusFindSystemInfoFromVectorFileName_SpectralResponse(Manager.GetString("reference-state"), NbrParticles2, NbrFluxQuanta2, Momentum2, Ratio2, Statistics2)==false)
+        {
+            cout << "error while retrieving system parameters from file name " << Manager.GetString("reference-state") << endl;
+            return -1;
+        }
+        if (NbrParticles2 != NbrParticles || NbrFluxQuanta2 != NbrFluxQuanta || Ratio2 != Ratio || Statistics2 != Statistics)
+        {
+           cout << "parameter mismatch error between state " << Manager.GetString("state") << "and reference state " << Manager.GetString("reference-state") << endl;
+           return -1; 
+        }
+        
+        cout << setw ( 20 ) << std::left << "NbrParticles2" << setw ( 20 ) << std::left << NbrParticles2 << endl;
+        cout << setw ( 20 ) << std::left << "NbrFluxQuanta2" << setw ( 20 ) << std::left << NbrFluxQuanta2 << endl;
+        cout << setw ( 20 ) << std::left << "Momentum2" << setw ( 20 ) << std::left << Momentum2 << endl;
+        cout << setw ( 20 ) << std::left << "Ratio2" << setw ( 20 ) << std::left << Ratio2 << endl;
+        cout << setw ( 20 ) << std::left << "Statistics2" << setw ( 20 ) << std::left << Statistics2 << endl;
+    }
+   
     double* PseudoPotentials;
     int NbrPseudoPotentials = 0;
     char *InteractionName=0;
@@ -293,7 +320,7 @@ int main ( int argc, char** argv )
 	    (*TargetVector) += (*TmpTargetVector);
 	  }
 	}
-	delete TmpTargetVector; //remember to delete these pointers
+	
 	sprintf(EigenvectorName,"%s_qy_%d", OutputNamePrefix, qy);
 	
 	//create hamiltonian
@@ -307,7 +334,27 @@ int main ( int argc, char** argv )
 	  }
 	else
 	  Hamiltonian = new ParticleOnTorusGenericHamiltonian (TargetSpace, NbrParticles, NbrFluxQuanta, Ratio, NbrPseudoPotentials, PseudoPotentials, Architecture.GetArchitecture(), /*1024*/ 0);
-
+    
+    if (Manager.GetString("reference-state")!=0)
+    {
+       RealVector* RealState2 = new RealVector();
+    
+       if ( RealState2->ReadVector ( Manager.GetString ( "reference-state" ) ) == false )
+       {
+          cout << "can't open vector file " << Manager.GetString ( "reference-state" ) << endl;
+          return -1;
+       }
+       ComplexVector ComplexState2(*RealState2); 
+        
+       VectorHamiltonianMultiplyOperation Operation(Hamiltonian, TargetVector, TmpTargetVector);
+       Operation.ApplyOperation(Architecture.GetArchitecture());
+       cout << "matrix element for reference state = " << ComplexState2 * *TmpTargetVector << endl;
+       delete RealState2;
+       return 0;
+    }
+    
+    delete TmpTargetVector; //remember to delete these pointers
+    
 	double Shift = -10.0;	
 	Hamiltonian->ShiftHamiltonian(Shift);
 	
@@ -327,8 +374,6 @@ int main ( int argc, char** argv )
       
       delete RealState;
       delete Space;
-      
-   
-
+    
     return 0;
 }
