@@ -65,7 +65,7 @@ ParticleOnLatticeFourBandHofstadterHamiltonian::ParticleOnLatticeFourBandHofstad
 // nbrCellsY = number of sites in the y direction
 // bandIndex = index of lower band n to consider (as well as band n+1)
 // uPotential = strength of the repulsive two body neareast neighbor interaction
-// vPotential = strength of the repulsive two body second nearest neighbor interactio
+// vPotential = strength of the repulsive two body second nearest neighbor interaction
 // tightBindingModel = pointer to the tight binding model
 // architecture = architecture to use for precalculation
 // memory = maximum amount of memory that can be allocated for fast multiplication (negative if there is no limit)
@@ -82,6 +82,15 @@ ParticleOnLatticeFourBandHofstadterHamiltonian::ParticleOnLatticeFourBandHofstad
   this->FlatBand = flatBandFlag;
   this->UPotential = uPotential;
   this->VPotential = vPotential;
+  this->V2Potential = 0.0;
+  this->V3Potential = 0.0;
+  this->V4Potential = 0.0;
+  this->ATAN_1_4_Potential = 0.0;
+  this->ATAN_1_3_Potential = 0.0;
+  this->ATAN_1_2_Potential = 0.0;
+  this->ATAN_2_3_Potential = 0.0;
+  this->ATAN_3_4_Potential = 0.0;
+  this->ATAN_1_Potential = 0.0;
   this->LowerBandIndex = bandIndex1;
 
   this->Architecture = architecture;
@@ -102,6 +111,79 @@ ParticleOnLatticeFourBandHofstadterHamiltonian::ParticleOnLatticeFourBandHofstad
   long MaxIndex;
   this->Architecture->GetTypicalRange(MinIndex, MaxIndex);
   this->PrecalculationShift = (int) MinIndex;  
+  this->EvaluateInteractionFactors();
+  if (memory > 0)
+    {
+      long TmpMemory = this->FastMultiplicationMemory(memory);
+      cout  << "fast = " ;
+      PrintMemorySize(cout, TmpMemory)<<endl;
+      this->EnableFastMultiplication();
+    }
+}
+
+// constructor (v2Potential)
+//
+// particles = Hilbert space associated to the system
+// nbrParticles = number of particles
+// nbrCellsX = number of sites in the x direction
+// nbrCellsY = number of sites in the y direction
+// bandIndex = index of lower band n to consider (as well as band n+1)
+// uPotential = strength of the repulsive two body neareast neighbor interaction
+// vPotential = strength of the repulsive two body second nearest neighbor interaction
+// v2Potential = strength of the repulsive two body third nearest neighbor interaction
+// v3Potential = strength of the repulsive two body fourth nearest neighbor interaction
+// v4Potential = strength of the repulsive two body fifth nearest neighbor interaction
+// atan_1_4_Potential = strength of the cross potential at arctan(1/4)
+// atan_1_3_Potential = strength of the cross potential at arctan(1/3)
+// atan_1_2_Potential = strength of the cross potential at arctan(1/2)
+// atan_2_3_Potential = strength of the cross potential at arctan(2/3)
+// atan_3_4_Potential = strength of the cross potential at arctan(3/4)
+// atan_1_Potential = strength of the cross potential at arctan(1)
+// tightBindingModel = pointer to the tight binding model
+// architecture = architecture to use for precalculation
+// memory = maximum amount of memory that can be allocated for fast multiplication (negative if there is no limit)
+ParticleOnLatticeFourBandHofstadterHamiltonian::ParticleOnLatticeFourBandHofstadterHamiltonian(ParticleOnSphereWithSU4Spin* particles, int nbrParticles, int nbrCellsX, int nbrCellsY, int bandIndex1, double uPotential, double vPotential, double v2Potential, double v3Potential, double v4Potential, double atan_1_4_Potential, double atan_1_3_Potential, double atan_1_2_Potential, double atan_2_3_Potential, double atan_3_4_Potential, double atan_1_Potential, Abstract2DTightBindingModel* tightBindingModel, bool flatBandFlag, AbstractArchitecture* architecture, long memory)
+{
+  this->Particles = particles;
+  this->NbrParticles = nbrParticles;
+  this->NbrSiteX = nbrCellsX;
+  this->NbrSiteY = nbrCellsY;
+
+  this->LzMax = NbrSiteX * NbrSiteY - 1;
+  this->HamiltonianShift = 0.0;
+  this->TightBindingModel = tightBindingModel;
+  this->FlatBand = flatBandFlag;
+  this->UPotential = uPotential;
+  this->VPotential = vPotential;
+  this->V2Potential = v2Potential;
+  this->V3Potential = v3Potential;
+  this->V4Potential = v4Potential;
+  this->ATAN_1_4_Potential = atan_1_4_Potential;
+  this->ATAN_1_3_Potential = atan_1_3_Potential;
+  this->ATAN_1_2_Potential = atan_1_2_Potential;
+  this->ATAN_2_3_Potential = atan_2_3_Potential;
+  this->ATAN_3_4_Potential = atan_3_4_Potential;
+  this->ATAN_1_Potential = atan_1_Potential;
+  this->LowerBandIndex = bandIndex1;
+
+  this->Architecture = architecture;
+  this->Memory = memory;
+  this->OneBodyInteractionFactorsupup = 0;
+  this->OneBodyInteractionFactorsupum = 0;
+  this->OneBodyInteractionFactorsupdp = 0;
+  this->OneBodyInteractionFactorsupdm = 0;
+  this->OneBodyInteractionFactorsumum = 0;
+  this->OneBodyInteractionFactorsumdp = 0;
+  this->OneBodyInteractionFactorsumdm = 0;
+  this->OneBodyInteractionFactorsdpdp = 0;
+  this->OneBodyInteractionFactorsdpdm = 0;
+  this->OneBodyInteractionFactorsdmdm = 0;
+  this->FastMultiplicationFlag = false;
+  this->HermitianSymmetryFlag = true;
+  long MinIndex;
+  long MaxIndex;
+  this->Architecture->GetTypicalRange(MinIndex, MaxIndex);
+  this->PrecalculationShift = (int) MinIndex;
   this->EvaluateInteractionFactors();
   if (memory > 0)
     {
@@ -368,7 +450,7 @@ void ParticleOnLatticeFourBandHofstadterHamiltonian::EvaluateInteractionFactors(
 			    Tmp *= 0.5;
 			  (*TmpInteractionFactor) = 2.0*Tmp;
 
-			  if (this->VPotential != 0.0)		    
+			  if (this->VPotential != 0.0 || this->V2Potential != 0.0 || this->V3Potential != 0.0 || this->V4Potential != 0.0 || this->ATAN_1_4_Potential != 0.0 || this->ATAN_1_3_Potential != 0.0 || this->ATAN_1_2_Potential != 0.0 || this->ATAN_2_3_Potential != 0.0 || this->ATAN_3_4_Potential != 0.0 || this->ATAN_1_Potential != 0.0)
 			    {
 			      cout<< "VPotential yet needs to be implemented!"<<endl;
 			      exit(1);

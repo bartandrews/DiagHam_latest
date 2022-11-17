@@ -60,10 +60,13 @@ ParticleOnTorus* GetHilbertSpace(bool Statistics,int NbrParticles, int NbrFluxQu
 {
 	ParticleOnTorus* Space;
 	if ( Statistics == true )
+		{
+			cout << "fermions" << endl;
 			Space = new FermionOnTorus ( NbrParticles, NbrFluxQuanta, Momentum );
+		}
 		else
 		{
-
+			cout << "bosons" << endl;
 	#ifdef  __64_BITS__
 			if ( ( NbrFluxQuanta + NbrParticles - 1 ) < 63 )
 	#else
@@ -163,7 +166,7 @@ int main ( int argc, char** argv )
     int NbrFluxQuanta = 0;
     int Momentum = 0;
     double Ratio = 0;
-    bool Statistics = false;
+    bool Statistics = true;
     
     long Memory = ((unsigned long) Manager.GetInteger("memory")) << 20;
     if (Architecture.GetArchitecture()->GetLocalMemory() > 0)
@@ -302,78 +305,81 @@ int main ( int argc, char** argv )
 	qy = TargetQyMomentum;
 	Max = TargetQyMomentum;
       }
-  
-    for (; qy <= Max; ++qy)
-      {
-	ParticleOnTorus* TargetSpace = GetHilbertSpace(Statistics, NbrParticles, NbrFluxQuanta, (Momentum+qy)%NbrFluxQuanta);
-	Space->SetTargetSpace(TargetSpace);
-	ComplexVector* TargetVector = new ComplexVector(TargetSpace->GetHilbertSpaceDimension(),true);
-	ComplexVector* TmpTargetVector = new ComplexVector(TargetSpace->GetHilbertSpaceDimension());
-	for (int qx=0;qx<NbrFluxQuanta;++qx)
-	{
-	  //ky labels momentum eigenstates on the torus
-	  for (int ky=0;ky<NbrFluxQuanta;++ky)
-	  {
-	    ParticleOnTorusDensityOperator Operator (Space,(ky+qy)%NbrFluxQuanta,ky,qx,Ratio);
-	    VectorOperatorMultiplyOperation Operation(&Operator,ComplexState,TmpTargetVector);
-	    Operation.ApplyOperation(Architecture.GetArchitecture());
-	    (*TargetVector) += (*TmpTargetVector);
-	  }
-	}
-	
-	sprintf(EigenvectorName,"%s_qy_%d", OutputNamePrefix, qy);
-	
-	//create hamiltonian
-	
-	AbstractQHEHamiltonian* Hamiltonian;
-	if (UseCoulomb)
-	  {
-	    if (UsePerturbed)
-	      Hamiltonian = new ParticleOnTorusPerturbedCoulombHamiltonian (TargetSpace, NbrParticles, NbrFluxQuanta, Ratio, Manager.GetInteger("coulomb-LL"), Manager.GetDouble("coulomb-strength"), Manager.GetDouble("yukawa-mass"), PerturbationNbrPseudoPotentials, PerturbationPseudoPotentials, Manager.GetDouble("perturbation-strength"), Architecture.GetArchitecture(), 0);
-	    else Hamiltonian = new ParticleOnTorusCoulombHamiltonian (TargetSpace, NbrParticles, NbrFluxQuanta, Ratio, Manager.GetInteger("coulomb-LL"), Architecture.GetArchitecture(), 0);
-	  }
-	else
-	  Hamiltonian = new ParticleOnTorusGenericHamiltonian (TargetSpace, NbrParticles, NbrFluxQuanta, Ratio, NbrPseudoPotentials, PseudoPotentials, Architecture.GetArchitecture(), /*1024*/ 0);
-    
-    if (Manager.GetString("reference-state")!=0)
-    {
-       RealVector* RealState2 = new RealVector();
-    
-       if ( RealState2->ReadVector ( Manager.GetString ( "reference-state" ) ) == false )
-       {
-          cout << "can't open vector file " << Manager.GetString ( "reference-state" ) << endl;
-          return -1;
-       }
-       ComplexVector ComplexState2(*RealState2); 
-        
-       VectorHamiltonianMultiplyOperation Operation(Hamiltonian, TargetVector, TmpTargetVector);
-       Operation.ApplyOperation(Architecture.GetArchitecture());
-       cout << "matrix element for reference state = " << ComplexState2 * *TmpTargetVector << endl;
-       delete RealState2;
-       return 0;
-    }
-    
-    delete TmpTargetVector; //remember to delete these pointers
-    
-	double Shift = -10.0;	
-	Hamiltonian->ShiftHamiltonian(Shift);
-	
-	//main task
-	cout <<  "Manager at " <<  &Manager <<  endl;
-	FQHEOnTorusMainTask Task(&Manager, Space, &Lanczos, Hamiltonian, Momentum, Shift, OutputFileName, FirstRun, EigenvectorName,  qy,  TargetVector);
-	MainTaskOperation TaskOperation (&Task);
-	TaskOperation.ApplyOperation(Architecture.GetArchitecture());
-	
-	if (FirstRun==true)
-	    FirstRun = false;
-	    
-	delete Hamiltonian;
-	delete TargetSpace;
 
-      }
-      
-      delete RealState;
-      delete Space;
-    
-    return 0;
+  	// spectral response function
+
+    for (; qy <= Max; ++qy)
+    {
+			ParticleOnTorus* TargetSpace = GetHilbertSpace(Statistics, NbrParticles, NbrFluxQuanta, (Momentum+qy)%NbrFluxQuanta);
+			Space->SetTargetSpace(TargetSpace);
+
+			ComplexVector* TargetVector = new ComplexVector(TargetSpace->GetHilbertSpaceDimension(),true);
+			ComplexVector* TmpTargetVector = new ComplexVector(TargetSpace->GetHilbertSpaceDimension());
+
+			for (int qx=0;qx<NbrFluxQuanta;++qx)
+			{
+				// ky labels momentum eigenstates on the torus
+//				int qx = 0;
+//				cout << "qx = " << qx << endl;
+				for (int ky=0; ky<NbrFluxQuanta; ++ky)
+				{
+					ParticleOnTorusDensityOperator Operator (Space,(ky+qy)%NbrFluxQuanta,ky,qx,Ratio);
+					VectorOperatorMultiplyOperation Operation(&Operator,ComplexState,TmpTargetVector);
+					Operation.ApplyOperation(Architecture.GetArchitecture());
+					(*TargetVector) += (*TmpTargetVector);
+				}
+			}
+			delete TmpTargetVector;  //remember to delete these pointers
+			sprintf(EigenvectorName,"%s_qy_%d", OutputNamePrefix, qy);
+
+			//create Hamiltonian
+			AbstractQHEHamiltonian* Hamiltonian;
+			if (UseCoulomb)
+			{
+				if (UsePerturbed)
+					Hamiltonian = new ParticleOnTorusPerturbedCoulombHamiltonian (TargetSpace, NbrParticles, NbrFluxQuanta, Ratio, Manager.GetInteger("coulomb-LL"), Manager.GetDouble("coulomb-strength"), Manager.GetDouble("yukawa-mass"), PerturbationNbrPseudoPotentials, PerturbationPseudoPotentials, Manager.GetDouble("perturbation-strength"), Architecture.GetArchitecture(), 0);
+				else Hamiltonian = new ParticleOnTorusCoulombHamiltonian (TargetSpace, NbrParticles, NbrFluxQuanta, Ratio, Manager.GetInteger("coulomb-LL"), Architecture.GetArchitecture(), 0);
+			}
+			else
+				Hamiltonian = new ParticleOnTorusGenericHamiltonian (TargetSpace, NbrParticles, NbrFluxQuanta, Ratio, NbrPseudoPotentials, PseudoPotentials, Architecture.GetArchitecture(), /*1024*/ 0);
+
+			if (Manager.GetString("reference-state")!=0)
+			{
+			  RealVector* RealState2 = new RealVector();
+
+			  if ( RealState2->ReadVector ( Manager.GetString ( "reference-state" ) ) == false )
+			  {
+				 	cout << "can't open vector file " << Manager.GetString ( "reference-state" ) << endl;
+					return -1;
+			  }
+			  ComplexVector ComplexState2(*RealState2);
+
+			  VectorHamiltonianMultiplyOperation Operation(Hamiltonian, TargetVector, TmpTargetVector);
+			  Operation.ApplyOperation(Architecture.GetArchitecture());
+			  cout << "matrix element for reference state = " << ComplexState2 * *TmpTargetVector << endl;
+			  delete RealState2;
+			  return 0;
+			}
+
+			// delete TmpTargetVector;  //remember to delete these pointers
+
+			double Shift = -10.0;
+			Hamiltonian->ShiftHamiltonian(Shift);
+
+			//main task
+			cout <<  "Manager at " <<  &Manager <<  endl;
+			FQHEOnTorusMainTask Task(&Manager, TargetSpace, &Lanczos, Hamiltonian, Momentum, Shift, OutputFileName, FirstRun, EigenvectorName, 0, TargetVector);
+			MainTaskOperation TaskOperation (&Task);
+			TaskOperation.ApplyOperation(Architecture.GetArchitecture());
+
+			if (FirstRun==true)
+				FirstRun = false;
+
+			delete Hamiltonian;
+			delete TargetSpace;
+    }
+	delete RealState;
+	delete Space;
+
+	return 0;
 }

@@ -55,7 +55,19 @@ class ParticleOnLatticeTwoBandHofstadterHamiltonian : public ParticleOnLatticeQu
   double UPotential;
   // second nearest neighbor density-density potential strength
   double VPotential;
-
+  // third nearest neighbor density-density potential strength
+  double V2Potential;
+  // fourth nearest neighbor density-density potential strength
+  double V3Potential;
+  // fifth nearest neighbor density-density potential strength
+  double V4Potential;
+	// cross potentials
+  double ATAN_1_4_Potential;
+  double ATAN_1_3_Potential;
+  double ATAN_1_2_Potential;
+  double ATAN_2_3_Potential;
+  double ATAN_3_4_Potential;
+  double ATAN_1_Potential;
   // use flat band model
   bool FlatBand;
 
@@ -76,11 +88,34 @@ class ParticleOnLatticeTwoBandHofstadterHamiltonian : public ParticleOnLatticeQu
   // nbrCellsY = number of sites in the y direction
   // bandIndex = index of lower band n to consider (as well as band n+1)
   // uPotential = strength of the repulsive two body neareast neighbor interaction
-  // vPotential = strength of the repulsive two body second nearest neighbor interactio
+  // vPotential = strength of the repulsive two body second nearest neighbor interaction
   // tightBindingModel = pointer to the tight binding model
   // architecture = architecture to use for precalculation
   // memory = maximum amount of memory that can be allocated for fast multiplication (negative if there is no limit)
   ParticleOnLatticeTwoBandHofstadterHamiltonian(ParticleOnSphereWithSpin* particles, int nbrParticles, int nbrCellsX, int nbrCellsY, int bandIndex1, double uPotential, double vPotential,  Abstract2DTightBindingModel* tightBindingModel, bool flatBandFlag, AbstractArchitecture* architecture, long memory = -1);
+
+  // constructor (v2Potential)
+  //
+  // particles = Hilbert space associated to the system
+  // nbrParticles = number of particles
+  // nbrCellsX = number of sites in the x direction
+  // nbrCellsY = number of sites in the y direction
+  // bandIndex = index of lower band n to consider (as well as band n+1)
+  // uPotential = strength of the repulsive two body neareast neighbor interaction
+  // vPotential = strength of the repulsive two body second nearest neighbor interaction
+  // v2Potential = strength of the repulsive two body third nearest neighbor interaction
+  // v3Potential = strength of the repulsive two body fourth nearest neighbor interaction
+  // v4Potential = strength of the repulsive two body fifth nearest neighbor interaction
+  // atan_1_4_Potential = strength of the cross potential at arctan(1/4)
+  // atan_1_3_Potential = strength of the cross potential at arctan(1/3)
+  // atan_1_2_Potential = strength of the cross potential at arctan(1/2)
+  // atan_2_3_Potential = strength of the cross potential at arctan(2/3)
+  // atan_3_4_Potential = strength of the cross potential at arctan(3/4)
+  // atan_1_Potential = strength of the cross potential at arctan(1)
+  // tightBindingModel = pointer to the tight binding model
+  // architecture = architecture to use for precalculation
+  // memory = maximum amount of memory that can be allocated for fast multiplication (negative if there is no limit)
+  ParticleOnLatticeTwoBandHofstadterHamiltonian(ParticleOnSphereWithSpin* particles, int nbrParticles, int nbrCellsX, int nbrCellsY, int bandIndex1, double uPotential, double vPotential, double v2Potential, double v3Potential, double v4Potential, double atan_1_4_Potential, double atan_1_3_Potential, double atan_1_2_Potential, double atan_2_3_Potential, double atan_3_4_Potential, double atan_1_Potential, Abstract2DTightBindingModel* tightBindingModel, bool flatBandFlag, AbstractArchitecture* architecture, long memory = -1);
 
   // destructor
   //

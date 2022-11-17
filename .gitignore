@@ -6,6 +6,9 @@ compile
 .kdev4
 DiagHam_latest.kdev4
 .idea
-run
+run/**/*.dat*
+run/**/*.out*
+run/**/*.gp*
 .svn
 **/*.deps
+**/nohup.out
