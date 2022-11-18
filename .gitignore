@@ -9,6 +9,8 @@ DiagHam_latest.kdev4
 run/**/*.dat*
 run/**/*.out*
 run/**/*.gp*
+run/**/*.bak
+run/**/initialvector
 .svn
 **/*.deps
 **/nohup.out

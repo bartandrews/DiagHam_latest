@@ -119,6 +119,7 @@ int main(int argc, char** argv)
   (*SystemGroup) += new SingleDoubleOption  ('\n', "v4-potential", "repulsive 4NN(boson) or 5NN (fermion) potential strength", 0.0);
 
   // cross potentials
+  (*SystemGroup) += new SingleDoubleOption  ('\n', "atan_0-potential", "repulsive cross potential strength at arctan(0)", 0.0);
   (*SystemGroup) += new SingleDoubleOption  ('\n', "atan_1_4-potential", "repulsive cross potential strength at arctan(1/4)", 0.0);
   (*SystemGroup) += new SingleDoubleOption  ('\n', "atan_1_3-potential", "repulsive cross potential strength at arctan(1/3)", 0.0);
   (*SystemGroup) += new SingleDoubleOption  ('\n', "atan_1_2-potential", "repulsive cross potential strength at arctan(1/2)", 0.0);
@@ -395,6 +396,8 @@ int main(int argc, char** argv)
 	lenFilePrefix += sprintf (FilePrefix+lenFilePrefix, "_v3_%g",Manager.GetDouble("v3-potential"));
 			if (Manager.GetDouble("v4-potential")!=0.0)
 	lenFilePrefix += sprintf (FilePrefix+lenFilePrefix, "_v4_%g",Manager.GetDouble("v4-potential"));
+			if (Manager.GetDouble("atan_0-potential")!=0.0)
+	lenFilePrefix += sprintf (FilePrefix+lenFilePrefix, "_atan-0_%g",Manager.GetDouble("atan_0-potential"));
 			if (Manager.GetDouble("atan_1_4-potential")!=0.0)
 	lenFilePrefix += sprintf (FilePrefix+lenFilePrefix, "_atan-1-4_%g",Manager.GetDouble("atan_1_4-potential"));
 			if (Manager.GetDouble("atan_1_3-potential")!=0.0)
@@ -666,7 +669,7 @@ int main(int argc, char** argv)
 			  else
 			  {
 			    if (PeriodicPotentialStrength == 0)
-			      Hamiltonian = new ParticleOnLatticeHofstadterSingleBandHamiltonian(Space, NbrParticles, NbrCellX, NbrCellY, MaxBand, Manager.GetDouble("u-potential"), Manager.GetDouble("v-potential"), Manager.GetDouble("v2-potential"), Manager.GetDouble("v3-potential"), Manager.GetDouble("v4-potential"), Manager.GetDouble("atan_1_4-potential"), Manager.GetDouble("atan_1_3-potential"), Manager.GetDouble("atan_1_2-potential"), Manager.GetDouble("atan_2_3-potential"), Manager.GetDouble("atan_3_4-potential"), Manager.GetDouble("atan_1-potential"), TightBindingModel, Manager.GetBoolean("flat-band"),Architecture.GetArchitecture(), Memory);
+			      Hamiltonian = new ParticleOnLatticeHofstadterSingleBandHamiltonian(Space, NbrParticles, NbrCellX, NbrCellY, MaxBand, Manager.GetDouble("u-potential"), Manager.GetDouble("v-potential"), Manager.GetDouble("v2-potential"), Manager.GetDouble("v3-potential"), Manager.GetDouble("v4-potential"), Manager.GetDouble("atan_0-potential"), Manager.GetDouble("atan_1_4-potential"), Manager.GetDouble("atan_1_3-potential"), Manager.GetDouble("atan_1_2-potential"), Manager.GetDouble("atan_2_3-potential"), Manager.GetDouble("atan_3_4-potential"), Manager.GetDouble("atan_1-potential"), TightBindingModel, Manager.GetBoolean("flat-band"),Architecture.GetArchitecture(), Memory);
 			    else
 			    {
 			      double** PeriodicOneBodyPotential = new double* [NbrCellX];
@@ -678,7 +681,7 @@ int main(int argc, char** argv)
 				for (int ky = 0; ky < NbrCellY; ++ky)
 				  PeriodicOneBodyPotential[kx][ky] = - PeriodicPotentialStrength * (cos(((double) kx  + Manager.GetDouble("gamma-x"))* KxFactor) + cos(((double) ky + Manager.GetDouble("gamma-y"))* KyFactor));
 			      }
-			      Hamiltonian = new ParticleOnLatticeHofstadterSingleBandHamiltonian(Space, NbrParticles, NbrCellX, NbrCellY, MaxBand, Manager.GetDouble("u-potential"), Manager.GetDouble("v-potential"), Manager.GetDouble("v2-potential"), Manager.GetDouble("v3-potential"), Manager.GetDouble("v4-potential"), Manager.GetDouble("atan_1_4-potential"), Manager.GetDouble("atan_1_3-potential"), Manager.GetDouble("atan_1_2-potential"), Manager.GetDouble("atan_2_3-potential"), Manager.GetDouble("atan_3_4-potential"), Manager.GetDouble("atan_1-potential"), TightBindingModel, PeriodicOneBodyPotential, Manager.GetBoolean("flat-band"),Architecture.GetArchitecture(), Memory);
+			      Hamiltonian = new ParticleOnLatticeHofstadterSingleBandHamiltonian(Space, NbrParticles, NbrCellX, NbrCellY, MaxBand, Manager.GetDouble("u-potential"), Manager.GetDouble("v-potential"), Manager.GetDouble("v2-potential"), Manager.GetDouble("v3-potential"), Manager.GetDouble("v4-potential"), Manager.GetDouble("atan_0-potential"), Manager.GetDouble("atan_1_4-potential"), Manager.GetDouble("atan_1_3-potential"), Manager.GetDouble("atan_1_2-potential"), Manager.GetDouble("atan_2_3-potential"), Manager.GetDouble("atan_3_4-potential"), Manager.GetDouble("atan_1-potential"), TightBindingModel, PeriodicOneBodyPotential, Manager.GetBoolean("flat-band"),Architecture.GetArchitecture(), Memory);
 			      for (int kx = 0; kx < NbrCellX; ++kx)
 				delete[] PeriodicOneBodyPotential[kx];
 			      delete[] PeriodicOneBodyPotential;
@@ -710,7 +713,7 @@ int main(int argc, char** argv)
 				Memory = Architecture.GetArchitecture()->GetLocalMemory();
 			      Architecture.GetArchitecture()->SetDimension(Space->GetHilbertSpaceDimension());	
 			      // assign Hamiltonian:
-			      Hamiltonian = new ParticleOnLatticeTwoBandHofstadterHamiltonian((ParticleOnSphereWithSpin*)Space, NbrParticles, NbrCellX, NbrCellY, MinBand, Manager.GetDouble("u-potential"), Manager.GetDouble("v-potential"), Manager.GetDouble("v2-potential"), Manager.GetDouble("v3-potential"), Manager.GetDouble("v4-potential"), Manager.GetDouble("atan_1_4-potential"), Manager.GetDouble("atan_1_3-potential"), Manager.GetDouble("atan_1_2-potential"), Manager.GetDouble("atan_2_3-potential"), Manager.GetDouble("atan_3_4-potential"), Manager.GetDouble("atan_1-potential"), TightBindingModel,Manager.GetBoolean("flat-band"), Architecture.GetArchitecture(), Memory);
+			      Hamiltonian = new ParticleOnLatticeTwoBandHofstadterHamiltonian((ParticleOnSphereWithSpin*)Space, NbrParticles, NbrCellX, NbrCellY, MinBand, Manager.GetDouble("u-potential"), Manager.GetDouble("v-potential"), Manager.GetDouble("v2-potential"), Manager.GetDouble("v3-potential"), Manager.GetDouble("v4-potential"), Manager.GetDouble("atan_0-potential"), Manager.GetDouble("atan_1_4-potential"), Manager.GetDouble("atan_1_3-potential"), Manager.GetDouble("atan_1_2-potential"), Manager.GetDouble("atan_2_3-potential"), Manager.GetDouble("atan_3_4-potential"), Manager.GetDouble("atan_1-potential"), TightBindingModel,Manager.GetBoolean("flat-band"), Architecture.GetArchitecture(), Memory);
 			    }
 			  else
 			    {
@@ -742,7 +745,7 @@ int main(int argc, char** argv)
 				    Memory = Architecture.GetArchitecture()->GetLocalMemory();
 				  Architecture.GetArchitecture()->SetDimension(Space->GetHilbertSpaceDimension());	
 				  // assign Hamiltonian:
-				  Hamiltonian = new ParticleOnLatticeFourBandHofstadterHamiltonian((ParticleOnSphereWithSU4Spin*)Space, NbrParticles, NbrCellX, NbrCellY, MinBand, Manager.GetDouble("u-potential"), Manager.GetDouble("v-potential"), Manager.GetDouble("v2-potential"), Manager.GetDouble("v3-potential"), Manager.GetDouble("v4-potential"), Manager.GetDouble("atan_1_4-potential"), Manager.GetDouble("atan_1_3-potential"), Manager.GetDouble("atan_1_2-potential"), Manager.GetDouble("atan_2_3-potential"), Manager.GetDouble("atan_3_4-potential"), Manager.GetDouble("atan_1-potential"), TightBindingModel,Manager.GetBoolean("flat-band"), Architecture.GetArchitecture(), Memory);
+				  Hamiltonian = new ParticleOnLatticeFourBandHofstadterHamiltonian((ParticleOnSphereWithSU4Spin*)Space, NbrParticles, NbrCellX, NbrCellY, MinBand, Manager.GetDouble("u-potential"), Manager.GetDouble("v-potential"), Manager.GetDouble("v2-potential"), Manager.GetDouble("v3-potential"), Manager.GetDouble("v4-potential"), Manager.GetDouble("atan_0-potential"), Manager.GetDouble("atan_1_4-potential"), Manager.GetDouble("atan_1_3-potential"), Manager.GetDouble("atan_1_2-potential"), Manager.GetDouble("atan_2_3-potential"), Manager.GetDouble("atan_3_4-potential"), Manager.GetDouble("atan_1-potential"), TightBindingModel,Manager.GetBoolean("flat-band"), Architecture.GetArchitecture(), Memory);
 				}
 			      else
 				{

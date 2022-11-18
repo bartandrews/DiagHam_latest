@@ -63,6 +63,7 @@ class ParticleOnLatticeFourBandHofstadterHamiltonian : public ParticleOnLatticeQ
   // fifth nearest neighbor density-density potential strength
   double V4Potential;
   // cross potentials
+  double ATAN_0_Potential;
   double ATAN_1_4_Potential;
   double ATAN_1_3_Potential;
   double ATAN_1_2_Potential;
@@ -113,6 +114,7 @@ class ParticleOnLatticeFourBandHofstadterHamiltonian : public ParticleOnLatticeQ
   // v2Potential = strength of the repulsive two body third nearest neighbor interaction
   // v3Potential = strength of the repulsive two body fourth nearest neighbor interaction
   // v4Potential = strength of the repulsive two body fifth nearest neighbor interaction
+  // atan_0_Potential = strength of the cross potential at arctan(0)
   // atan_1_4_Potential = strength of the cross potential at arctan(1/4)
   // atan_1_3_Potential = strength of the cross potential at arctan(1/3)
   // atan_1_2_Potential = strength of the cross potential at arctan(1/2)
@@ -122,7 +124,7 @@ class ParticleOnLatticeFourBandHofstadterHamiltonian : public ParticleOnLatticeQ
   // tightBindingModel = pointer to the tight binding model
   // architecture = architecture to use for precalculation
   // memory = maximum amount of memory that can be allocated for fast multiplication (negative if there is no limit)
-  ParticleOnLatticeFourBandHofstadterHamiltonian(ParticleOnSphereWithSU4Spin* particles, int nbrParticles, int nbrCellsX, int nbrCellsY, int bandIndex1, double uPotential, double vPotential, double v2Potential, double v3Potential, double v4Potential, double atan_1_4_Potential, double atan_1_3_Potential, double atan_1_2_Potential, double atan_2_3_Potential, double atan_3_4_Potential, double atan_1_Potential, Abstract2DTightBindingModel* tightBindingModel, bool flatBandFlag, AbstractArchitecture* architecture, long memory = -1);
+  ParticleOnLatticeFourBandHofstadterHamiltonian(ParticleOnSphereWithSU4Spin* particles, int nbrParticles, int nbrCellsX, int nbrCellsY, int bandIndex1, double uPotential, double vPotential, double v2Potential, double v3Potential, double v4Potential, double atan_0_Potential, double atan_1_4_Potential, double atan_1_3_Potential, double atan_1_2_Potential, double atan_2_3_Potential, double atan_3_4_Potential, double atan_1_Potential, Abstract2DTightBindingModel* tightBindingModel, bool flatBandFlag, AbstractArchitecture* architecture, long memory = -1);
 
   // destructor
   //

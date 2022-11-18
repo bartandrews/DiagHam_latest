@@ -84,6 +84,7 @@ ParticleOnLatticeTwoBandHofstadterHamiltonian::ParticleOnLatticeTwoBandHofstadte
   this->V2Potential = 0.0;
   this->V3Potential = 0.0;
   this->V4Potential = 0.0;
+  this->ATAN_0_Potential = 0.0;
   this->ATAN_1_4_Potential = 0.0;
   this->ATAN_1_3_Potential = 0.0;
   this->ATAN_1_2_Potential = 0.0;
@@ -124,6 +125,7 @@ ParticleOnLatticeTwoBandHofstadterHamiltonian::ParticleOnLatticeTwoBandHofstadte
 // v2Potential = strength of the repulsive two body third nearest neighbor interaction
 // v3Potential = strength of the repulsive two body fourth nearest neighbor interaction
 // v4Potential = strength of the repulsive two body fifth nearest neighbor interaction
+// atan_0_Potential = strength of the cross potential at arctan(0)
 // atan_1_4_Potential = strength of the cross potential at arctan(1/4)
 // atan_1_3_Potential = strength of the cross potential at arctan(1/3)
 // atan_1_2_Potential = strength of the cross potential at arctan(1/2)
@@ -133,7 +135,7 @@ ParticleOnLatticeTwoBandHofstadterHamiltonian::ParticleOnLatticeTwoBandHofstadte
 // tightBindingModel = pointer to the tight binding model
 // architecture = architecture to use for precalculation
 // memory = maximum amount of memory that can be allocated for fast multiplication (negative if there is no limit)
-ParticleOnLatticeTwoBandHofstadterHamiltonian::ParticleOnLatticeTwoBandHofstadterHamiltonian(ParticleOnSphereWithSpin* particles, int nbrParticles, int nbrCellsX, int nbrCellsY, int bandIndex1, double uPotential, double vPotential, double v2Potential, double v3Potential, double v4Potential, double atan_1_4_Potential, double atan_1_3_Potential, double atan_1_2_Potential, double atan_2_3_Potential, double atan_3_4_Potential, double atan_1_Potential, Abstract2DTightBindingModel* tightBindingModel, bool flatBandFlag, AbstractArchitecture* architecture, long memory)
+ParticleOnLatticeTwoBandHofstadterHamiltonian::ParticleOnLatticeTwoBandHofstadterHamiltonian(ParticleOnSphereWithSpin* particles, int nbrParticles, int nbrCellsX, int nbrCellsY, int bandIndex1, double uPotential, double vPotential, double v2Potential, double v3Potential, double v4Potential, double atan_0_Potential, double atan_1_4_Potential, double atan_1_3_Potential, double atan_1_2_Potential, double atan_2_3_Potential, double atan_3_4_Potential, double atan_1_Potential, Abstract2DTightBindingModel* tightBindingModel, bool flatBandFlag, AbstractArchitecture* architecture, long memory)
 {
   this->Particles = particles;
   this->NbrParticles = nbrParticles;
@@ -148,6 +150,7 @@ ParticleOnLatticeTwoBandHofstadterHamiltonian::ParticleOnLatticeTwoBandHofstadte
   this->V2Potential = v2Potential;
   this->V3Potential = v3Potential;
   this->V4Potential = v4Potential;
+  this->ATAN_0_Potential = atan_0_Potential;
   this->ATAN_1_4_Potential = atan_1_4_Potential;
   this->ATAN_1_3_Potential = atan_1_3_Potential;
   this->ATAN_1_2_Potential = atan_1_2_Potential;
@@ -704,7 +707,7 @@ void ParticleOnLatticeTwoBandHofstadterHamiltonian::EvaluateInteractionFactors()
 			    Tmp *= 0.5;
 			  (*TmpInteractionFactor) = 2.0*Tmp;
   
-			  if (this->VPotential != 0.0 || this->V2Potential != 0.0 || this->V3Potential != 0.0 || this->V4Potential != 0.0 || this->ATAN_1_4_Potential != 0.0 || this->ATAN_1_3_Potential != 0.0 || this->ATAN_1_2_Potential != 0.0 || this->ATAN_2_3_Potential != 0.0 || this->ATAN_3_4_Potential != 0.0 || this->ATAN_1_Potential != 0.0)
+			  if (this->VPotential != 0.0 || this->V2Potential != 0.0 || this->V3Potential != 0.0 || this->V4Potential != 0.0 || this->ATAN_0_Potential != 0.0 || this->ATAN_1_4_Potential != 0.0 || this->ATAN_1_3_Potential != 0.0 || this->ATAN_1_2_Potential != 0.0 || this->ATAN_2_3_Potential != 0.0 || this->ATAN_3_4_Potential != 0.0 || this->ATAN_1_Potential != 0.0)
 			    {
 			      cout<< "VPotential yet needs to be implemented!"<<endl;
 			      exit(1);

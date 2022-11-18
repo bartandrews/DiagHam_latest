@@ -89,6 +89,7 @@ ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSin
   this->V2Potential = 0.0;
   this->V3Potential = 0.0;
   this->V4Potential = 0.0;
+  this->ATAN_0_Potential = 0.0;
   this->ATAN_1_4_Potential = 0.0;
   this->ATAN_1_3_Potential = 0.0;
   this->ATAN_1_2_Potential = 0.0;
@@ -127,6 +128,7 @@ ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSin
 // v2Potential = strength of the repulsive two body third nearest neighbor interaction
 // v3Potential = strength of the repulsive two body fourth nearest neighbor interaction
 // v4Potential = strength of the repulsive two body fifth nearest neighbor interaction
+// atan_0_Potential = strength of the cross potential at arctan(0)
 // atan_1_4_Potential = strength of the cross potential at arctan(1/4)
 // atan_1_3_Potential = strength of the cross potential at arctan(1/3)
 // atan_1_2_Potential = strength of the cross potential at arctan(1/2)
@@ -137,7 +139,7 @@ ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSin
 // architecture = architecture to use for precalculation
 // memory = maximum amount of memory that can be allocated for fast multiplication (negative if there is no limit)
 
-ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSingleBandHamiltonian(ParticleOnSphere* particles, int nbrParticles, int nbrCellX, int nbrCellY, int bandIndex, double uPotential, double vPotential, double v2Potential, double v3Potential, double v4Potential, double atan_1_4_Potential, double atan_1_3_Potential, double atan_1_2_Potential, double atan_2_3_Potential, double atan_3_4_Potential, double atan_1_Potential, Abstract2DTightBindingModel* tightBindingModel, bool flatBandFlag, AbstractArchitecture* architecture, long memory)
+ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSingleBandHamiltonian(ParticleOnSphere* particles, int nbrParticles, int nbrCellX, int nbrCellY, int bandIndex, double uPotential, double vPotential, double v2Potential, double v3Potential, double v4Potential, double atan_0_Potential, double atan_1_4_Potential, double atan_1_3_Potential, double atan_1_2_Potential, double atan_2_3_Potential, double atan_3_4_Potential, double atan_1_Potential, Abstract2DTightBindingModel* tightBindingModel, bool flatBandFlag, AbstractArchitecture* architecture, long memory)
 {
   this->Particles = particles;
   this->NbrParticles = nbrParticles;
@@ -155,6 +157,7 @@ ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSin
   this->V2Potential = v2Potential;
   this->V3Potential = v3Potential;
   this->V4Potential = v4Potential;
+  this->ATAN_0_Potential = atan_0_Potential;
   this->ATAN_1_4_Potential = atan_1_4_Potential;
   this->ATAN_1_3_Potential = atan_1_3_Potential;
   this->ATAN_1_2_Potential = atan_1_2_Potential;
@@ -212,6 +215,7 @@ ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSin
   this->V2Potential = 0.0;
   this->V3Potential = 0.0;
   this->V4Potential = 0.0;
+  this->ATAN_0_Potential = 0.0;
   this->ATAN_1_4_Potential = 0.0;
   this->ATAN_1_3_Potential = 0.0;
   this->ATAN_1_2_Potential = 0.0;
@@ -250,6 +254,7 @@ ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSin
 // v2Potential = strength of the repulsive two body third nearest neighbor interaction
 // v3Potential = strength of the repulsive two body fourth nearest neighbor interaction
 // v4Potential = strength of the repulsive two body fifth nearest neighbor interaction
+// atan_0_Potential = strength of the cross potential at arctan(0)
 // atan_1_4_Potential = strength of the cross potential at arctan(1/4)
 // atan_1_3_Potential = strength of the cross potential at arctan(1/3)
 // atan_1_2_Potential = strength of the cross potential at arctan(1/2)
@@ -260,7 +265,7 @@ ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSin
 // architecture = architecture to use for precalculation
 // memory = maximum amount of memory that can be allocated for fast multiplication (negative if there is no limit)
 
-ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSingleBandHamiltonian(ParticleOnSphere* particles, int nbrParticles, int nbrCellX, int nbrCellY, int bandIndex, double uPotential, double vPotential, double v2Potential, double v3Potential, double v4Potential, double atan_1_4_Potential, double atan_1_3_Potential, double atan_1_2_Potential, double atan_2_3_Potential, double atan_3_4_Potential, double atan_1_Potential, Abstract2DTightBindingModel* tightBindingModel, double** oneBodyPotential,  bool flatBandFlag, AbstractArchitecture* architecture, long memory)
+ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSingleBandHamiltonian(ParticleOnSphere* particles, int nbrParticles, int nbrCellX, int nbrCellY, int bandIndex, double uPotential, double vPotential, double v2Potential, double v3Potential, double v4Potential, double atan_0_Potential, double atan_1_4_Potential, double atan_1_3_Potential, double atan_1_2_Potential, double atan_2_3_Potential, double atan_3_4_Potential, double atan_1_Potential, Abstract2DTightBindingModel* tightBindingModel, double** oneBodyPotential,  bool flatBandFlag, AbstractArchitecture* architecture, long memory)
 {
   this->Particles = particles;
   this->NbrParticles = nbrParticles;
@@ -278,6 +283,7 @@ ParticleOnLatticeHofstadterSingleBandHamiltonian::ParticleOnLatticeHofstadterSin
   this->V2Potential = v2Potential;
   this->V3Potential = v3Potential;
   this->V4Potential = v4Potential;
+  this->ATAN_0_Potential = atan_0_Potential;
   this->ATAN_1_4_Potential = atan_1_4_Potential;
   this->ATAN_1_3_Potential = atan_1_3_Potential;
   this->ATAN_1_2_Potential = atan_1_2_Potential;
@@ -350,6 +356,7 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 	double FactorV2 = this->V2Potential * 0.5 / ((double) (this->NbrSiteX * this->NbrSiteY));
 	double FactorV3 = this->V3Potential * 0.5 / ((double) (this->NbrSiteX * this->NbrSiteY));
 	double FactorV4 = this->V4Potential * 0.5 / ((double) (this->NbrSiteX * this->NbrSiteY));
+	double FactorATAN_0 = this->ATAN_0_Potential * 0.5 / ((double) (this->NbrSiteX * this->NbrSiteY));
 	double FactorATAN_1_4 = this->ATAN_1_4_Potential * 0.5 / ((double) (this->NbrSiteX * this->NbrSiteY));
 	double FactorATAN_1_3 = this->ATAN_1_3_Potential * 0.5 / ((double) (this->NbrSiteX * this->NbrSiteY));
 	double FactorATAN_1_2 = this->ATAN_1_2_Potential * 0.5 / ((double) (this->NbrSiteX * this->NbrSiteY));
@@ -357,7 +364,7 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 	double FactorATAN_3_4 = this->ATAN_3_4_Potential * 0.5 / ((double) (this->NbrSiteX * this->NbrSiteY));
 	double FactorATAN_1 = this->ATAN_1_Potential * 0.5 / ((double) (this->NbrSiteX * this->NbrSiteY));
 
-  if (FactorU==0.0 && FactorV==0.0 && FactorV2==0.0 && FactorV3==0.0 && FactorV4==0.0 && FactorATAN_1_4==0.0 && FactorATAN_1_3==0.0 && FactorATAN_1_2==0.0 && FactorATAN_2_3==0.0 && FactorATAN_3_4 && FactorATAN_1==0.0 && (this->OneBodyPotential == 0))
+  if (FactorU==0.0 && FactorV==0.0 && FactorV2==0.0 && FactorV3==0.0 && FactorV4==0.0 && FactorATAN_0==0.0 && FactorATAN_1_4==0.0 && FactorATAN_1_3==0.0 && FactorATAN_1_2==0.0 && FactorATAN_2_3==0.0 && FactorATAN_3_4 && FactorATAN_1==0.0 && (this->OneBodyPotential == 0))
     {
       std::cerr << "Error: HofstadterHamiltonian created with interaction zero - set non-zero --u-potential or --v-potential or --v2-potential or --v3-potential or --v4-potential or --atan_*-potential"<<std::endl;
       exit(1);
@@ -582,12 +589,71 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 					  this->InteractionFactors[i][Index] += 2.0 * FactorV4 * Tmp;
 					}
 
+					if (this->ATAN_0_Potential != 0.0)
+					{
+					  int xI, yI;
+					  int dRx1, dRy1, sF1;
+					  int dRx2, dRy2, sF2;
+					  int dRx3, dRy3, sF3;
+					  int dRx4, dRy4, sF4;
+					  Complex translationPhase1, translationPhase2, translationPhase3, translationPhase4;
+					  int nbrNeighbors=4;
+					  const double ATAN_0_FACTOR1 = 1;  // e^(1-1^2)
+					  int dx1[4]={1,-1,0,0};
+					  int dy1[4]={0,0,1,-1};
+					  const double ATAN_0_FACTOR2 = 0.0498;  // e^(1-2^2)
+					  int dx2[4]={2,-2,0,0};
+					  int dy2[4]={0,0,2,-2};
+					  const double ATAN_0_FACTOR3 = 0.000335;  // e^(1-3^2)
+					  int dx3[4]={3,-3,0,0};
+					  int dy3[4]={0,0,3,-3};
+					  const double ATAN_0_FACTOR4 = 3.06e-7;  // e^(1-4^2)
+					  int dx4[4]={4,-4,0,0};
+					  int dy4[4]={0,0,4,-4};
+					  Tmp=0.0;
+
+					  for (int s=0; s<NbrSublattices; ++s)
+						{
+						  TightBindingModel->DecodeSublatticeIndex(s, xI, yI);
+
+						  for (int n=0; n<nbrNeighbors; ++n)
+							{
+							  sF1 = TightBindingModel->EncodeSublatticeIndex(xI + dx1[n], yI + dy1[n], dRx1, dRy1, translationPhase1); // calculate final sublattice index.
+							  sF2 = TightBindingModel->EncodeSublatticeIndex(xI + dx2[n], yI + dy2[n], dRx2, dRy2, translationPhase2); // calculate final sublattice index.
+							  sF3 = TightBindingModel->EncodeSublatticeIndex(xI + dx3[n], yI + dy3[n], dRx3, dRy3, translationPhase3); // calculate final sublattice index.
+							  sF4 = TightBindingModel->EncodeSublatticeIndex(xI + dx4[n], yI + dy4[n], dRx4, dRy4, translationPhase4); // calculate final sublattice index.
+
+							  Tmp += ATAN_0_FACTOR1*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF1, sF1, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF1, kx1, ky1, kx2, ky2, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx1, dRy1, kx2, ky2, kx3, ky3);
+							  Tmp -= ATAN_0_FACTOR1*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF1, sF1, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF1, kx1, ky1, kx2, ky2, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx1, dRy1, kx2, ky2, kx4, ky4);
+							  Tmp -= ATAN_0_FACTOR1*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF1, sF1, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF1, kx2, ky2, kx1, ky1, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx1, dRy1, kx1, ky1, kx3, ky3);
+							  Tmp += ATAN_0_FACTOR1*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF1, sF1, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF1, kx2, ky2, kx1, ky1, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx1, dRy1, kx1, ky1, kx4, ky4);
+
+							  Tmp += ATAN_0_FACTOR2*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF2, sF2, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF2, kx1, ky1, kx2, ky2, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx2, dRy2, kx2, ky2, kx3, ky3);
+							  Tmp -= ATAN_0_FACTOR2*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF2, sF2, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF2, kx1, ky1, kx2, ky2, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx2, dRy2, kx2, ky2, kx4, ky4);
+							  Tmp -= ATAN_0_FACTOR2*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF2, sF2, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF2, kx2, ky2, kx1, ky1, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx2, dRy2, kx1, ky1, kx3, ky3);
+							  Tmp += ATAN_0_FACTOR2*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF2, sF2, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF2, kx2, ky2, kx1, ky1, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx2, dRy2, kx1, ky1, kx4, ky4);
+
+							  Tmp += ATAN_0_FACTOR3*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF3, sF3, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF3, kx1, ky1, kx2, ky2, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx3, dRy3, kx2, ky2, kx3, ky3);
+							  Tmp -= ATAN_0_FACTOR3*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF3, sF3, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF3, kx1, ky1, kx2, ky2, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx3, dRy3, kx2, ky2, kx4, ky4);
+							  Tmp -= ATAN_0_FACTOR3*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF3, sF3, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF3, kx2, ky2, kx1, ky1, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx3, dRy3, kx1, ky1, kx3, ky3);
+							  Tmp += ATAN_0_FACTOR3*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF3, sF3, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF3, kx2, ky2, kx1, ky1, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx3, dRy3, kx1, ky1, kx4, ky4);
+
+							  Tmp += ATAN_0_FACTOR4*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF4, sF4, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF4, kx1, ky1, kx2, ky2, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx4, dRy4, kx2, ky2, kx3, ky3);
+							  Tmp -= ATAN_0_FACTOR4*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF4, sF4, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF4, kx1, ky1, kx2, ky2, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx4, dRy4, kx2, ky2, kx4, ky4);
+							  Tmp -= ATAN_0_FACTOR4*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF4, sF4, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF4, kx2, ky2, kx1, ky1, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx4, dRy4, kx1, ky1, kx3, ky3);
+							  Tmp += ATAN_0_FACTOR4*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF4, sF4, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF4, kx2, ky2, kx1, ky1, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx4, dRy4, kx1, ky1, kx4, ky4);
+							}
+						}
+
+					  this->InteractionFactors[i][Index] += 2.0 * FactorATAN_0 * Tmp;
+					}
+
 					if (this->ATAN_1_4_Potential != 0.0)
 					{
 					  int xI, yI, dRx, dRy, sF;
 					  Complex translationPhase;
 					  int nbrNeighbors=4;
-					  const double ATAN_1_4_FACTOR = 0; // e^(1-17^2)
+					  const double ATAN_1_4_FACTOR = 1e-7; // e^(1-sqrt(17)^2)
 					  int dx[4]={4,-1,-4,1};
 					  int dy[4]={1,4,-1,-4};
 					  Tmp=0.0;
@@ -615,7 +681,7 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 					  int xI, yI, dRx, dRy, sF;
 					  Complex translationPhase;
 					  int nbrNeighbors=4;
-					  const double ATAN_1_3_FACTOR = 0; // e^(1-10^2)
+					  const double ATAN_1_3_FACTOR = 0.000123; // e^(1-sqrt(10)^2)
 					  int dx[4]={3,-1,-3,1};
 					  int dy[4]={1,3,-1,-3};
 					  Tmp=0.0;
@@ -643,10 +709,10 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 					  int xI, yI, dRx1, dRy1, dRx2, dRy2, sF1, sF2;
 					  Complex translationPhase1, translationPhase2;
 					  int nbrNeighbors=4;
-					  const double ATAN_1_2_FACTOR1 = 3.76e-11;  // e^(1-5^2)
+					  const double ATAN_1_2_FACTOR1 = 0.0183;  // e^(1-sqrt(5)^2)
 					  int dx1[4]={2,-1,-2,1};
 					  int dy1[4]={1,2,-1,-2};
-					  const double ATAN_1_2_FACTOR2 = 0;  // e^(1-20^2)
+					  const double ATAN_1_2_FACTOR2 = 5.60e-9;  // e^(1-sqrt(20)^2)
 					  int dx2[4]={4,-2,-4,2};
 					  int dy2[4]={2,4,-2,-4};
 					  Tmp=0.0;
@@ -680,7 +746,7 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 					  int xI, yI, dRx, dRy, sF;
 					  Complex translationPhase;
 					  int nbrNeighbors=4;
-					  const double ATAN_2_3_FACTOR = 0;  // e^(1-13^2)
+					  const double ATAN_2_3_FACTOR = 6.14e-6;  // e^(1-sqrt(13)^2)
 					  int dx[4]={3,-2,-3,2};
 					  int dy[4]={2,3,-2,-3};
 					  Tmp=0.0;
@@ -708,7 +774,7 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 					  int xI, yI, dRx, dRy, sF;
 					  Complex translationPhase;
 					  int nbrNeighbors=4;
-					  const double ATAN_3_4_FACTOR = 0;  // e^(1-25^2)
+					  const double ATAN_3_4_FACTOR = 3.76e-11;  // e^(1-sqrt(25)^2)
 					  int dx[4]={4,-3,-4,3};
 					  int dy[4]={3,4,-3,-4};
 					  Tmp=0.0;
@@ -740,16 +806,16 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 					  int dRx4, dRy4, sF4;
 					  Complex translationPhase1, translationPhase2, translationPhase3, translationPhase4;
 					  int nbrNeighbors=4;
-					  const double ATAN_1_FACTOR1 = 0.0498;  // e^(1-2^2)
+					  const double ATAN_1_FACTOR1 = 0.368;  // e^(1-sqrt(2)^2)
 					  int dx1[4]={1,-1,-1,1};
 					  int dy1[4]={1,1,-1,-1};
-					  const double ATAN_1_FACTOR2 = 0;  // e^(1-8^2)
+					  const double ATAN_1_FACTOR2 = 0.000912;  // e^(1-sqrt(8)^2)
 					  int dx2[4]={2,-2,-2,2};
 					  int dy2[4]={2,2,-2,-2};
-					  const double ATAN_1_FACTOR3 = 0;  // e^(1-18^2)
+					  const double ATAN_1_FACTOR3 = 4.13e-8;  // e^(1-sqrt(18)^2)
 					  int dx3[4]={3,-3,-3,3};
 					  int dy3[4]={3,3,-3,-3};
-					  const double ATAN_1_FACTOR4 = 0;  // e^(1-32^2)
+					  const double ATAN_1_FACTOR4 = 3.44e-14;  // e^(1-sqrt(32)^2)
 					  int dx4[4]={4,-4,-4,4};
 					  int dy4[4]={4,4,-4,-4};
 					  Tmp=0.0;
@@ -1006,12 +1072,71 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 				this->InteractionFactors[i][Index] += 2.0 * FactorV4 * Tmp;
 			}
 
+			if (this->ATAN_0_Potential != 0.0)
+			{
+				int xI, yI;
+				int dRx1, dRy1, sF1;
+				int dRx2, dRy2, sF2;
+				int dRx3, dRy3, sF3;
+				int dRx4, dRy4, sF4;
+				Complex translationPhase1, translationPhase2, translationPhase3, translationPhase4;
+				int nbrNeighbors=4;
+				const double ATAN_0_FACTOR1 = 1;  // e^(1-1^2)
+				int dx1[4]={1,-1,0,0};
+				int dy1[4]={0,0,1,-1};
+				const double ATAN_0_FACTOR2 = 0.0498;  // e^(1-2^2)
+				int dx2[4]={2,-2,0,0};
+				int dy2[4]={0,0,2,-2};
+				const double ATAN_0_FACTOR3 = 0.00335;  // e^(1-3^2)
+				int dx3[4]={3,-3,0,0};
+				int dy3[4]={0,0,3,-3};
+				const double ATAN_0_FACTOR4 = 3.06e-7;  // e^(1-4^2)
+				int dx4[4]={4,-4,0,0};
+				int dy4[4]={0,0,4,-4};
+				Tmp=0.0;
+
+				for (int s=0; s<NbrSublattices; ++s)
+				{
+					TightBindingModel->DecodeSublatticeIndex(s, xI, yI);
+
+					for (int n=0; n<nbrNeighbors; ++n)
+					{
+						sF1 = TightBindingModel->EncodeSublatticeIndex(xI + dx1[n], yI + dy1[n], dRx1, dRy1, translationPhase1); // calculate final sublattice index.
+						sF2 = TightBindingModel->EncodeSublatticeIndex(xI + dx2[n], yI + dy2[n], dRx2, dRy2, translationPhase2); // calculate final sublattice index.
+						sF3 = TightBindingModel->EncodeSublatticeIndex(xI + dx3[n], yI + dy3[n], dRx3, dRy3, translationPhase3); // calculate final sublattice index.
+						sF4 = TightBindingModel->EncodeSublatticeIndex(xI + dx4[n], yI + dy4[n], dRx4, dRy4, translationPhase4); // calculate final sublattice index.
+
+						Tmp += ATAN_0_FACTOR1*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF1, sF1, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF1, kx1, ky1, kx2, ky2, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx1, dRy1, kx2, ky2, kx3, ky3);
+						Tmp -= ATAN_0_FACTOR1*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF1, sF1, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF1, kx1, ky1, kx2, ky2, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx1, dRy1, kx2, ky2, kx4, ky4);
+						Tmp -= ATAN_0_FACTOR1*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF1, sF1, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF1, kx2, ky2, kx1, ky1, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx1, dRy1, kx1, ky1, kx3, ky3);
+						Tmp += ATAN_0_FACTOR1*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF1, sF1, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF1, kx2, ky2, kx1, ky1, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx1, dRy1, kx1, ky1, kx4, ky4);
+
+						Tmp += ATAN_0_FACTOR2*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF2, sF2, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF2, kx1, ky1, kx2, ky2, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx2, dRy2, kx2, ky2, kx3, ky3);
+						Tmp -= ATAN_0_FACTOR2*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF2, sF2, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF2, kx1, ky1, kx2, ky2, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx2, dRy2, kx2, ky2, kx4, ky4);
+						Tmp -= ATAN_0_FACTOR2*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF2, sF2, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF2, kx2, ky2, kx1, ky1, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx2, dRy2, kx1, ky1, kx3, ky3);
+						Tmp += ATAN_0_FACTOR2*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF2, sF2, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF2, kx2, ky2, kx1, ky1, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx2, dRy2, kx1, ky1, kx4, ky4);
+
+						Tmp += ATAN_0_FACTOR3*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF3, sF3, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF3, kx1, ky1, kx2, ky2, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx3, dRy3, kx2, ky2, kx3, ky3);
+						Tmp -= ATAN_0_FACTOR3*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF3, sF3, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF3, kx1, ky1, kx2, ky2, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx3, dRy3, kx2, ky2, kx4, ky4);
+						Tmp -= ATAN_0_FACTOR3*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF3, sF3, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF3, kx2, ky2, kx1, ky1, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx3, dRy3, kx1, ky1, kx3, ky3);
+						Tmp += ATAN_0_FACTOR3*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF3, sF3, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF3, kx2, ky2, kx1, ky1, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx3, dRy3, kx1, ky1, kx4, ky4);
+
+						Tmp += ATAN_0_FACTOR4*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF4, sF4, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF4, kx1, ky1, kx2, ky2, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx4, dRy4, kx2, ky2, kx3, ky3);
+						Tmp -= ATAN_0_FACTOR4*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index1, Index2, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF4, sF4, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF4, kx1, ky1, kx2, ky2, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx4, dRy4, kx2, ky2, kx4, ky4);
+						Tmp -= ATAN_0_FACTOR4*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index3, Index4, BandIndex, BandIndex, BandIndex, BandIndex, s, sF4, sF4, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF4, kx2, ky2, kx1, ky1, kx3, ky3, kx4, ky4) * ComputeBlochPhases(dRx4, dRy4, kx1, ky1, kx3, ky3);
+						Tmp += ATAN_0_FACTOR4*this->ComputeTransfomationBasisContribution(OneBodyBasis, Index2, Index1, Index4, Index3, BandIndex, BandIndex, BandIndex, BandIndex, s, sF4, sF4, s)*this->ComputeEmbeddingForTwoBodyOperator(s, sF4, kx2, ky2, kx1, ky1, kx4, ky4, kx3, ky3) * ComputeBlochPhases(dRx4, dRy4, kx1, ky1, kx4, ky4);
+					}
+				}
+
+				this->InteractionFactors[i][Index] += 2.0 * FactorATAN_0 * Tmp;
+			}
+
 			if (this->ATAN_1_4_Potential != 0.0)
 			{
 				int xI, yI, dRx, dRy, sF;
 				Complex translationPhase;
 				int nbrNeighbors=4;
-				const double ATAN_1_4_FACTOR = 0; // e^(1-17^2)
+				const double ATAN_1_4_FACTOR = 1.13e-7; // e^(1-sqrt(17)^2)
 				int dx[4]={4,-1,-4,1};
 				int dy[4]={1,4,-1,-4};
 				Tmp=0.0;
@@ -1039,7 +1164,7 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 				int xI, yI, dRx, dRy, sF;
 				Complex translationPhase;
 				int nbrNeighbors=4;
-				const double ATAN_1_3_FACTOR = 0; // e^(1-10^2)
+				const double ATAN_1_3_FACTOR = 0.000123; // e^(1-sqrt(10)^2)
 				int dx[4]={3,-1,-3,1};
 				int dy[4]={1,3,-1,-3};
 				Tmp=0.0;
@@ -1067,10 +1192,10 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 				int xI, yI, dRx1, dRy1, dRx2, dRy2, sF1, sF2;
 				Complex translationPhase1, translationPhase2;
 				int nbrNeighbors=4;
-				const double ATAN_1_2_FACTOR1 = 3.78e-11;  // e^(1-5^2)
+				const double ATAN_1_2_FACTOR1 = 0.0183;  // e^(1-sqrt(5)^2)
 				int dx1[4]={2,-1,-2,1};
 				int dy1[4]={1,2,-1,-2};
-				const double ATAN_1_2_FACTOR2 = 0;  // e^(1-20^2)
+				const double ATAN_1_2_FACTOR2 = 5.60e-9;  // e^(1-sqrt(20)^2)
 				int dx2[4]={4,-2,-4,2};
 				int dy2[4]={2,4,-2,-4};
 				Tmp=0.0;
@@ -1104,7 +1229,7 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 				int xI, yI, dRx, dRy, sF;
 				Complex translationPhase;
 				int nbrNeighbors=4;
-				const double ATAN_2_3_FACTOR = 0;  // e^(1-13^2)
+				const double ATAN_2_3_FACTOR = 6.14e-6;  // e^(1-sqrt(13)^2)
 				int dx[4]={3,-2,-3,2};
 				int dy[4]={2,3,-2,-3};
 				Tmp=0.0;
@@ -1132,7 +1257,7 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 				int xI, yI, dRx, dRy, sF;
 				Complex translationPhase;
 				int nbrNeighbors=4;
-				const double ATAN_3_4_FACTOR = 0;  // e^(1-25^2)
+				const double ATAN_3_4_FACTOR = 3.78e-11;  // e^(1-sqrt(25)^2)
 				int dx[4]={4,-3,-4,3};
 				int dy[4]={3,4,-3,-4};
 				Tmp=0.0;
@@ -1164,16 +1289,16 @@ void ParticleOnLatticeHofstadterSingleBandHamiltonian::EvaluateInteractionFactor
 				int dRx4, dRy4, sF4;
 				Complex translationPhase1, translationPhase2, translationPhase3, translationPhase4;
 				int nbrNeighbors=4;
-				const double ATAN_1_FACTOR1 = 0.0498;  // e^(1-2^2)
+				const double ATAN_1_FACTOR1 = 0.368;  // e^(1-sqrt(2)^2)
 				int dx1[4]={1,-1,-1,1};
 				int dy1[4]={1,1,-1,-1};
-				const double ATAN_1_FACTOR2 = 0;  // e^(1-8^2)
+				const double ATAN_1_FACTOR2 = 0.000912;  // e^(1-sqrt(8)^2)
 				int dx2[4]={2,-2,-2,2};
 				int dy2[4]={2,2,-2,-2};
-				const double ATAN_1_FACTOR3 = 0;  // e^(1-18^2)
+				const double ATAN_1_FACTOR3 = 4.14e-8;  // e^(1-sqrt(18)^2)
 				int dx3[4]={3,-3,-3,3};
 				int dy3[4]={3,3,-3,-3};
-				const double ATAN_1_FACTOR4 = 0;  // e^(1-32^2)
+				const double ATAN_1_FACTOR4 = 3.44e-14;  // e^(1-sqrt(32)^2)
 				int dx4[4]={4,-4,-4,4};
 				int dy4[4]={4,4,-4,-4};
 				Tmp=0.0;
