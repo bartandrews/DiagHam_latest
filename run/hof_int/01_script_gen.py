@@ -7,7 +7,7 @@ def pot(distance):
 
 if __name__ == "__main__":
 
-    program = "turn"  # "tune" or "turn"
+    program = "tune"  # "tune" or "turn"
     stats = "fermions"  # "fermions" or "bosons"
     FCIHofstadterModel = "~/DiagHam_latest/build/FTI/src/Programs/FCI/FCIHofstadterModel"
 

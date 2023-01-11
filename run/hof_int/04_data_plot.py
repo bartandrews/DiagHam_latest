@@ -7,8 +7,8 @@ plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
 
 if __name__ == "__main__":
 
-    program = "turn"  # "tune" or "turn"
-    stats = "bosons"  # "fermions" or "bosons"
+    program = "tune"  # "tune" or "turn"
+    stats = "fermions"  # "fermions" or "bosons"
 
     if program == "tune":
         if stats == "fermions":

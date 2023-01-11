@@ -1415,4 +1415,3 @@ Complex ParticleOnLatticeHofstadterSingleBandHamiltonian::ComputeBlochPhases(int
   double phase = this->KxFactor * dRx * (kx2-kx3) + this->KyFactor * dRy * (ky2-ky3);
   return Polar(phase);
 }
-
