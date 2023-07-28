@@ -5,7 +5,7 @@
 //                                                                            //
 //                  Copyright (C) 2001-2012 Nicolas Regnault                  //
 //                                                                            //
-//                        class author: Gunnar Möller                         //
+//                        class author: Gunnar Mï¿½ller                         //
 //                                                                            //
 //  class of tight binding model for the square lattice with homogeneous flux //
 //                                                                            //
@@ -45,7 +45,6 @@ using std::ios;
 
 // #define DEBUG_OUTPUT
 
-
 // default constructor
 //
 // nbrCellsX = number of unit cells in the x direction
@@ -61,6 +60,245 @@ using std::ios;
 // useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
 // precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
 TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, char axis,
+								     double gammaX, double gammaY,
+								     AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
+{
+  this->NbrSiteX = nbrCellX;
+  this->NbrSiteY = nbrCellY;
+  this->UnitCellX = unitCellX;
+  this->UnitCellY = unitCellY;
+  this->T1hop = 1.0;
+  this->T3hop = 0.0;
+  this->FullUnitCellX = this->UnitCellX;
+  this->FullUnitCellY = this->UnitCellY;
+  this->LatticeVector1.Resize(2);
+  this->LatticeVector1[0] = this->UnitCellX;
+  this->LatticeVector1[1] = 0.0;
+  this->LatticeVector2.Resize(2);
+  this->LatticeVector2[0] = 0.0;
+  this->LatticeVector2[1] = this->UnitCellY;
+  this->KxFactor = 2.0 * M_PI / ((double) this->NbrSiteX);
+  this->KyFactor = 2.0 * M_PI / ((double) this->NbrSiteY);
+  this->GammaX = gammaX;
+  this->GammaY = gammaY;
+  this->NbrBands = this->UnitCellX * this->UnitCellY;
+  this->NbrStatePerBand = this->NbrSiteX * this->NbrSiteY;
+  this->MuS = 0.0;
+  this->T1 = 0.0;
+  this->T2 = 0.0;
+  this->Delta = 0.0;
+  this->M = 0.0;
+  this->LandauGaugeAxis=axis;
+  this->Architecture = architecture;
+  this->Precision = precision;
+  if (precision < 64) this->Precision = (precision < 32 ? 32 : 64);
+
+  if (storeOneBodyMatrices == true)
+    {
+      this->OneBodyBasis = new ComplexMatrix [this->NbrStatePerBand];
+    }
+  else
+    {
+      this->OneBodyBasis = 0;
+    }
+  this->EnergyBandStructure = new double*[this->NbrBands];
+  for (int i = 0; i < this->NbrBands; ++i)
+    {
+      this->EnergyBandStructure[i] = new double[this->NbrStatePerBand];
+    }
+  this->SetNbrFluxQuanta(nbrFlux);
+  if (useEmbedding == true)
+    {
+      this->SetNaturalEmbedding();
+    }
+  else
+    {
+      this->SetNoEmbedding();
+      this->UsingNaturalEmbedding=false;
+    }
+  this->ComputeBandStructure();
+
+  //or else, use explicitly hardcoded embedding
+  //this->CoreComputeBandStructureWithEmbedding(0, this->GetNbrStatePerBand());
+}
+
+
+
+// constructor with staggered chemical potential and periodic potentials
+//
+// nbrCellsX = number of unit cells in the x direction
+// nbrCellsY = number of unit cella in the y direction
+// unitCellX = number of sites in unit cell in x direction
+// unitCellY = number of sites in unit cell in y direction
+// nbrFlux = number of flux quanta per unit cell
+// muS = amplitude of staggered potential
+// fullUnitCellX = number of sites in full unit cell in x direction
+// t1 = amplitude of one magnetic flux potential
+// t2 = amplitude of half flux potential
+// axis = direction of Landau gauge within cell ('x' or 'y')
+// gammaX = boundary condition twisting angle along x
+// gammaY = boundary condition twisting angle along y
+// architecture = pointer to the architecture
+// storeOneBodyMatrices = flag to indicate if the one body transformation matrices have to be computed and stored
+// useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
+// precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
+TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, double muS, int fullUnitCellX, double t1, double t2, char axis, double gammaX, double gammaY,
+								     AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
+{
+  this->NbrSiteX = nbrCellX;
+  this->NbrSiteY = nbrCellY;
+  this->UnitCellX = unitCellX;
+  this->UnitCellY = unitCellY;
+  this->T1hop = 1.0;
+  this->T3hop = 0.0;
+  this->FullUnitCellX = fullUnitCellX;
+  this->FullUnitCellY = this->UnitCellY;
+  this->LatticeVector1.Resize(2);
+  this->LatticeVector1[0] = this->FullUnitCellX;
+  this->LatticeVector1[1] = 0.0;
+  this->LatticeVector2.Resize(2);
+  this->LatticeVector2[0] = 0.0;
+  this->LatticeVector2[1] = this->UnitCellY;
+  this->MuS = muS;
+  this->T1 = t1;
+  this->T2 = t2;
+  this->Delta = 0.0;
+  this->M = 0.0;
+  this->KxFactor = 2.0 * M_PI / ((double) this->NbrSiteX);
+  this->KyFactor = 2.0 * M_PI / ((double) this->NbrSiteY);
+  this->GammaX = gammaX;
+  this->GammaY = gammaY;
+  this->NbrBands = this->FullUnitCellX * this->UnitCellY;
+  this->NbrStatePerBand = this->NbrSiteX * this->NbrSiteY;
+  this->LandauGaugeAxis=axis;
+  this->Architecture = architecture;
+  this->Precision = precision;
+  if (precision < 64) this->Precision = (precision < 32 ? 32 : 64);
+
+  if (storeOneBodyMatrices == true)
+    {
+      this->OneBodyBasis = new ComplexMatrix [this->NbrStatePerBand];
+    }
+  else
+    {
+      this->OneBodyBasis = 0;
+    }
+  this->EnergyBandStructure = new double*[this->NbrBands];
+  for (int i = 0; i < this->NbrBands; ++i)
+    {
+      this->EnergyBandStructure[i] = new double[this->NbrStatePerBand];
+    }
+  this->SetNbrFluxQuanta(nbrFlux);
+  if (useEmbedding == true)
+    {
+      this->SetNaturalEmbedding();
+    }
+  else
+    {
+      this->SetNoEmbedding();
+      this->UsingNaturalEmbedding=false;
+    }
+  this->ComputeBandStructure();
+
+  //or else, use explicitly hardcoded embedding
+  //this->CoreComputeBandStructureWithEmbedding(0, this->GetNbrStatePerBand());
+}
+
+// constructor with staggered chemical potential and periodic potentials
+//
+// nbrCellsX = number of unit cells in the x direction
+// nbrCellsY = number of unit cella in the y direction
+// unitCellX = number of sites in unit cell in x direction
+// unitCellY = number of sites in unit cell in y direction
+// nbrFlux = number of flux quanta per unit cell
+// muS = amplitude of staggered potential
+// fullUnitCellX = number of sites in full unit cell in x direction
+// t1 = amplitude of one magnetic flux potential
+// t2 = amplitude of half flux potential
+// axis = direction of Landau gauge within cell ('x' or 'y')
+// gammaX = boundary condition twisting angle along x
+// gammaY = boundary condition twisting angle along y
+// architecture = pointer to the architecture
+// storeOneBodyMatrices = flag to indicate if the one body transformation matrices have to be computed and stored
+// useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
+// precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
+TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, int fullUnitCellX, int fullUnitCellY, double delta, double M, char axis, double gammaX, double gammaY,
+								     AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
+{
+  this->NbrSiteX = nbrCellX;
+  this->NbrSiteY = nbrCellY;
+  this->UnitCellX = unitCellX;
+  this->UnitCellY = unitCellY;
+  this->T1hop = 1.0;
+  this->T3hop = 0.0;
+  this->FullUnitCellX = fullUnitCellX;
+  this->FullUnitCellY = fullUnitCellY;
+  this->LatticeVector1.Resize(2);
+  this->LatticeVector1[0] = this->FullUnitCellX;
+  this->LatticeVector1[1] = 0.0;
+  this->LatticeVector2.Resize(2);
+  this->LatticeVector2[0] = 0.0;
+  this->LatticeVector2[1] = this->FullUnitCellY;
+  this->MuS = 0.0;
+  this->T1 = 0.0;
+  this->T2 = 0.0;
+  this->Delta = delta;
+  this->M = M;
+  this->KxFactor = 2.0 * M_PI / ((double) this->NbrSiteX);
+  this->KyFactor = 2.0 * M_PI / ((double) this->NbrSiteY);
+  this->GammaX = gammaX;
+  this->GammaY = gammaY;
+  this->NbrBands = this->FullUnitCellX * this->FullUnitCellY;
+  this->NbrStatePerBand = this->NbrSiteX * this->NbrSiteY;
+  this->LandauGaugeAxis=axis;
+  this->Architecture = architecture;
+  this->Precision = precision;
+  if (precision < 64) this->Precision = (precision < 32 ? 32 : 64);
+
+  if (storeOneBodyMatrices == true)
+    {
+      this->OneBodyBasis = new ComplexMatrix [this->NbrStatePerBand];
+    }
+  else
+    {
+      this->OneBodyBasis = 0;
+    }
+  this->EnergyBandStructure = new double*[this->NbrBands];
+  for (int i = 0; i < this->NbrBands; ++i)
+    {
+      this->EnergyBandStructure[i] = new double[this->NbrStatePerBand];
+    }
+  this->SetNbrFluxQuanta(nbrFlux);
+  if (useEmbedding == true)
+    {
+      this->SetNaturalEmbedding();
+    }
+  else
+    {
+      this->SetNoEmbedding();
+      this->UsingNaturalEmbedding=false;
+    }
+  this->ComputeBandStructure();
+
+  //or else, use explicitly hardcoded embedding
+  //this->CoreComputeBandStructureWithEmbedding(0, this->GetNbrStatePerBand());
+}
+
+// default constructor
+//
+// nbrCellsX = number of unit cells in the x direction
+// nbrCellsY = number of unit cella in the y direction
+// unitCellX = number of sites in unit cell in x direction
+// unitCellY = number of sites in unit cell in y direction
+// nbrFlux = number of flux quanta per unit cell
+// axis = direction of Landau gauge within cell ('x' or 'y')
+// gammaX = boundary condition twisting angle along x
+// gammaY = boundary condition twisting angle along y
+// architecture = pointer to the architecture
+// storeOneBodyMatrices = flag to indicate if the one body transformation matrices have to be computed and stored
+// useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
+// precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
+TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, double t1hop, double t3hop, char axis,
 								     double gammaX, double gammaY, 
 								     AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
 {
@@ -68,6 +306,8 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
   this->NbrSiteY = nbrCellY;
   this->UnitCellX = unitCellX;
   this->UnitCellY = unitCellY;
+  this->T1hop = t1hop;
+  this->T3hop = t3hop;
   this->FullUnitCellX = this->UnitCellX;
   this->FullUnitCellY = this->UnitCellY;
   this->LatticeVector1.Resize(2);
@@ -141,13 +381,15 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
 // storeOneBodyMatrices = flag to indicate if the one body transformation matrices have to be computed and stored
 // useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
 // precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
-TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, double muS, int fullUnitCellX, double t1, double t2, char axis, double gammaX, double gammaY, 
+TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, double t1hop, double t3hop, double muS, int fullUnitCellX, double t1, double t2, char axis, double gammaX, double gammaY,
 								     AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
 {
   this->NbrSiteX = nbrCellX;
   this->NbrSiteY = nbrCellY;
   this->UnitCellX = unitCellX;
   this->UnitCellY = unitCellY;
+  this->T1hop = t1hop;
+  this->T3hop = t3hop;
   this->FullUnitCellX = fullUnitCellX;
   this->FullUnitCellY = this->UnitCellY;
   this->LatticeVector1.Resize(2);
@@ -219,13 +461,15 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
 // storeOneBodyMatrices = flag to indicate if the one body transformation matrices have to be computed and stored
 // useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
 // precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
-TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, int fullUnitCellX, int fullUnitCellY, double delta, double M, char axis, double gammaX, double gammaY, 
+TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, double t1hop, double t3hop, int fullUnitCellX, int fullUnitCellY, double delta, double M, char axis, double gammaX, double gammaY,
 								     AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
 {
   this->NbrSiteX = nbrCellX;
   this->NbrSiteY = nbrCellY;
   this->UnitCellX = unitCellX;
   this->UnitCellY = unitCellY;
+  this->T1hop = t1hop;
+  this->T3hop = t3hop;
   this->FullUnitCellX = fullUnitCellX;
   this->FullUnitCellY = fullUnitCellY;
   this->LatticeVector1.Resize(2);
@@ -553,296 +797,329 @@ void TightBindingModelHofstadterSquare::CoreComputeBandStructure(long minStateIn
   double TmpSignDelta;
   double TmpSignM;
   //int sublXf, sublYf; // final site sublattice positions
+
   for (int kx = 0; kx < this->NbrSiteX; ++kx)
-    {
-      for (int ky = 0; ky < this->NbrSiteY; ++ky)
 	{
-	  int Index = this->GetLinearizedMomentumIndex(kx, ky);
-	  if ((Index >= minStateIndex) && (Index < MaxStateIndex))
-	    {
-	      K1 = this->KxFactor*(((double) kx) + this->GammaX);
-	      K2 = this->KyFactor*(((double) ky) + this->GammaY);
-#ifdef DEBUG_OUTPUT
-	      cout << "Sector kx="<<kx<<", ky="<<ky<<" (KX="<<K1<<", KY="<<K2<<")"<<endl;
-#endif
-	      // construct magnetic unit cell:
-	      HermitianMatrix TmpOneBodyHamiltonian(this->NbrBands, true);
-	      
-	      Complex TranslationPhase;
-	      switch (this->LandauGaugeAxis)
+		for (int ky = 0; ky < this->NbrSiteY; ++ky)
 		{
-		case 'y': {
-		  for (int i=0; i<this->FullUnitCellX; ++i)
-		    {
-		      Complex Phase=Polar(1.0,2.0*M_PI*this->FluxDensity*(double) (i));
-		      Complex Phase2=Polar(1.0,this->UnitCellY*2.0*M_PI*this->FluxDensity*(double) (i));
-
-		      for (int j=0; j<this->FullUnitCellY; ++j)
+			int Index = this->GetLinearizedMomentumIndex(kx, ky);
+			if ((Index >= minStateIndex) && (Index < MaxStateIndex))
 			{
-			  int InitialIndex = this->EncodeSublatticeIndex(i, j, K1, K2, TranslationPhase); // initial TranlationPhase always one, so can be discarded
-			  
-			  if ((this->MuS != 0.0) && (i == 0) && (j == 0))
-			    TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, -this->MuS);
-			  
-			  TmpSignDelta = 0.5 * (pow(-1.0, i), pow(-1.0, j));
-			  TmpSignM = pow(-1.0, (i + j));
-			  if ((this->Delta != 0.0) || (this->M != 0.0))
-			    TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, TmpSignDelta * this->Delta + TmpSignM * this->M);
-			  
-			  
-			  double InitialEmbeddingPhase=this->GetEmbeddingPhase(InitialIndex, K1, K2);
-			  int FinalIndex = this->EncodeSublatticeIndex(i+1, j, K1, K2, TranslationPhase);
-			  double FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			  if (InitialIndex>=FinalIndex)
-			    TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			  cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
+				K1 = this->KxFactor*(((double) kx) + this->GammaX);
+				K2 = this->KyFactor*(((double) ky) + this->GammaY);
+				#ifdef DEBUG_OUTPUT
+							cout << "Sector kx="<<kx<<", ky="<<ky<<" (KX="<<K1<<", KY="<<K2<<")"<<endl;
+				#endif
+				// construct magnetic unit cell:
+				HermitianMatrix TmpOneBodyHamiltonian(this->NbrBands, true);
 
-			  FinalIndex = this->EncodeSublatticeIndex(i-1, j, K1, K2, TranslationPhase);
-			  FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			  if (InitialIndex>=FinalIndex)
-			    TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			  cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
-			  
-			  FinalIndex = this->EncodeSublatticeIndex(i, j+1, K1, K2, TranslationPhase);
-			  FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			  if (InitialIndex>=FinalIndex)
-			    TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*Conj(Phase)*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			  cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*Conj(Phase)<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
+				Complex TranslationPhase;
+				switch (this->LandauGaugeAxis)
+				{
+					case 'y':
+					{
+						for (int i=0; i<this->FullUnitCellX; ++i)
+						{
+							Complex Phase=Polar(1.0,2.0*M_PI*this->FluxDensity*(double) (i));
+							Complex Phase2=Polar(1.0,this->UnitCellY*2.0*M_PI*this->FluxDensity*(double) (i));
+							Complex Phase3=Polar(1.0,4.0*M_PI*this->FluxDensity*(double) (i));
 
-			  FinalIndex = this->EncodeSublatticeIndex(i, j-1, K1, K2, TranslationPhase);
-			  FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			  if (InitialIndex>=FinalIndex)
-			    TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*Phase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			  cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*Phase<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
-			  
-			  if ((this->T1 != 0) && ((i % this->UnitCellX)== 0) && (j == 0))
-			  {
-// 			    if ((i == 0) && (j == 0))
-// 			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, -this->T1);
-// 			    if ((i == 1) && (j == 1))
-// 			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, this->T1);
-			    
-			    
-			    FinalIndex = this->EncodeSublatticeIndex(i + this->UnitCellX, j, K1, K2, TranslationPhase);
-			    FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			    if (InitialIndex>=FinalIndex)
-			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T1*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			    cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T1<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
-			    FinalIndex = this->EncodeSublatticeIndex(i - this->UnitCellX, j, K1, K2, TranslationPhase);
-			    FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			    if (InitialIndex>=FinalIndex)
-			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T1*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			    cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T1<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
-			    
-			    FinalIndex = this->EncodeSublatticeIndex(i, j + this->UnitCellY, K1, K2, TranslationPhase);
-			    FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			    if (InitialIndex>=FinalIndex)
-			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T1*Conj(Phase2) * Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			    cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T1*Conj(Phase2) <<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
-			    
-			    FinalIndex = this->EncodeSublatticeIndex(i, j - this->UnitCellY, K1, K2, TranslationPhase);
-			    FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			    if (InitialIndex>=FinalIndex)
-			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T1*Phase2 * Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			    cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T1 * Phase2 <<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
-			  }
-			  
-			  if ((this->T2 != 0) && ((this->UnitCellX % 2 ) == 0) && (i % (this->UnitCellX / 2) == 1))
-			  {
-// 			    if ((i % (this->UnitCellX / 2) == 0) && (j == 0))
-// 			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, -this->T2);
-			    
-			    FinalIndex = this->EncodeSublatticeIndex(i + this->UnitCellX / 2, j, K1, K2, TranslationPhase);
-			    FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			    if (InitialIndex>=FinalIndex)
-			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T2*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			    cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T2<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
-			    
-			    FinalIndex = this->EncodeSublatticeIndex(i - this->UnitCellX / 2, j, K1, K2, TranslationPhase);
-			    FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			    if (InitialIndex>=FinalIndex)
-			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T2*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			    cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T2<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
-			    
-			    FinalIndex = this->EncodeSublatticeIndex(i, j + this->UnitCellY, K1, K2, TranslationPhase);
-			    FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			    if (InitialIndex>=FinalIndex)
-			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T2*Conj(Phase2)*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			    cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T2*Conj(Phase2)<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
-			    
-			    FinalIndex = this->EncodeSublatticeIndex(i, j - this->UnitCellY, K1, K2, TranslationPhase);
-			    FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			    if (InitialIndex>=FinalIndex)
-			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T2*Phase2*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			    cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T2*Phase2<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
-#endif
-			  }
+							for (int j=0; j<this->FullUnitCellY; ++j)
+							{
+								int InitialIndex = this->EncodeSublatticeIndex(i, j, K1, K2, TranslationPhase); // initial TranlationPhase always one, so can be discarded
+
+								if ((this->MuS != 0.0) && (i == 0) && (j == 0))
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, -this->MuS);
+
+								TmpSignDelta = 0.5 * (pow(-1.0, i), pow(-1.0, j));
+								TmpSignM = pow(-1.0, (i + j));
+								if ((this->Delta != 0.0) || (this->M != 0.0))
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, TmpSignDelta * this->Delta + TmpSignM * this->M);
+
+								double InitialEmbeddingPhase=this->GetEmbeddingPhase(InitialIndex, K1, K2);
+
+								// i+1 hopping
+								int FinalIndex = this->EncodeSublatticeIndex(i+1, j, K1, K2, TranslationPhase);
+								double FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T1hop)*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+								#ifdef DEBUG_OUTPUT
+											cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+								#endif
+
+								// i-1 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i-1, j, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T1hop)*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+								#ifdef DEBUG_OUTPUT
+											cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+								#endif
+
+								// j+1 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i, j+1, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T1hop)*TranslationPhase*Conj(Phase)*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+								#ifdef DEBUG_OUTPUT
+											cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*Conj(Phase)<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+								#endif
+
+								// j-1 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i, j-1, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T1hop)*TranslationPhase*Phase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+								#ifdef DEBUG_OUTPUT
+											cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*Phase<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+								#endif
+
+								// i+2 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i+2, j, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T3hop)*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								// i-2 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i-2, j, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T3hop)*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								// j+2 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i, j+2, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T3hop)*TranslationPhase*Conj(Phase3)*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								// j-2 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i, j-2, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T3hop)*TranslationPhase*Phase3*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								if ((this->T1 != 0) && ((i % this->UnitCellX)== 0) && (j == 0))
+								{
+					// 			    if ((i == 0) && (j == 0))
+					// 			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, -this->T1);
+					// 			    if ((i == 1) && (j == 1))
+					// 			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, this->T1);
+
+
+									FinalIndex = this->EncodeSublatticeIndex(i + this->UnitCellX, j, K1, K2, TranslationPhase);
+									FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+									if (InitialIndex>=FinalIndex)
+										TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T1*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+					#ifdef DEBUG_OUTPUT
+									cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T1<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+					#endif
+									FinalIndex = this->EncodeSublatticeIndex(i - this->UnitCellX, j, K1, K2, TranslationPhase);
+									FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+									if (InitialIndex>=FinalIndex)
+										TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T1*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+					#ifdef DEBUG_OUTPUT
+									cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T1<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+					#endif
+
+									FinalIndex = this->EncodeSublatticeIndex(i, j + this->UnitCellY, K1, K2, TranslationPhase);
+									FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+									if (InitialIndex>=FinalIndex)
+										TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T1*Conj(Phase2) * Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+					#ifdef DEBUG_OUTPUT
+									cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T1*Conj(Phase2) <<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+					#endif
+
+									FinalIndex = this->EncodeSublatticeIndex(i, j - this->UnitCellY, K1, K2, TranslationPhase);
+									FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+									if (InitialIndex>=FinalIndex)
+										TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T1*Phase2 * Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+					#ifdef DEBUG_OUTPUT
+									cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T1 * Phase2 <<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+					#endif
+								}
+
+								if ((this->T2 != 0) && ((this->UnitCellX % 2 ) == 0) && (i % (this->UnitCellX / 2) == 1))
+								{
+					// 			    if ((i % (this->UnitCellX / 2) == 0) && (j == 0))
+					// 			      TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, -this->T2);
+
+									FinalIndex = this->EncodeSublatticeIndex(i + this->UnitCellX / 2, j, K1, K2, TranslationPhase);
+									FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+									if (InitialIndex>=FinalIndex)
+										TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T2*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+					#ifdef DEBUG_OUTPUT
+									cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T2<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+					#endif
+
+									FinalIndex = this->EncodeSublatticeIndex(i - this->UnitCellX / 2, j, K1, K2, TranslationPhase);
+									FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+									if (InitialIndex>=FinalIndex)
+										TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T2*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+					#ifdef DEBUG_OUTPUT
+									cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T2<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+					#endif
+
+									FinalIndex = this->EncodeSublatticeIndex(i, j + this->UnitCellY, K1, K2, TranslationPhase);
+									FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+									if (InitialIndex>=FinalIndex)
+										TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T2*Conj(Phase2)*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+					#ifdef DEBUG_OUTPUT
+									cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T2*Conj(Phase2)<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+					#endif
+
+									FinalIndex = this->EncodeSublatticeIndex(i, j - this->UnitCellY, K1, K2, TranslationPhase);
+									FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+									if (InitialIndex>=FinalIndex)
+										TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*this->T2*Phase2*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+					#ifdef DEBUG_OUTPUT
+									cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase*this->T2*Phase2<<", embeddingPhase="<<Polar(InitialEmbeddingPhase-FinalEmbeddingPhase)<<endl;
+					#endif
+								}
+							}
+						}
+				// 			  cout << TmpOneBodyHamiltonian << endl;
+						break;
+					}
+
+					case 'x':
+					{ // needs checking
+				if (this->FullUnitCellX != this->UnitCellX)
+					cout << "Warning: enlarged unit cell untested in 'x' gauge" << endl;
+				if ((this->T1 != 0.0) || (this->T2 != 0.0))
+					cout << "Error: additional one flux flux and half flux potentials not implemented in 'x' gauge" << endl;
+				for (int j=0; j<UnitCellY; ++j)
+					{
+						Complex Phase=Polar(1.0,-2.0*M_PI*this->FluxDensity*(double)j);
+						for (int i=0; i<this->FullUnitCellX; ++i)
+				{
+
+					int InitialIndex = this->EncodeSublatticeIndex(i, j, K1, K2, TranslationPhase); // TranlationPhase always one, so can be discarded
+					int FinalIndex = this->EncodeSublatticeIndex(i+1, j, K1, K2, TranslationPhase);
+					double InitialEmbeddingPhase=this->GetEmbeddingPhase(InitialIndex, K1, K2);
+					double FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+
+					if (this->MuS != 0.0)
+					{
+						TmpSign = pow(-1.0, j);
+						if (i >= this->UnitCellX)
+							TmpSign *= -1.0;
+						TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, TmpSign * this->MuS);
+					}
+
+					if (InitialIndex>=FinalIndex)
+						TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -Conj(Phase)*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+		#ifdef DEBUG_OUTPUT
+					cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-Conj(Phase)*TranslationPhase<<endl;
+		#endif
+
+					FinalIndex = this->EncodeSublatticeIndex(i-1, j, K1, K2, TranslationPhase);
+					FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+					if (InitialIndex>=FinalIndex)
+						TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -Phase*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+		#ifdef DEBUG_OUTPUT
+					cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-Phase*TranslationPhase<<endl;
+		#endif
+
+					FinalIndex = this->EncodeSublatticeIndex(i, j+1, K1, K2, TranslationPhase);
+					FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+					if (InitialIndex>=FinalIndex)
+						TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+		#ifdef DEBUG_OUTPUT
+					cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase<<endl;
+		#endif
+
+					FinalIndex = this ->EncodeSublatticeIndex(i, j-1, K1, K2, TranslationPhase);
+					FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+					if (InitialIndex>=FinalIndex)
+						TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+		#ifdef DEBUG_OUTPUT
+					cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase<<endl;
+		#endif
+				}
+					}
+				break;
 			}
-		    }
-// 			  cout << TmpOneBodyHamiltonian << endl;
-		  break;
-		}
 
-		case 'x': { // needs checking
-		  if (this->FullUnitCellX != this->UnitCellX)
-		    cout << "Warning: enlarged unit cell untested in 'x' gauge" << endl;
-		  if ((this->T1 != 0.0) || (this->T2 != 0.0))
-		    cout << "Error: additional one flux flux and half flux potentials not implemented in 'x' gauge" << endl;
-		  for (int j=0; j<UnitCellY; ++j)
-		    {
-		      Complex Phase=Polar(1.0,-2.0*M_PI*this->FluxDensity*(double)j);
-		      for (int i=0; i<this->FullUnitCellX; ++i)
-			{
+					default:
+					{
+						cout << "Invalid Landau quantization axis encountered in ParticleOnLatticeDeltaHamiltonian."<<endl;
+						exit(1);
+						break;
+					}
+				}
 
-			  int InitialIndex = this->EncodeSublatticeIndex(i, j, K1, K2, TranslationPhase); // TranlationPhase always one, so can be discarded
-			  int FinalIndex = this->EncodeSublatticeIndex(i+1, j, K1, K2, TranslationPhase);
-			  double InitialEmbeddingPhase=this->GetEmbeddingPhase(InitialIndex, K1, K2);
-			  double FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			  
-			  if (this->MuS != 0.0)
-			  {
-			    TmpSign = pow(-1.0, j);
-			    if (i >= this->UnitCellX)
-			      TmpSign *= -1.0;
-			    TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, InitialIndex, TmpSign * this->MuS);
-			  }
+				#ifdef DEBUG_OUTPUT
+							cout << TmpOneBodyHamiltonian<< endl;
+				#endif
 
-			  if (InitialIndex>=FinalIndex)
-			    TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -Conj(Phase)*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			  cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-Conj(Phase)*TranslationPhase<<endl;
-#endif
-
-			  FinalIndex = this->EncodeSublatticeIndex(i-1, j, K1, K2, TranslationPhase);
-			  FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			  if (InitialIndex>=FinalIndex)
-			    TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -Phase*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			  cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-Phase*TranslationPhase<<endl;
-#endif
-			  
-			  FinalIndex = this->EncodeSublatticeIndex(i, j+1, K1, K2, TranslationPhase);
-			  FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			  if (InitialIndex>=FinalIndex)
-			    TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			  cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase<<endl;
-#endif
-
-			  FinalIndex = this ->EncodeSublatticeIndex(i, j-1, K1, K2, TranslationPhase);
-			  FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
-			  if (InitialIndex>=FinalIndex)
-			    TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
-#ifdef DEBUG_OUTPUT
-			  cout << "H["<<InitialIndex<<"->"<<FinalIndex<<"]="<<-TranslationPhase<<endl;
-#endif
-			}
-		    }
-		  break;
-		}
-
-		default:
- 		  cout << "Invalid Landau quantization axis encountered in ParticleOnLatticeDeltaHamiltonian."<<endl;
-		  exit(1);
-		  break;
-		}
-
-#ifdef DEBUG_OUTPUT
-	      cout << TmpOneBodyHamiltonian<< endl;
-#endif
-	    
-
-	      if (this->OneBodyBasis != 0)
-		{
-		  ComplexMatrix TmpMatrix(this->NbrBands, this->NbrBands, true);
-		  TmpMatrix.SetToIdentity();
-		  RealDiagonalMatrix TmpDiag;
-#ifdef __LAPACK__
-		  if (this->Precision==64)
-		    TmpOneBodyHamiltonian.LapackDiagonalize(TmpDiag, TmpMatrix);
-		  else
-		    if (this->Precision==32)
-		      TmpOneBodyHamiltonian.LapackDiagonalizeSinglePrecision(TmpDiag, TmpMatrix);
-		    else
-#ifdef __MPACK__
-		      TmpOneBodyHamiltonian.LapackDiagonalizeArbitraryPrecision(TmpDiag, TmpMatrix, this->Precision);
-#else
-		      {
+				if (this->OneBodyBasis != 0)
+				{
+			ComplexMatrix TmpMatrix(this->NbrBands, this->NbrBands, true);
+			TmpMatrix.SetToIdentity();
+			RealDiagonalMatrix TmpDiag;
+	#ifdef __LAPACK__
+			if (this->Precision==64)
+				TmpOneBodyHamiltonian.LapackDiagonalize(TmpDiag, TmpMatrix);
+			else
+				if (this->Precision==32)
+					TmpOneBodyHamiltonian.LapackDiagonalizeSinglePrecision(TmpDiag, TmpMatrix);
+				else
+	#ifdef __MPACK__
+					TmpOneBodyHamiltonian.LapackDiagonalizeArbitraryPrecision(TmpDiag, TmpMatrix, this->Precision);
+	#else
+					{
 			cout << "Attention - Arbitrary precision Lapack not available! Calling double precision code.";
 			TmpOneBodyHamiltonian.LapackDiagonalize(TmpDiag, TmpMatrix);
-		      }
-#endif		  
-#else
-		  TmpOneBodyHamiltonian.Diagonalize(TmpDiag, TmpMatrix);
-#endif
-#ifdef DEBUG_OUTPUT
-		  ComplexMatrix TmpMatrix2((Matrix&)TmpMatrix);
-		  TmpMatrix2.HermitianTranspose();
-		  if (this->NbrBands < 12)
-		    cout << "U.U^+="<<endl
+					}
+	#endif
+	#else
+			TmpOneBodyHamiltonian.Diagonalize(TmpDiag, TmpMatrix);
+	#endif
+	#ifdef DEBUG_OUTPUT
+			ComplexMatrix TmpMatrix2((Matrix&)TmpMatrix);
+			TmpMatrix2.HermitianTranspose();
+			if (this->NbrBands < 12)
+				cout << "U.U^+="<<endl
 			 << TmpMatrix2 * TmpMatrix;
-		  else
-		    {
-		      ComplexMatrix W = TmpMatrix2 * TmpMatrix;
-		      ComplexMatrix I(this->NbrBands, this->NbrBands, true);
-		      I.SetToIdentity();
-		      W-=I;
-		      bool unitary = true;
-		      for (int i = 0; i < this->NbrBands; ++i)
+			else
+				{
+					ComplexMatrix W = TmpMatrix2 * TmpMatrix;
+					ComplexMatrix I(this->NbrBands, this->NbrBands, true);
+					I.SetToIdentity();
+					W-=I;
+					bool unitary = true;
+					for (int i = 0; i < this->NbrBands; ++i)
 			for (int j = 0; j < this->NbrBands; ++j)
-			  if (SqrNorm(W[i][j])>1e-26)
-			    {
-			      cout << "U.U^+ deviates from identity at ("<<i<<", "<<j<<") by "<<W[i][j]<<endl;
-			      unitary = false;
-			    }
-		      if (unitary)
+				if (SqrNorm(W[i][j])>1e-26)
+					{
+						cout << "U.U^+ deviates from identity at ("<<i<<", "<<j<<") by "<<W[i][j]<<endl;
+						unitary = false;
+					}
+					if (unitary)
 			cout << "U is unitary."<<endl;
-		      else
+					else
 			cout << "U deviates from unitarity."<<endl;
-		    }
-#endif
+				}
+	#endif
 
-		  this->OneBodyBasis[Index] = TmpMatrix;
-		  for (int i = 0; i < this->NbrBands; ++i)
-		    this->EnergyBandStructure[i][Index] = TmpDiag(i, i);
+			this->OneBodyBasis[Index] = TmpMatrix;
+			for (int i = 0; i < this->NbrBands; ++i)
+				this->EnergyBandStructure[i][Index] = TmpDiag(i, i);
 		}
-	      else
-		{
-		  RealDiagonalMatrix TmpDiag;
-#ifdef __LAPACK__
-		  TmpOneBodyHamiltonian.LapackDiagonalize(TmpDiag);
-#else
-		  TmpOneBodyHamiltonian.Diagonalize(TmpDiag);
-#endif
-		  for (int i = 0; i < this->NbrBands; ++i)
-		    this->EnergyBandStructure[i][Index] = TmpDiag(i, i);
+				else
+				{
+			RealDiagonalMatrix TmpDiag;
+	#ifdef __LAPACK__
+			TmpOneBodyHamiltonian.LapackDiagonalize(TmpDiag);
+	#else
+			TmpOneBodyHamiltonian.Diagonalize(TmpDiag);
+	#endif
+			for (int i = 0; i < this->NbrBands; ++i)
+				this->EnergyBandStructure[i][Index] = TmpDiag(i, i);
 		}
-	    }
+			}
+		}
 	}
-    }
 }
 
 

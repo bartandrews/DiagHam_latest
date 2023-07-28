@@ -6,7 +6,7 @@ use Getopt::Long;
 
 my $WorkDir="./"; # working directory for storage of all output files
 my $Path="1";
-my $Machine="s2";   # choose label to use one of the preset paths
+my $Machine="bart";   # choose label to use one of the preset paths
 my $BuildDirectory;
 my $MPIBuildDirectory;
 my $MPIRun;
@@ -25,10 +25,10 @@ elsif ($Machine =~ m/g/)
     $MPIBuildDirectory = "/scratch/ba340/DiagHam/buildMPI/";
     $MPIRun ="mpirun";
   }
-elsif ($Machine =~ m/t/)
+elsif ($Machine =~ m/bart/)
   {
-    $BuildDirectory = "~/DiagHam/build/";
-    $MPIBuildDirectory = "~/DiagHam/build/";
+    $BuildDirectory = "~/DiagHam_latest/build/";
+    $MPIBuildDirectory = "~/DiagHam_latest/build/";
     $MPIRun ="mpirun";
   }
 else

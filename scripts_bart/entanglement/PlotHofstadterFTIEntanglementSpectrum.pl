@@ -11,29 +11,29 @@ use strict 'vars';
 #     exit(1);
 #   }
 
-my $Machine="g";   # choose label to use one of the preset paths
+my $Machine="bart";   # choose label to use one of the preset paths
 my $BuildDirectory;
 my $MPIBuildDirectory;
 my $MPIRun;
 my $MPIRunPrefix="";
 my $FTIPrograms="FTI/src/Programs/FTI/";
 my $FCIPrograms="FTI/src/Programs/FCI/";
-if ($Machine =~ m/s1/)
+if ($Machine =~ m/s2/)
   {
-    $BuildDirectory = "/scratch/gm360/DiagHam/buildLA/";
-    $MPIBuildDirectory = "/scratch/gm360/DiagHam/buildMPI/";
+    $BuildDirectory = "/scratch/ba340/DiagHam/build/";
+    $MPIBuildDirectory = "/scratch/ba340/DiagHam/buildMPI/";
     $MPIRun ="mpirun";
   }
 elsif ($Machine =~ m/g/)
   {
-    $BuildDirectory = "/Users/gunnar/DiagHam/build1/";
-    $MPIBuildDirectory = "/Users/gunnar/DiagHam/buildMPI/";
+    $BuildDirectory = "/scratch/ba340/DiagHam/build/";
+    $MPIBuildDirectory = "/scratch/ba340/DiagHam/buildMPI/";
     $MPIRun ="mpirun";
   } 
-elsif ($Machine =~ m/t/)
+elsif ($Machine =~ m/bart/)
   {
-    $BuildDirectory = "~/DiagHam2/build/";
-    $MPIBuildDirectory = "~/DiagHam2/build/";
+    $BuildDirectory = "~/DiagHam_latest/build/";
+    $MPIBuildDirectory = "~/DiagHam_latest/build/";
     $MPIRun ="mpirun";
   }
 else
