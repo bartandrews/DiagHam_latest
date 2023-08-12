@@ -38,16 +38,6 @@ def H_eigenvectors2(t_3, q, k_x, k_y):
                 eigenvectors_arr[a, i, j, :] = eigenvectors[:, a]
     return eigenvectors_arr
 
-def H_eigenvalues2(t_3, q, k_x, k_y):
-    eigenvalues_arr = np.empty((q, len(k_x), len(k_y)))
-    for i, kx in enumerate(k_x):
-        for j, ky in enumerate(k_y):
-            matrix = H(t_3, q, kx, ky)
-            assert(np.all(0 == (matrix - np.conj(matrix.T))))
-            eigenvalues, eigenvectors = np.linalg.eigh(matrix)
-            for a in range(q):
-                eigenvalues_arr[a, i, j] = eigenvalues[a]
-    return eigenvalues_arr
 
 def qgt(H_eigenvectors_arr, i, ikx, iky):
     dx, dy = (k_x[1] - k_x[0]) / 1000, (k_y[1] - k_y[0]) / 1000
@@ -92,36 +82,6 @@ def TISM_int(t_3, q, i):
                 tisms[xi][yi] = (np.trace(fs_metric(H_temp, 0, xi, yi)) - np.abs(berry_curv(H_temp, 0 ,xi ,yi)[0,1]))
     return np.sum(tisms)*dx*dy/(2*np.pi)
 
-def berry_curv_std(t_3, q, i):
-    k_x, k_y = np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi, grain)
-    dx, dy = (k_x[1] - k_x[0]), (k_y[1] - k_y[0])
-    tdx, tdy = (k_x[1] - k_x[0])/1000, (k_y[1] - k_y[0])/1000
-    H_eigenvectors_arr_0 = H_eigenvectors2(t_3, q, np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi/q, grain))
-    H_eigenvectors_arr_1 = H_eigenvectors2(t_3, q, np.linspace(0, 2 * np.pi/q, grain)+tdx, np.linspace(0, 2 * np.pi/q, grain))
-    H_eigenvectors_arr_2 = H_eigenvectors2(t_3, q, np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi/q, grain)+tdy)
-    H_eigenvectors_arr = np.array([H_eigenvectors_arr_0, H_eigenvectors_arr_1, H_eigenvectors_arr_2])
-    berry_curvs = np.zeros((len(k_x)-1, len(k_y)-1))
-    dx, dy = (k_x[1] - k_x[0]), (k_y[1] - k_y[0])
-    for xi in range(len(k_x)-1):
-        for yi in range(len(k_y)-1):
-            berry_curvs[xi][yi]  = berry_curv(H_eigenvectors_arr, i, xi, yi)[1,0]
-    return np.std(berry_curvs)/np.average(berry_curvs)
-
-def band_gap(t_3, q, i):
-    k_x, k_y = np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi, grain)
-    eigenvalues_arr = H_eigenvalues2(t_3, q, k_x, k_y)
-    eigenvectors_arr = H_eigenvectors2(t_3, q, k_x, k_y)
-    if i+1 == q:
-        return np.min(eigenvalues_arr[i]) - np.max(eigenvalues_arr[i-1])
-    return np.min(eigenvalues_arr[i+1]) - np.max(eigenvalues_arr[i])
-def band_width(t_3, q, i):
-    k_x, k_y = np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi, grain)
-    eigenvalues_arr = H_eigenvalues2(t_3, q, k_x, k_y)[i]
-    eigenvectors_arr = H_eigenvectors2(t_3, q, k_x, k_y)[i]
-    return np.max(eigenvalues_arr) - np.min(eigenvalues_arr)
-def flatness_param(t_3, q, i):
-    return band_gap(t_3, q, i)/band_width(t_3, q, i)
-
 
 if __name__ == "__main__":
 
@@ -130,10 +90,8 @@ if __name__ == "__main__":
     t_1 = 1
     grain = 100
     p = 1
-    q = 16
+    qs = np.array([16])
 
-    qs = np.array([q])
-    ts = np.linspace(-0.25, 0, 26)
     def my_task(q, t_temp):
         n_phi = 1/q
         points = np.array([None, None])
@@ -142,29 +100,11 @@ if __name__ == "__main__":
         tism = np.array([t_3, TISM_int(t_3, q, 0)])
         return tism
 
-    def my_task2(q, t_temp):
-        n_phi = 1/q
-        points = np.array([None, None])
-        t_3 = t_temp
-        k_x, k_y = np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi, grain)
-        tism = np.array([t_3, flatness_param(t_3, q, 0)])
-        return tism
-
-    def my_task3(q, t_temp):
-        n_phi = 1/q
-        points = np.array([None, None])
-        t_3 = t_temp
-        k_x, k_y = np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi, grain)
-        tism = np.array([t_3, berry_curv_std(t_3, q, 0)])
-        return tism
-
     for q in qs:
         k_x, k_y = np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi, grain)
-        results = np.array(Parallel(n_jobs=3)(delayed(my_task)(q, t_temp) for t_temp in ts))
-        flatness = np.array(Parallel(n_jobs=3)(delayed(my_task2)(q, t_temp) for t_temp in ts))
-        BC_fluct = np.array(Parallel(n_jobs=3)(delayed(my_task3)(q, t_temp) for t_temp in ts))
+        results = np.array(Parallel(n_jobs=3)(delayed(my_task)(q, t_temp) for t_temp in np.linspace(-0.25, 0, 26)))
 
-    file = open(f"sp_data/q_{q}.txt", "w")
-    for i, t3hop in enumerate(ts):
-        file.write(f"{results[:, 0][i]:.2f}\t{flatness[:, 1][i]}\t{BC_fluct[:, 1][i]}\t{results[:, 1][i]}\n")
+    file = open(f"sp_data/q_16.txt", "w")
+    for i, t3hop in enumerate(np.linspace(-0.25, 0, 26)):
+        file.write(f"{results[:, 0][i]:.2f}\t{results[:, 1][i]}\n")
     file.close()

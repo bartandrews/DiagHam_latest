@@ -13,17 +13,17 @@ def can_convert_to_float(string):
 
 if __name__ == "__main__":
 
-    stats = "bosons"  # "fermions" or "bosons"
-    q = 81
+    stats = "fermions"  # "fermions" or "bosons"
+    q = 24
 
     if stats == "fermions":
         s = 3  # g.s. degeneracy
     else:  # stats == "bosons"
         s = 2  # g.s. degeneracy
 
-    for alpha in [1]:
+    for alpha in [0]:
         os.chdir(f"/home/bart/DiagHam_latest/run/SFCI_data/{stats}_alpha_{alpha}/q_{q:g}")
-        out_file = open(f"mb_q_{q:g}.txt", "w")
+        out_file = open(f"mb_ener_q_{q:g}.txt", "w")
 
         for t3hop in np.linspace(-0.25, 0, 26):
 

@@ -7,11 +7,11 @@ plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
 
 if __name__ == "__main__":
 
-    alpha = 1
-    stats = "bosons"
-    q = 81
+    alpha = 0
+    stats = "fermions"
+    q = 24
     scale_factor = q**2 if stats == "fermions" else q
-    file_name = "bosons_alpha_1_q_81"
+    file_name = "Fig10a"
 
     sp_data = f"/home/bart/DiagHam_latest/run/SFCI_data/sp_data/q_{q:g}.txt"
     mb_data = f"/home/bart/DiagHam_latest/run/SFCI_data/{stats}_alpha_{alpha:g}/q_{q:g}/mb_ener_q_{q:g}.txt"
@@ -34,7 +34,8 @@ if __name__ == "__main__":
 
     sc = ax1.scatter(tism, gap, c=t3hop, zorder=5)
     ax1.set_xlim([-0.002, 0.016])
-    ax1.set_ylim([1.520, 1.555])
+    # ax1.set_ylim([0.605, 0.618])  # bosons_alpha_0
+    # ax1.set_ylim([1.520, 1.555])  # bosons_alpha_1
 
     cbar = plt.colorbar(sc)
     cbar.set_label('$t_3$')
