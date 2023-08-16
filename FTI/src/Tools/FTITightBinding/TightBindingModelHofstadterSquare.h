@@ -55,6 +55,8 @@ class TightBindingModelHofstadterSquare : public Abstract2DTightBindingModel
 	// hopping amplitudes
 	double T1hop;
 	double T3hop;
+	double T6hop;
+	double T9hop;
 
   // number of flux quanta in cell (cancelled by opposite flux)
   int NbrFluxQuanta;
@@ -164,9 +166,10 @@ class TightBindingModelHofstadterSquare : public Abstract2DTightBindingModel
   // storeOneBodyMatrices = flag to indicate if the one body transformation matrices have to be computed and stored
   // useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
   // precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
-  TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, double t1hop, double t3hop, char axis,
-				    double gammaX, double gammaY, 
-				    AbstractArchitecture* architecture, bool storeOneBodyMatrices = true,  bool useEmbedding = false, int precision = 64);
+  TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux,
+  																	double t1hop, double t3hop, double t6hop, double t9hop, char axis,
+				    												double gammaX, double gammaY,
+				    												AbstractArchitecture* architecture, bool storeOneBodyMatrices = true,  bool useEmbedding = false, int precision = 64);
 
   // constructor with staggered potential
   //
@@ -186,9 +189,11 @@ class TightBindingModelHofstadterSquare : public Abstract2DTightBindingModel
   // storeOneBodyMatrices = flag to indicate if the one body transformation matrices have to be computed and stored
   // useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
   // precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
-  TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, double t1hop, double t3hop, double muS, int fullUnitCellX, double t1, double t2, char axis,
-				    double gammaX, double gammaY, 
-				    AbstractArchitecture* architecture, bool storeOneBodyMatrices = true,  bool useEmbedding = false, int precision = 64);
+  TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux,
+  																	double t1hop, double t3hop, double t6hop, double t9hop,
+  																	double muS, int fullUnitCellX, double t1, double t2, char axis,
+				    												double gammaX, double gammaY,
+				    												AbstractArchitecture* architecture, bool storeOneBodyMatrices = true,  bool useEmbedding = false, int precision = 64);
 
   // constructor with staggered potential
   //
@@ -208,9 +213,11 @@ class TightBindingModelHofstadterSquare : public Abstract2DTightBindingModel
   // storeOneBodyMatrices = flag to indicate if the one body transformation matrices have to be computed and stored
   // useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
   // precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
-  TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, double t1hop, double t3hop, int fullUnitCellX, int fullUnitCellY, double delta, double M, char axis,
-				    double gammaX, double gammaY, 
-				    AbstractArchitecture* architecture, bool storeOneBodyMatrices = true,  bool useEmbedding = false, int precision = 64);
+  TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux,
+  																	double t1hop, double t3hop, double t6hop, double t9hop,
+  																	int fullUnitCellX, int fullUnitCellY, double delta, double M, char axis,
+				    												double gammaX, double gammaY,
+				    												AbstractArchitecture* architecture, bool storeOneBodyMatrices = true,  bool useEmbedding = false, int precision = 64);
 
 
   // constructor from a saved band structure

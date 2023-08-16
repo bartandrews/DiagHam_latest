@@ -100,6 +100,8 @@ int main(int argc, char** argv)
   // hopping amplitudes
 	(*SystemGroup) += new SingleDoubleOption  ('\n', "t1hop", "t1 hopping", 1.0);
   (*SystemGroup) += new SingleDoubleOption  ('\n', "t3hop", "t3 hopping", 0.0);
+  (*SystemGroup) += new SingleDoubleOption  ('\n', "t6hop", "t6 hopping", 0.0);
+  (*SystemGroup) += new SingleDoubleOption  ('\n', "t9hop", "t9 hopping", 0.0);
 
   (*SystemGroup) += new SingleIntegerOption  ('\n', "only-kx", "only evalute a given x momentum sector (negative if all kx sectors have to be computed)", -1);
   (*SystemGroup) += new SingleIntegerOption  ('\n', "only-ky", "only evalute a given y momentum sector (negative if all ky sectors have to be computed)", -1);
@@ -199,6 +201,8 @@ int main(int argc, char** argv)
 
   double T1hop = Manager.GetDouble("t1hop");
   double T3hop = Manager.GetDouble("t3hop");
+  double T6hop = Manager.GetDouble("t6hop");
+  double T9hop = Manager.GetDouble("t9hop");
   
   int FullUnitCellX = Manager.GetInteger("enlarge-cellx") * UnitCellX;
   int FullUnitCellY = Manager.GetInteger("enlarge-celly") * UnitCellY;
@@ -396,6 +400,8 @@ int main(int argc, char** argv)
     	if (Manager.GetDouble("t1hop")!=1.0){
 	lenFilePrefix += sprintf (FilePrefix+lenFilePrefix, "_t1_%.2f",Manager.GetDouble("t1hop"));}
 	lenFilePrefix += sprintf (FilePrefix+lenFilePrefix, "_t3_%.2f",Manager.GetDouble("t3hop"));
+	lenFilePrefix += sprintf (FilePrefix+lenFilePrefix, "_t6_%.2f",Manager.GetDouble("t6hop"));
+	lenFilePrefix += sprintf (FilePrefix+lenFilePrefix, "_t9_%.2f",Manager.GetDouble("t9hop"));
       if (((Manager.GetBoolean("flat-band") == false)&&(Manager.GetBoolean("hardcore") == false ))||(Manager.GetDouble("u-potential")!=0.0)||(Manager.GetDouble("v-potential")!=0.0)||(Manager.GetDouble("v2-potential")!=0.0)||(Manager.GetDouble("v3-potential")!=0.0)||(Manager.GetDouble("v4-potential")!=0.0)||(PeriodicPotentialStrength != 0.0))
 	lenFilePrefix += sprintf (FilePrefix+lenFilePrefix, "_u_%g",Manager.GetDouble("u-potential"));
       if ((Manager.GetDouble("v-potential")!=0.0)||(Manager.GetDouble("v2-potential")!=0.0)||(Manager.GetDouble("v3-potential")!=0.0)||(Manager.GetDouble("v4-potential")!=0.0))
@@ -451,10 +457,10 @@ int main(int argc, char** argv)
       if (Manager.GetBoolean("triangular")==false)
       {
 	if ((MuPotential == 0.0) && (EnlargeCellXFlag == false) && (EnlargeCellYFlag == false) && (T1 == 0.0) && (T2 == 0.0) && (delta == 0.0) && (M == 0.0))
-	  TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), ExportOneBody, EmbeddingFlag, Precision);
+	  TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, T6hop, T9hop, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), ExportOneBody, EmbeddingFlag, Precision);
 	else
 	  if ((EnlargeCellYFlag == false) && (delta == 0.0) && (M == 0.0))
-	    TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, MuPotential, FullUnitCellX, T1, T2, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), ExportOneBody, EmbeddingFlag, Precision);
+	    TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, T6hop, T9hop, MuPotential, FullUnitCellX, T1, T2, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), ExportOneBody, EmbeddingFlag, Precision);
 	  else
 	  {
 	    if ((MuPotential != 0.0) || (T1 != 0.0) || (T2 != 0.0))
@@ -462,7 +468,7 @@ int main(int argc, char** argv)
 	      cout << "Set of parameters not implemented" << endl;
 	      return -1;
 	    }
-	    TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, FullUnitCellX, FullUnitCellY, delta, M, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), ExportOneBody, EmbeddingFlag, Precision);
+	    TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, T6hop, T9hop, FullUnitCellX, FullUnitCellY, delta, M, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), ExportOneBody, EmbeddingFlag, Precision);
 	  }
       }
       else
@@ -555,11 +561,11 @@ int main(int argc, char** argv)
   if (Manager.GetBoolean("triangular")==false)
       {
 	if ((MuPotential == 0.0) && (EnlargeCellXFlag == false) && (EnlargeCellYFlag == false) && (T1 == 0.0) && (T2 == 0.0))
-	  TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), true, EmbeddingFlag, Precision);
+	  TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, T6hop, T9hop, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), true, EmbeddingFlag, Precision);
 	else
 	{
 	  if ((EnlargeCellYFlag == false) && (delta == 0.0) && (M == 0.0))
-	    TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, MuPotential, FullUnitCellX, T1, T2, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), true, EmbeddingFlag, Precision);
+	    TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, T6hop, T9hop, MuPotential, FullUnitCellX, T1, T2, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), true, EmbeddingFlag, Precision);
 	  else
 	  {
 	    if ((MuPotential != 0.0) || (T1 != 0.0) || (T2 != 0.0))
@@ -567,7 +573,7 @@ int main(int argc, char** argv)
 	      cout << "Set of parameters not implemented" << endl;
 	      return -1;
 	    }
-	    TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, FullUnitCellX, FullUnitCellY, delta, M, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), true, EmbeddingFlag, Precision);
+	    TightBindingModel= new TightBindingModelHofstadterSquare(NbrCellX, NbrCellY, UnitCellX, UnitCellY, FluxPerCell, T1hop, T3hop, T6hop, T9hop, FullUnitCellX, FullUnitCellY, delta, M, Axis, Manager.GetDouble("gamma-x"), Manager.GetDouble("gamma-y"), Architecture.GetArchitecture(), true, EmbeddingFlag, Precision);
 	  }
 	}	  
       }

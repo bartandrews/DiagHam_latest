@@ -69,6 +69,8 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
   this->UnitCellY = unitCellY;
   this->T1hop = 1.0;
   this->T3hop = 0.0;
+  this->T6hop = 0.0;
+  this->T9hop = 0.0;
   this->FullUnitCellX = this->UnitCellX;
   this->FullUnitCellY = this->UnitCellY;
   this->LatticeVector1.Resize(2);
@@ -151,6 +153,8 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
   this->UnitCellY = unitCellY;
   this->T1hop = 1.0;
   this->T3hop = 0.0;
+  this->T6hop = 0.0;
+  this->T9hop = 0.0;
   this->FullUnitCellX = fullUnitCellX;
   this->FullUnitCellY = this->UnitCellY;
   this->LatticeVector1.Resize(2);
@@ -231,6 +235,8 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
   this->UnitCellY = unitCellY;
   this->T1hop = 1.0;
   this->T3hop = 0.0;
+  this->T6hop = 0.0;
+  this->T9hop = 0.0;
   this->FullUnitCellX = fullUnitCellX;
   this->FullUnitCellY = fullUnitCellY;
   this->LatticeVector1.Resize(2);
@@ -298,9 +304,10 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
 // storeOneBodyMatrices = flag to indicate if the one body transformation matrices have to be computed and stored
 // useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
 // precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
-TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, double t1hop, double t3hop, char axis,
-								     double gammaX, double gammaY, 
-								     AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
+TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux,
+																																		 double t1hop, double t3hop, double t6hop, double t9hop, char axis,
+								     																								 double gammaX, double gammaY,
+								     																								 AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
 {
   this->NbrSiteX = nbrCellX;
   this->NbrSiteY = nbrCellY;
@@ -308,6 +315,8 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
   this->UnitCellY = unitCellY;
   this->T1hop = t1hop;
   this->T3hop = t3hop;
+  this->T6hop = t6hop;
+  this->T9hop = t9hop;
   this->FullUnitCellX = this->UnitCellX;
   this->FullUnitCellY = this->UnitCellY;
   this->LatticeVector1.Resize(2);
@@ -381,8 +390,10 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
 // storeOneBodyMatrices = flag to indicate if the one body transformation matrices have to be computed and stored
 // useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
 // precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
-TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, double t1hop, double t3hop, double muS, int fullUnitCellX, double t1, double t2, char axis, double gammaX, double gammaY,
-								     AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
+TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux,
+																																		 double t1hop, double t3hop, double t6hop, double t9hop,
+																																		 double muS, int fullUnitCellX, double t1, double t2, char axis, double gammaX, double gammaY,
+								     																								 AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
 {
   this->NbrSiteX = nbrCellX;
   this->NbrSiteY = nbrCellY;
@@ -390,6 +401,8 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
   this->UnitCellY = unitCellY;
   this->T1hop = t1hop;
   this->T3hop = t3hop;
+  this->T6hop = t6hop;
+  this->T9hop = t9hop;
   this->FullUnitCellX = fullUnitCellX;
   this->FullUnitCellY = this->UnitCellY;
   this->LatticeVector1.Resize(2);
@@ -461,8 +474,10 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
 // storeOneBodyMatrices = flag to indicate if the one body transformation matrices have to be computed and stored
 // useEmbedding = flag indicating whether to run calculation with natural embedding (site positions)
 // precision = precision (in bits) used for diagonalization of single particle spectrum (values >64 will draw on GMP)
-TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux, double t1hop, double t3hop, int fullUnitCellX, int fullUnitCellY, double delta, double M, char axis, double gammaX, double gammaY,
-								     AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
+TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCellX, int nbrCellY, int unitCellX, int unitCellY, int nbrFlux,
+																																		 double t1hop, double t3hop, double t6hop, double t9hop,
+																																		 int fullUnitCellX, int fullUnitCellY, double delta, double M, char axis, double gammaX, double gammaY,
+								     																								 AbstractArchitecture* architecture, bool storeOneBodyMatrices, bool useEmbedding, int precision)
 {
   this->NbrSiteX = nbrCellX;
   this->NbrSiteY = nbrCellY;
@@ -470,6 +485,8 @@ TightBindingModelHofstadterSquare::TightBindingModelHofstadterSquare(int nbrCell
   this->UnitCellY = unitCellY;
   this->T1hop = t1hop;
   this->T3hop = t3hop;
+  this->T6hop = t6hop;
+  this->T9hop = t9hop;
   this->FullUnitCellX = fullUnitCellX;
   this->FullUnitCellY = fullUnitCellY;
   this->LatticeVector1.Resize(2);
@@ -823,6 +840,8 @@ void TightBindingModelHofstadterSquare::CoreComputeBandStructure(long minStateIn
 							Complex Phase=Polar(1.0,2.0*M_PI*this->FluxDensity*(double) (i));
 							Complex Phase2=Polar(1.0,this->UnitCellY*2.0*M_PI*this->FluxDensity*(double) (i));
 							Complex Phase3=Polar(1.0,4.0*M_PI*this->FluxDensity*(double) (i));
+							Complex Phase4=Polar(1.0,6.0*M_PI*this->FluxDensity*(double) (i));
+							Complex Phase5=Polar(1.0,8.0*M_PI*this->FluxDensity*(double) (i));
 
 							for (int j=0; j<this->FullUnitCellY; ++j)
 							{
@@ -897,6 +916,54 @@ void TightBindingModelHofstadterSquare::CoreComputeBandStructure(long minStateIn
 								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
 								if (InitialIndex>=FinalIndex)
 									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T3hop)*TranslationPhase*Phase3*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								// i+3 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i+3, j, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T6hop)*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								// i-3 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i-3, j, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T6hop)*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								// j+3 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i, j+3, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T6hop)*TranslationPhase*Conj(Phase4)*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								// j-3 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i, j-3, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T6hop)*TranslationPhase*Phase4*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								// i+4 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i+4, j, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T9hop)*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								// i-4 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i-4, j, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T9hop)*TranslationPhase*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								// j+4 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i, j+4, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T9hop)*TranslationPhase*Conj(Phase5)*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
+
+								// j-4 hopping
+								FinalIndex = this->EncodeSublatticeIndex(i, j-4, K1, K2, TranslationPhase);
+								FinalEmbeddingPhase=this->GetEmbeddingPhase(FinalIndex, K1, K2);
+								if (InitialIndex>=FinalIndex)
+									TmpOneBodyHamiltonian.AddToMatrixElement(InitialIndex, FinalIndex, -(this->T9hop)*TranslationPhase*Phase5*Polar(InitialEmbeddingPhase-FinalEmbeddingPhase));
 
 								if ((this->T1 != 0) && ((i % this->UnitCellX)== 0) && (j == 0))
 								{
