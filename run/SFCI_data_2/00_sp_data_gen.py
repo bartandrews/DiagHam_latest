@@ -169,8 +169,9 @@ def DISM(evecs_comb, band, ikx, iky, dkx_r, dky_r):
             - (berry_curv(evecs_comb, band, ikx, iky, dkx_r, dky_r)[0, 1])**2/4)
 
 
-def band_geom(t3, q, grain, grain_r):
-    print(f"t3 = {t3}")
+def band_geom(t6, t9, q, grain, grain_r):
+    print(f"(t6, t9) = ({t6:g}, {t9:g})")
+    t3 = (-9*t6 - 16*t9 - 1)/4  # quartic plane
 
     # define the mesh
     kx_list, ky_list = np.linspace(0, 2*np.pi/q, grain), np.linspace(0, 2*np.pi, grain)
@@ -178,9 +179,9 @@ def band_geom(t3, q, grain, grain_r):
     dkx_r, dky_r = (kx_list[1] - kx_list[0])/grain_r, (ky_list[1] - ky_list[0])/grain_r  # reduced mesh (for qgt)
 
     # compute the eigenbasis
-    evals, evecs = H_eigbasis(t3, q, kx_list, ky_list)
-    _, evecs_x = H_eigbasis(t3, q, kx_list+dkx_r, ky_list)
-    _, evecs_y = H_eigbasis(t3, q, kx_list, ky_list+dky_r)
+    evals, evecs = H_eigbasis(t3, q, kx_list, ky_list, t6, t9)
+    _, evecs_x = H_eigbasis(t3, q, kx_list+dkx_r, ky_list, t6, t9)
+    _, evecs_y = H_eigbasis(t3, q, kx_list, ky_list+dky_r, t6, t9)
     evecs_comb = np.array([evecs, evecs_x, evecs_y])
 
     # initialize the arrays
@@ -216,7 +217,7 @@ def band_geom(t3, q, grain, grain_r):
     width = np.max(evals[0]) - np.min(evals[0])
     gap_width = np.log10(gap) - np.log10(width)
 
-    return [t3, tism_int, dism_int, berry_fluc, fs_fluc, gap_width]
+    return [t6, t9, tism_int, dism_int, berry_fluc, fs_fluc, gap_width]
 
 
 if __name__ == "__main__":
@@ -226,14 +227,15 @@ if __name__ == "__main__":
     q_val = 16
     grain_val = 100
     grain_r_val = 1000
-    ts = np.linspace(-0.25, 0, 26)
+    ts = np.linspace(-0.25, 0.25, 11)
 
-    results = np.array(Parallel(n_jobs=6)(delayed(band_geom)(t3, q_val, grain_val, grain_r_val) for t3 in ts))
+    results = np.array(Parallel(n_jobs=6)(delayed(band_geom)(t6, t9, q_val, grain_val, grain_r_val) for t6 in ts for t9 in ts))
 
     file = open(f"sp_data/q_{q_val}.txt", "w")
-    for it3, _ in enumerate(ts):
-        file.write(f"{results[:, 0][it3]:.2f}\t{results[:, 1][it3]}\t{results[:, 2][it3]}\t{results[:, 3][it3]}\t"
-                   f"{results[:, 4][it3]}\t{results[:, 5][it3]}\n")
+    for i in range(np.shape(results)[0]):
+        file.write(f"{results[:, 0][i]:.2f}\t{results[:, 1][i]:.2f}\t"
+                   f"{results[:, 2][i]}\t{results[:, 3][i]}\t{results[:, 4][i]}\t"
+                   f"{results[:, 5][i]}\t{results[:, 6][i]}\n")
     file.close()
 
     print(f"Total time taken (seconds) = {perf_counter() - t0:.1f}")
