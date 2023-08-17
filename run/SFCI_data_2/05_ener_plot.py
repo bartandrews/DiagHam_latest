@@ -17,12 +17,13 @@ if __name__ == "__main__":
     stats = "bosons"
     alpha = 0
     q = 16
-    scale_factor = q**2 if stats == "fermions" else q
+    ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"{stats}_alpha_{alpha}_q_{q}"
+
+    scale_factor = q**2 if stats == "fermions" else q
 
     mb_data = f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha:g}/q_{q:g}/mb_ener_q_{q:g}.txt"
 
-    ts = np.linspace(-1, 1, 11)
     ts_min = np.min(ts)
     ts_max = np.max(ts)
     ts_len = len(ts)

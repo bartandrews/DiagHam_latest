@@ -41,7 +41,7 @@ if __name__ == "__main__":
     # remove outliers
     for i in range(ts_len):
         for j in range(ts_len):
-            if tisms[i, j] > 20:
+            if tisms[i, j] > 1000:
                 tisms[i, j] = 0
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
