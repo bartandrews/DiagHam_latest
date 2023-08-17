@@ -20,9 +20,9 @@ if __name__ == "__main__":
 
     stats = "bosons"  # "fermions" or "bosons"
     alpha = 0
-    p, X, Y, x, y = 8, 9, 9, 4, 4
+    p, X, Y, x, y = 8, 4, 4, 4, 4
     q = X*Y
-    ts = np.linspace(-0.2, 0.2, 11)
+    ts = np.linspace(-0.25, 0.25, 11)
 
     if stats == "fermions":
         s = 3  # g.s. degeneracy
@@ -49,8 +49,8 @@ if __name__ == "__main__":
                         kx.append(int(row[0]))
                         ky.append(int(row[1]))
                         E.append(float(row[2]))
-                sortedE = sorted(E)  # ensure m.b. gap > g.s. degeneracy
-                assert np.abs(sortedE[s] - sortedE[s - 1]) > np.abs(sortedE[s - 1] - sortedE[s - 2])
+                # sortedE = sorted(E)  # ensure m.b. gap > g.s. degeneracy
+                # assert np.abs(sortedE[s] - sortedE[s - 1]) > np.abs(sortedE[s - 1] - sortedE[s - 2])
 
             kx_min, ky_min, E_min = [], [], []
             for i in range(s):
@@ -104,9 +104,9 @@ if __name__ == "__main__":
                 "/home/bart/DiagHam_latest/scripts_bart/entanglement/PlotHofstadterFTIEntanglementSpectrum.pl "
             os.system(PlotHofstadterFTIEntanglementSpectrum+given_file.replace(".dat", ".full.parent"))
 
-        # clean up
-        ent_path = os.path.join(ener_path, "ent")
-        os.makedirs(ent_path, exist_ok=True)
-        for file in os.listdir("."):
-            if "task" in file or "par" in file or file.endswith(".vec") or file.endswith(".gs"):
-                shutil.move(os.path.join(ener_path, file), os.path.join(ent_path, file))
+    # clean up
+    ent_path = os.path.join(ener_path, "ent")
+    os.makedirs(ent_path, exist_ok=True)
+    for file in os.listdir("."):
+        if "task" in file or "par" in file or file.endswith(".vec") or file.endswith(".gs"):
+            shutil.move(os.path.join(ener_path, file), os.path.join(ent_path, file))

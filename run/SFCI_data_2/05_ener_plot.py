@@ -14,9 +14,9 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    stats = "bosons"
+    stats = "fermions"
     alpha = 0
-    q = 16
+    q = 24
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"{stats}_alpha_{alpha}_q_{q}"
 

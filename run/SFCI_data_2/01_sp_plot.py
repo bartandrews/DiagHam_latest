@@ -14,7 +14,7 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    q = 16
+    q = 81
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"q_{q}"
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     for i in range(ts_len):
         for j in range(ts_len):
             if tisms[i, j] > 1000:
-                tisms[i, j] = 0
+                tisms[i, j] = np.nan
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
 
