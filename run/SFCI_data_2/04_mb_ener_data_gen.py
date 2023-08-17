@@ -16,7 +16,7 @@ if __name__ == "__main__":
     stats = "bosons"  # "fermions" or "bosons"
     alpha = 0
     q = 16
-    ts = np.linspace(-0.2, 0.2, 11)
+    ts = np.linspace(-0.25, 0.25, 11)
 
     if stats == "fermions":
         s = 3  # g.s. degeneracy
@@ -53,4 +53,4 @@ if __name__ == "__main__":
 
             out_file.write(f"{t6hop:.2f}\t{t9hop:.2f}\t{gap}\n")
 
-            out_file.close()
+    out_file.close()
