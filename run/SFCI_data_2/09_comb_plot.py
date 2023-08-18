@@ -56,14 +56,14 @@ if __name__ == "__main__":
                 tisms[iq, it6, it9] = float(row[2])
 
     # many-body quantities
-    for iq in [0]:
+    for iq, _ in enumerate(qs):
         with open(mb_data[iq], 'r') as csvfile:
             plots = csv.reader(csvfile, delimiter='\t')
             for i, row in enumerate(plots):
                 it6 = int(i / len(ts))
                 it9 = i % len(ts)
                 gaps[iq, it6, it9] = float(row[2])
-    for iq in [0]:
+    for iq, _ in enumerate(qs):
         with open(mb_ent_data[iq], 'r') as csvfile:
             plots = csv.reader(csvfile, delimiter='\t')
             for i, row in enumerate(plots):
@@ -72,9 +72,9 @@ if __name__ == "__main__":
                 ent_gaps[iq, it6, it9] = float(row[2])
 
     fig = plt.figure(figsize=(9, 9))
-    fig.suptitle(f'{title_str}')
+    # fig.suptitle(f'{title_str}')
     gs = gridspec.GridSpec(3, 3)
-    gs.update(top=0.9)
+    gs.update(top=0.92)
 
     ########
     # TISM #
@@ -174,7 +174,7 @@ if __name__ == "__main__":
     ax3.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax3.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     cbar = plt.colorbar(sc)
-    cbar.set_label(f'{cbtitle}')
+    # cbar.set_label(f'{cbtitle}')
     ax3.grid()
     # ax3.set_xlabel('$t_6$')
     ax3.set_ylabel('$t_9$')
@@ -183,6 +183,56 @@ if __name__ == "__main__":
     # ax3.set_title(f'$n_\\phi = 1/{qs[iq]}$')
     ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax3.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+
+    ax4 = plt.subplot(gs[4])
+    iq = 1
+    # remove outliers
+    for i in range(ts_len):
+        for j in range(ts_len):
+            if gaps[iq, i, j] > 1000:
+                gaps[iq, i, j] = np.nan
+    # smooth plot
+    itrpol_method = 'None'  # 'bicubic'
+    # plot
+    sc = ax4.imshow(gaps[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+                    extent=[plot_min, plot_max, plot_min, plot_max])
+    ax4.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
+    ax4.scatter(1 / 7, -1 / 56, c='g', label="octic point")
+    cbar = plt.colorbar(sc)
+    # cbar.set_label(f'{cbtitle}')
+    ax4.grid()
+    # ax4.set_xlabel('$t_6$')
+    # ax4.set_ylabel('$t_9$')
+    ax4.tick_params(labelleft=False)
+    ax4.tick_params(labelbottom=False)
+    # ax4.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    ax4.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    ax4.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+
+    ax5 = plt.subplot(gs[5])
+    iq = 2
+    # remove outliers
+    for i in range(ts_len):
+        for j in range(ts_len):
+            if gaps[iq, i, j] > 1000:
+                gaps[iq, i, j] = np.nan
+    # smooth plot
+    itrpol_method = 'None'  # 'bicubic'
+    # plot
+    sc = ax5.imshow(gaps[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+                    extent=[plot_min, plot_max, plot_min, plot_max])
+    ax5.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
+    ax5.scatter(1 / 7, -1 / 56, c='g', label="octic point")
+    cbar = plt.colorbar(sc)
+    cbar.set_label(f'{cbtitle}')
+    ax5.grid()
+    # ax5.set_xlabel('$t_6$')
+    # ax5.set_ylabel('$t_9$')
+    ax5.tick_params(labelleft=False)
+    ax5.tick_params(labelbottom=False)
+    # ax5.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    ax5.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    ax5.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
     ####################
     # Entanglement gap #
@@ -203,7 +253,7 @@ if __name__ == "__main__":
     ax6.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax6.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     cbar = plt.colorbar(sc)
-    cbar.set_label('$\\Delta_\\xi$')
+    # cbar.set_label('$\\Delta_\\xi$')
     ax6.grid()
     ax6.set_xlabel('$t_6$')
     ax6.set_ylabel('$t_9$')
@@ -212,6 +262,56 @@ if __name__ == "__main__":
     # ax6.set_title(f'$n_\\phi = 1/{qs[iq]}$')
     ax6.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax6.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+
+    ax7 = plt.subplot(gs[7])
+    iq = 1
+    # remove outliers
+    for i in range(ts_len):
+        for j in range(ts_len):
+            if ent_gaps[iq, i, j] > 1000:
+                ent_gaps[iq, i, j] = np.nan
+    # smooth plot
+    itrpol_method = 'None'  # 'bicubic'
+    # plot
+    sc = ax7.imshow(ent_gaps[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+                    extent=[plot_min, plot_max, plot_min, plot_max])
+    ax7.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
+    ax7.scatter(1 / 7, -1 / 56, c='g', label="octic point")
+    cbar = plt.colorbar(sc)
+    # cbar.set_label('$\\Delta_\\xi$')
+    ax7.grid()
+    ax7.set_xlabel('$t_6$')
+    # ax7.set_ylabel('$t_9$')
+    ax7.tick_params(labelleft=False)
+    # ax7.tick_params(labelbottom=False)
+    # ax7.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    ax7.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    ax7.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+
+    ax8 = plt.subplot(gs[8])
+    iq = 2
+    # remove outliers
+    for i in range(ts_len):
+        for j in range(ts_len):
+            if ent_gaps[iq, i, j] > 1000:
+                ent_gaps[iq, i, j] = np.nan
+    # smooth plot
+    itrpol_method = 'None'  # 'bicubic'
+    # plot
+    sc = ax8.imshow(ent_gaps[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+                    extent=[plot_min, plot_max, plot_min, plot_max])
+    ax8.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
+    ax8.scatter(1 / 7, -1 / 56, c='g', label="octic point")
+    cbar = plt.colorbar(sc)
+    cbar.set_label('$\\Delta_\\xi$')
+    ax8.grid()
+    ax8.set_xlabel('$t_6$')
+    # ax8.set_ylabel('$t_9$')
+    ax8.tick_params(labelleft=False)
+    # ax8.tick_params(labelbottom=False)
+    # ax8.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    ax8.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    ax8.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
     plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/{file_name}.png", bbox_inches='tight', dpi=300)
     plt.show()

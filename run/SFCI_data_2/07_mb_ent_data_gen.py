@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     stats = "bosons"  # "fermions" or "bosons"
     alpha = 0
-    q = 16
+    q = 81
     ts = np.linspace(-0.25, 0.25, 11)
 
     os.chdir(f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha}/q_{q:g}/ent")

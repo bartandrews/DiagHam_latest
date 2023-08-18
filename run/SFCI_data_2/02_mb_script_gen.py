@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     stats = "fermions"  # "fermions" or "bosons"
     alpha = 0
-    p, X, Y, x, y = 8, 6, 4, 4, 6
+    p, X, Y, x, y = 8, 12, 8, 4, 6
     q = X * Y
     ts = np.linspace(-0.25, 0.25, 11)
 

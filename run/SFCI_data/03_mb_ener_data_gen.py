@@ -13,8 +13,8 @@ def can_convert_to_float(string):
 
 if __name__ == "__main__":
 
-    stats = "fermions"  # "fermions" or "bosons"
-    q = 24
+    stats = "bosons"  # "fermions" or "bosons"
+    q = 49
 
     if stats == "fermions":
         s = 3  # g.s. degeneracy
