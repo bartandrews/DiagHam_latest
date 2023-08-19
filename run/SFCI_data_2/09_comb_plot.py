@@ -14,16 +14,21 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    stats = "bosons"
+    stats = "fermions"
     alpha = 0
-    qs = [16, 49, 81]
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"{stats}_alpha_{alpha}"
 
     if stats == "bosons":
+        qs = [16, 49, 81]
+        scale_power = 1  # power of q for many-body gap scaling
+        scale_divisor = 1  # divisor for many-body gap
         cbtitle = "$q \\Delta_\\mathrm{m.b.}$"
         title_str = f"Bosons, $\\nu=1/2$, $V_{{ij}} = (1-\\alpha)\\delta_{{ij}} + \\alpha e^{{-|r_{{ij}}|^4}}$, $\\alpha={alpha}$"
     else:  # fermions
+        qs = [24, 54, 96]
+        scale_power = 2  # power of q for many-body gap scaling
+        scale_divisor = 2  # divisor for many-body gap
         cbtitle = "$q^2 \\Delta_\\mathrm{m.b.}$"
         title_str = f"Fermions, $\\nu=1/3$, $V_{{ij}} = (1-\\alpha)\\delta_{{\\langle ij \\rangle}} + \\alpha e^{{-|r_{{ij}}|^4}}$, $\\alpha={alpha}$"
 
@@ -56,13 +61,13 @@ if __name__ == "__main__":
                 tisms[iq, it6, it9] = float(row[2])
 
     # many-body quantities
-    for iq, _ in enumerate(qs):
+    for iq, q in enumerate(qs):
         with open(mb_data[iq], 'r') as csvfile:
             plots = csv.reader(csvfile, delimiter='\t')
             for i, row in enumerate(plots):
                 it6 = int(i / len(ts))
                 it9 = i % len(ts)
-                gaps[iq, it6, it9] = float(row[2])
+                gaps[iq, it6, it9] = q**scale_power * float(row[2]) / scale_divisor
     for iq, _ in enumerate(qs):
         with open(mb_ent_data[iq], 'r') as csvfile:
             plots = csv.reader(csvfile, delimiter='\t')
@@ -71,10 +76,12 @@ if __name__ == "__main__":
                 it9 = i % len(ts)
                 ent_gaps[iq, it6, it9] = float(row[2])
 
-    fig = plt.figure(figsize=(9, 9))
+    fig = plt.figure(figsize=(7, 7))
     # fig.suptitle(f'{title_str}')
     gs = gridspec.GridSpec(3, 3)
     gs.update(top=0.92)
+    axlabel_fontsize = 12
+    title_fontsize = 14
 
     ########
     # TISM #
@@ -95,13 +102,13 @@ if __name__ == "__main__":
     ax0.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax0.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     cbar = plt.colorbar(sc)
-    # cbar.set_label('$\\langle \\mathcal{T} \\rangle$')
+    # cbar.set_label('$\\langle \\mathcal{T} \\rangle$', fontsize=axlabel_fontsize)
     ax0.grid()
-    # ax0.set_xlabel('$t_6$')
-    ax0.set_ylabel('$t_9$')
+    # ax0.set_xlabel('$t_6$', fontsize=axlabel_fontsize)
+    ax0.set_ylabel('$t_9$', fontsize=axlabel_fontsize)
     # ax0.tick_params(labelleft=False)
     ax0.tick_params(labelbottom=False)
-    ax0.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    ax0.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax0.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax0.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
@@ -120,13 +127,13 @@ if __name__ == "__main__":
     ax1.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax1.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     cbar = plt.colorbar(sc)
-    # cbar.set_label('$\\langle \\mathcal{T} \\rangle$')
+    # cbar.set_label('$\\langle \\mathcal{T} \\rangle$', fontsize=axlabel_fontsize)
     ax1.grid()
-    # ax1.set_xlabel('$t_6$')
-    # ax1.set_ylabel('$t_9$')
+    # ax1.set_xlabel('$t_6$', fontsize=axlabel_fontsize)
+    # ax1.set_ylabel('$t_9$', fontsize=axlabel_fontsize)
     ax1.tick_params(labelleft=False)
     ax1.tick_params(labelbottom=False)
-    ax1.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    ax1.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax1.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax1.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
@@ -145,13 +152,13 @@ if __name__ == "__main__":
     ax2.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax2.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     cbar = plt.colorbar(sc)
-    cbar.set_label('$\\langle \\mathcal{T} \\rangle$')
+    cbar.set_label('$\\langle \\mathcal{T} \\rangle$', fontsize=axlabel_fontsize)
     ax2.grid()
-    # ax2.set_xlabel('$t_6$')
-    # ax2.set_ylabel('$t_9$')
+    # ax2.set_xlabel('$t_6$', fontsize=axlabel_fontsize)
+    # ax2.set_ylabel('$t_9$', fontsize=axlabel_fontsize)
     ax2.tick_params(labelleft=False)
     ax2.tick_params(labelbottom=False)
-    ax2.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    ax2.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax2.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
@@ -174,13 +181,13 @@ if __name__ == "__main__":
     ax3.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax3.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     cbar = plt.colorbar(sc)
-    # cbar.set_label(f'{cbtitle}')
+    # cbar.set_label(f'{cbtitle}', fontsize=axlabel_fontsize)
     ax3.grid()
-    # ax3.set_xlabel('$t_6$')
-    ax3.set_ylabel('$t_9$')
+    # ax3.set_xlabel('$t_6$', fontsize=axlabel_fontsize)
+    ax3.set_ylabel('$t_9$', fontsize=axlabel_fontsize)
     # ax3.tick_params(labelleft=False)
     ax3.tick_params(labelbottom=False)
-    # ax3.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    # ax3.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax3.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
@@ -199,13 +206,13 @@ if __name__ == "__main__":
     ax4.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax4.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     cbar = plt.colorbar(sc)
-    # cbar.set_label(f'{cbtitle}')
+    # cbar.set_label(f'{cbtitle}', fontsize=axlabel_fontsize)
     ax4.grid()
-    # ax4.set_xlabel('$t_6$')
-    # ax4.set_ylabel('$t_9$')
+    # ax4.set_xlabel('$t_6$', fontsize=axlabel_fontsize)
+    # ax4.set_ylabel('$t_9$', fontsize=axlabel_fontsize)
     ax4.tick_params(labelleft=False)
     ax4.tick_params(labelbottom=False)
-    # ax4.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    # ax4.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax4.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax4.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
@@ -224,13 +231,13 @@ if __name__ == "__main__":
     ax5.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax5.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     cbar = plt.colorbar(sc)
-    cbar.set_label(f'{cbtitle}')
+    cbar.set_label(f'{cbtitle}', fontsize=axlabel_fontsize)
     ax5.grid()
-    # ax5.set_xlabel('$t_6$')
-    # ax5.set_ylabel('$t_9$')
+    # ax5.set_xlabel('$t_6$', fontsize=axlabel_fontsize)
+    # ax5.set_ylabel('$t_9$', fontsize=axlabel_fontsize)
     ax5.tick_params(labelleft=False)
     ax5.tick_params(labelbottom=False)
-    # ax5.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    # ax5.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax5.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax5.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
@@ -253,13 +260,13 @@ if __name__ == "__main__":
     ax6.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax6.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     cbar = plt.colorbar(sc)
-    # cbar.set_label('$\\Delta_\\xi$')
+    # cbar.set_label('$\\Delta_\\xi$', fontsize=axlabel_fontsize)
     ax6.grid()
-    ax6.set_xlabel('$t_6$')
-    ax6.set_ylabel('$t_9$')
+    ax6.set_xlabel('$t_6$', fontsize=axlabel_fontsize)
+    ax6.set_ylabel('$t_9$', fontsize=axlabel_fontsize)
     # ax6.tick_params(labelleft=False)
     # ax6.tick_params(labelbottom=False)
-    # ax6.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    # ax6.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax6.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax6.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
@@ -278,13 +285,13 @@ if __name__ == "__main__":
     ax7.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax7.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     cbar = plt.colorbar(sc)
-    # cbar.set_label('$\\Delta_\\xi$')
+    # cbar.set_label('$\\Delta_\\xi$', fontsize=axlabel_fontsize)
     ax7.grid()
-    ax7.set_xlabel('$t_6$')
-    # ax7.set_ylabel('$t_9$')
+    ax7.set_xlabel('$t_6$', fontsize=axlabel_fontsize)
+    # ax7.set_ylabel('$t_9$', fontsize=axlabel_fontsize)
     ax7.tick_params(labelleft=False)
     # ax7.tick_params(labelbottom=False)
-    # ax7.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    # ax7.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax7.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax7.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
@@ -303,15 +310,20 @@ if __name__ == "__main__":
     ax8.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax8.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     cbar = plt.colorbar(sc)
-    cbar.set_label('$\\Delta_\\xi$')
+    cbar.set_label('$\\Delta_\\xi$', fontsize=axlabel_fontsize)
     ax8.grid()
-    ax8.set_xlabel('$t_6$')
-    # ax8.set_ylabel('$t_9$')
+    ax8.set_xlabel('$t_6$', fontsize=axlabel_fontsize)
+    # ax8.set_ylabel('$t_9$', fontsize=axlabel_fontsize)
     ax8.tick_params(labelleft=False)
     # ax8.tick_params(labelbottom=False)
-    # ax8.set_title(f'$n_\\phi = 1/{qs[iq]}$')
+    # ax8.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax8.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax8.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+
+    label_fontsize = 14
+    fig.text(0.04, 0.902, "(a)", fontsize=label_fontsize)
+    fig.text(0.04, 0.615, "(b)", fontsize=label_fontsize)
+    fig.text(0.04, 0.33, "(c)", fontsize=label_fontsize)
 
     plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/{file_name}.png", bbox_inches='tight', dpi=300)
     plt.show()

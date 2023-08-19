@@ -40,7 +40,7 @@ if __name__ == "__main__":
         for i, row in enumerate(plots):
             it6 = int(i / len(ts))
             it9 = i % len(ts)
-            gaps[it6, it9] = float(row[2])
+            gaps[it6, it9] = scale_factor * float(row[2])
 
     fig = plt.figure()
     ax1 = plt.subplot(111)

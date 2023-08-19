@@ -13,9 +13,9 @@ def can_convert_to_float(string):
 
 if __name__ == "__main__":
 
-    stats = "bosons"  # "fermions" or "bosons"
+    stats = "fermions"  # "fermions" or "bosons"
     alpha = 0
-    q = 81
+    q = 96
     ts = np.linspace(-0.25, 0.25, 11)
 
     if stats == "fermions":

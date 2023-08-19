@@ -14,7 +14,7 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    q = 81
+    q = 96
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"q_{q}"
 

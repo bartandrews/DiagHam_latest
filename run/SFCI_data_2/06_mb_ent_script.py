@@ -18,9 +18,9 @@ def pot(distance):
 
 if __name__ == "__main__":
 
-    stats = "bosons"  # "fermions" or "bosons"
+    stats = "fermions"  # "fermions" or "bosons"
     alpha = 0
-    p, X, Y, x, y = 8, 9, 9, 4, 4
+    p, X, Y, x, y = 8, 12, 8, 4, 6
     q = X*Y
     ts = np.linspace(-0.25, 0.25, 11)
 
