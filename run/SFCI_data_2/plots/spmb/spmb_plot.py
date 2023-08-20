@@ -3,6 +3,54 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.ticker as ticker
 import csv
+from matplotlib.patches import Polygon
+from math import gcd
+from fractions import Fraction
+
+plt.rc('text', usetex=True)
+plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
+
+
+def chern(pval, qval):
+
+    nphi = Fraction(pval, qval)
+    p = nphi.numerator
+    q = nphi.denominator
+
+    # determine r and s
+    sr_list, tr_list = [], []
+
+    for r in range(q+1):
+        if q % 2 == 0 and r == q/2:
+            continue
+        for tr in range(-int(q/2), int(q/2)+1):
+            for sr in range(-q, q+1):
+                if r == q*sr + p*tr:
+                    # print(sr, tr)
+                    sr_list.append(sr)
+                    tr_list.append(tr)
+                    break
+            else:
+                continue  # only executed if the inner loop did NOT break
+            break  # only executed if the inner loop DID break
+
+    # print(tr_list)
+
+    Chern_list = []
+    if q % 2 != 0:
+        numb_band_groups = q
+    else:
+        numb_band_groups = q-1
+
+    for i in range(numb_band_groups):
+        Chern_list.append(tr_list[i+1] - tr_list[i])
+
+    if q % 2 == 0:
+        Chern_list.insert(q//2-1, Chern_list[q//2-1])
+
+    # del tr_list[0]
+
+    return Chern_list
 
 
 def can_convert_to_float(string):
@@ -113,12 +161,11 @@ def H(p, q, k, t3=0.0, t6=0.0, t9=0.0):
 
 if __name__ == "__main__":
 
-
     GA = np.array([0, 0])
     Y = np.array([0, 0.5])
     S = np.array([0.5, 0.5])
     X = np.array([0.5, 0])
-    sym_points = [GA, Y, S, X]
+    sym_points = [GA, X, S, Y]
     num_samples = 100
     num_bands = 9
     b1 = (2. * np.pi) * np.array([1 / num_bands, 0])
@@ -133,8 +180,7 @@ if __name__ == "__main__":
     count = 0
     for i in range(num_paths):
         for j in range(points_per_path):
-            k = sym_points[i] + (sym_points[(i + 1) % num_paths] - sym_points[i]) * float(j) / float(
-                points_per_path - 1)
+            k = sym_points[i] + (sym_points[(i + 1) % num_paths] - sym_points[i]) * float(j)/float(points_per_path-1)
             k = np.matmul(k, bvec)
             eigvals = np.linalg.eigvals(H(1, num_bands, k, -0.1125, -0.15, 0.05))
             idx = np.argsort(eigvals)
@@ -143,15 +189,24 @@ if __name__ == "__main__":
             count += 1
 
     # construct butterfly
-    q_val = 99
-    nphi_list, E_list = [], []
+    q_val = 199
+    nphi_list, E_list, chern_list = [], [], []
     for p in range(1, q_val):
+        print(f"p = {p}")
+        if gcd(p, q_val) != 1:  # nphi must be a coprime fraction
+            continue
         nphi_val = p/q_val
         nphi_list.append([nphi_val]*q_val)
-        E_list.append(np.linalg.eigvals(H(p, q_val, np.array([0, 0]), -0.1125, -0.15, 0.05)))
+        E_list.append(np.sort(np.linalg.eigvals(H(p, q_val, np.array([0, 0]), -0.1125, -0.15, 0.05))))
+        chern_list.append(chern(p, q_val))
+        # print(E_list)
+        # print(chern_list[-1])
+
+    print(np.shape(nphi_list), np.shape(E_list), np.shape(chern_list))
 
     # construct many-body spectrum
-    mb_file = "fermions_hofstadter_X_12_Y_8_q_1_n_8_x_4_y_6_t3_-0.11_t6_-0.15_t9_0.05_u_1_gx_0_gy_0_ext.dat"
+    # mb_file = "fermions_hofstadter_X_12_Y_8_q_1_n_8_x_4_y_6_t3_-0.11_t6_-0.15_t9_0.05_u_1_gx_0_gy_0_ext.dat"
+    mb_file = "fermions_hofstadter_X_6_Y_4_q_1_n_8_x_4_y_6_t3_-0.11_t6_-0.15_t9_0.05_u_1_gx_0_gy_0_ext.dat"
     lin_K = []
     mb_E = []
     with open(mb_file, 'r') as csvfile:
@@ -162,7 +217,8 @@ if __name__ == "__main__":
                 mb_E.append(float(row[2])/2)
 
     # construct entanglement spectrum
-    ent_file = "fermions_hofstadter_X_12_Y_8_q_1_n_8_x_4_y_6_t3_-0.11_t6_-0.15_t9_0.05_u_1_gx_0_gy_0.na_4.parentspec"
+    # ent_file = "fermions_hofstadter_X_12_Y_8_q_1_n_8_x_4_y_6_t3_-0.11_t6_-0.15_t9_0.05_u_1_gx_0_gy_0.na_4.parentspec"
+    ent_file = "fermions_hofstadter_X_6_Y_4_q_1_n_8_x_4_y_6_t3_-0.11_t6_-0.15_t9_0.05_u_1_gx_0_gy_0.na_4.parentspec"
     lin_K_ent = []
     ent = []
     with open(ent_file, 'r') as csvfile:
@@ -201,7 +257,7 @@ if __name__ == "__main__":
             Na = 8 - realNa
         else:
             Na = realNa
-        ent_flow_file = f"fermions_hofstadter_X_12_Y_8_q_1_n_8_x_4_y_6_t3_-0.11_t6_-0.15_t9_0.05_u_1_gx_0_gy_0.na_{Na}.parentspec"
+        ent_flow_file = f"fermions_hofstadter_X_6_Y_4_q_1_n_8_x_4_y_6_t3_-0.11_t6_-0.15_t9_0.05_u_1_gx_0_gy_0.na_{Na}.parentspec"
         with open(ent_flow_file, 'r') as csvfile:
             plots = csv.reader(csvfile, delimiter=' ')
             for i, row in enumerate(plots):
@@ -211,6 +267,7 @@ if __name__ == "__main__":
                             Nas.append(int(row[0]))
                         else:
                             Nas.append(realNa)
+                        # print(Na, float(row[5]))
                         ents.append(float(row[5]))
 
     ##########
@@ -239,7 +296,7 @@ if __name__ == "__main__":
     xtick_vals.append(num_paths*points_per_path)
 
     ax0.set_xticks(xtick_vals)
-    ax0.set_xticklabels(["$\Gamma$", "$Y$", "$S$", "$X$", "$\Gamma$"])
+    ax0.set_xticklabels(["$\Gamma$", "$X$", "$S$", "$Y$", "$\Gamma$"])
 
     ax0.set_xlim([0, num_points])
     ax0.set_ylabel('$E$')
@@ -251,7 +308,7 @@ if __name__ == "__main__":
         if i < 5:
             ax0.text(1, eigenvalues[i][10], f"$C_{i+1}={Chern_list[i]}$")
         elif i == 5:
-            ax0.text(37, 1.5*eigenvalues[i][50], f"$C_{i + 1}={Chern_list[i]}$")
+            ax0.text(37, 1.8*eigenvalues[i][50], f"$C_{i + 1}={Chern_list[i]}$")
         else:
             ax0.text(77, 0.95*eigenvalues[i][90], f"$C_{i + 1}={Chern_list[i]}$")
 
@@ -261,10 +318,11 @@ if __name__ == "__main__":
 
     ax1 = plt.subplot(gs[1])
     ax1.set_title(f"$n_\phi = p/{q_val}$")
-    ax1.plot(nphi_list, E_list, '.', c='k', markersize=1)
+    sc = ax1.scatter(nphi_list, E_list, c=chern_list, cmap='jet', s=0.1, marker=',', vmin=-10, vmax=10)
+    # cbar = plt.colorbar(sc)
     ax1.set_ylabel('$E$')
     ax1.set_xlabel('$n_\phi$')
-    ax1.set_xlim([0, 1])
+    # ax1.set_xlim([0, 1])
     ax1.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax1.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
@@ -273,28 +331,40 @@ if __name__ == "__main__":
     ######################
 
     ax2 = plt.subplot(gs[2])
-    ax2.set_title(f"$n_\phi = 1/96$")
-    ax2.plot(lin_K, np.subtract(mb_E, min(mb_E))*1e5, '+', c='k', markersize=5)
-    ax2.set_ylabel('$(E_\\mathrm{m.b.} - E_{\\mathrm{m.b.},0})/10^{-5}$')
+    ax2.set_title(f"$\\nu=1/3$, $n_\phi = 1/24$")
+    ax2.plot(lin_K, np.subtract(mb_E, min(mb_E))*1e3, '+', c='k', markersize=5)
+    ax2.set_ylabel('$(E_\\mathrm{m.b.} - E_{\\mathrm{m.b.},0})/10^{-3}$')
     ax2.set_xlabel('$k_x L_y + k_y$')
     ax2.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax2.annotate(s='', xy=(3, 0.000128*1e5), xytext=(3, -0.000003*1e5), arrowprops=dict(arrowstyle='<->'))
-    ax2.text(3.5, 0.00006*1e5, "$\\Delta_\\mathrm{m.b.}$")
+    ax2.annotate(s='', xy=(2, 1.95), xytext=(2, 0), arrowprops=dict(arrowstyle='<->'))
+    ax2.text(2.5, 0.9, "$\\Delta_\\mathrm{m.b.}$")
+
+    left, bottom, width, height = [0.3, 0.43, 0.1, 0.05]
+    ax2_2 = fig.add_axes([left, bottom, width, height])
+    # ax2_2.tick_params(labelleft=False)
+    # ax2_2.tick_params(labelbottom=False)
+    ax2_2.set_xlabel('$q^{-2}$')
+    ax2_2.set_ylabel('$\\Delta_\mathrm{m.b.}$')
+    ax2_2.set_xticks([])
+    ax2_2.set_yticks([])
+
+    ax2_2.plot([1, 2, 3], [1, 2, 3])
 
     #########################
     # entanglement spectrum #
     #########################
 
     ax3 = plt.subplot(gs[3])
-    ax3.set_title(f"$n_\phi = 1/96$")
+    ax3.set_title(f"$\\nu=1/3$, $n_\phi = 1/24$")
     ax3.plot(lin_K_ent, ent, '+', c='k', markersize=2)
     ax3.set_ylabel('$\\xi$')
     ax3.set_xlabel('$k_x L_y + k_y$')
     ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax3.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax3.annotate(s='', xy=(10, 17.5), xytext=(10, 9.5), arrowprops=dict(arrowstyle='<->'))
-    ax3.text(10.5, 13, "$\\Delta_\\xi$")
+    ax3.annotate(s='', xy=(2, 16.5), xytext=(2, 9.5), arrowprops=dict(arrowstyle='<->'))
+    ax3.text(2.5, 12.4, "$\\Delta_\\xi$")
+    ax3.text(8, 11, "$(1,3)$ counting")
 
     #################
     # spectral flow #
@@ -303,10 +373,10 @@ if __name__ == "__main__":
     offset = np.min(np.array([gamma_E_0, gamma_E_2, gamma_E_4]))
 
     ax4 = plt.subplot(gs[4])
-    ax4.set_title(f"$n_\phi = 1/24$")
-    ax4.plot(gammas, np.subtract(gamma_E_0, offset)*1e10, 's', c='b', markersize=5, label="$0$")
-    ax4.plot(gammas, np.subtract(gamma_E_2, offset)*1e10, 'o', c='g', markersize=5, label="$2$")
-    ax4.plot(gammas, np.subtract(gamma_E_4, offset)*1e10, '+', c='r', markersize=5, label="$4$")
+    ax4.set_title(f"$\\nu=1/3$, $n_\phi = 1/24$")
+    ax4.plot(gammas, np.subtract(gamma_E_0, offset)*1e10, 's', c='b', markersize=3, label="$0$")
+    ax4.plot(gammas, np.subtract(gamma_E_2, offset)*1e10, 'o', c='g', markersize=3, label="$2$")
+    ax4.plot(gammas, np.subtract(gamma_E_4, offset)*1e10, '+', c='r', markersize=3, label="$4$")
     ax4.set_ylabel('$(E_\\mathrm{m.b.}-\\min_{\Phi}(E_{\\mathrm{m.b.},0}))/10^{-10}$')
     ax4.set_xlabel('$\\Phi/2\pi$')
     ax4.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
@@ -315,17 +385,39 @@ if __name__ == "__main__":
     ax4.legend(loc='best', handletextpad=0.3, handlelength=0.5, labelspacing=0.1, borderpad=0.3,
                framealpha=1, edgecolor='k', markerscale=0.8, fontsize=10, ncol=6, columnspacing=0.5, title='$k_y$')
 
+    im = plt.imread("/home/bart/Documents/papers/SFCI/torus.png")
+    left, bottom, width, height = [0.135, 0.11, 0.08, 0.05]
+    ax4_2 = fig.add_axes([left, bottom, width, height])
+    ax4_2.imshow(im)
+    ax4_2.set_ylim([341, -10])
+    ax4_2.axis('off')
+    ax4.annotate(s='', xy=(0.13, 3.5), xytext=(0.13, 0.8), arrowprops=dict(arrowstyle='->'))
+    ax4.text(0.1, 3.5, "$\\Phi$")
+
+    ax4.text(0.75, 0.8, "$k_x=0$")
+
     #####################
     # entanglement flow #
     #####################
 
     ax5 = plt.subplot(gs[5])
-    ax5.set_title(f"$n_\phi = 1/96$")
+    ax5.set_title(f"$\\nu=1/3$, $n_\phi = 1/24$")
     ax5.plot(Nas, ents, '+', c='k', markersize=5)
     ax5.set_ylabel('$\\xi$')
     ax5.set_xlabel('$N_A$')
     ax5.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax5.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+
+    metal0 = Polygon(((2, 5.5638343725871), (4, 9.4870246401184), (4,16.619647989528), (2, 15.003435206111)), fc=(0, 0, 0, 0.1))
+    metal1 = Polygon(((4, 9.4870246401184), (6, 5.5638343725871), (6, 15.003435206111), (4, 16.619647989528)), fc=(0, 0, 0, 0.1))
+    metal2 = Polygon(((1, 3.1780538302693), (2, 5.5638343725871), (2, 15.003435206111)), fc=(0, 0, 0, 0.1))
+    metal3 = Polygon(((6, 5.5638343725871), (7, 3.1780538302693), (6, 15.003435206111)), fc=(0, 0, 0, 0.1))
+    ax5.add_artist(metal0)
+    ax5.add_artist(metal1)
+    ax5.add_artist(metal2)
+    ax5.add_artist(metal3)
+
+    ax5.text(2.3, 11, "$(k_x, k_y) = (0, 0)$")
 
     fig.text(0.05, 0.9, "(a)", fontsize=12)
     fig.text(0.5, 0.9, "(b)", fontsize=12)
@@ -334,5 +426,5 @@ if __name__ == "__main__":
     fig.text(0.05, 0.32, "(e)", fontsize=12)
     fig.text(0.5, 0.32, "(f)", fontsize=12)
 
-    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/spmb/spmb.png", bbox_inches='tight', dpi=300)
+    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/spmb/spmb.png", bbox_inches='tight', dpi=600)
     plt.show()
