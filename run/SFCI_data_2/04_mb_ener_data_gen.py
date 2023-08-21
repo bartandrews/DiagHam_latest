@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
     stats = "fermions"  # "fermions" or "bosons"
     alpha = 0
-    q = 96
+    q = 54
     ts = np.linspace(-0.25, 0.25, 11)
 
     if stats == "fermions":
@@ -48,11 +48,14 @@ if __name__ == "__main__":
                     if can_convert_to_float(row[0]):  # if value is a number
                         E.append(float(row[2]))
                 E = sorted(E)
-                if np.abs(E[s]-E[s-1]) > np.abs(E[s-1]-E[s-2]):  # ensure m.b. gap > g.s. degeneracy
-                    gap = np.abs(E[s]-E[s-1])
-                else:
-                    gap = np.nan
+                # if np.abs(E[s]-E[s-1]) > np.abs(E[s-1]-E[s-2]):  # ensure m.b. gap > g.s. degeneracy
+                #     gap = np.abs(E[s]-E[s-1])
+                # else:
+                #     gap = np.nan
+                gap = np.abs(E[s] - E[s - 1])
+                degen = E[:s]
+                degen_spread = np.max(E[:s]) - np.min(E[:s])
 
-            out_file.write(f"{t6hop:.2f}\t{t9hop:.2f}\t{gap}\n")
+            out_file.write(f"{t6hop:.2f}\t{t9hop:.2f}\t{gap}\t{degen_spread}\n")
 
     out_file.close()

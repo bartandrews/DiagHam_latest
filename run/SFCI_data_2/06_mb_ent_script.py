@@ -30,18 +30,20 @@ if __name__ == "__main__":
         s = 2  # g.s. degeneracy
 
     ener_path = f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha}/q_{q:g}"
-    os.chdir(ener_path)
+    ent_path = os.path.join(ener_path, "ent")
+    os.makedirs(ent_path, exist_ok=True)
+    os.chdir(ent_path)
 
     for t6hop in ts:
         for t9hop in ts:
             t3hop = (-9 * t6hop - 16 * t9hop - 1) / 4  # quartic plane
 
             # extract the g.s. momentum sectors
-            for file in os.listdir("."):
+            for file in os.listdir(".."):
                 if f"t6_{t6hop:.2f}_t9_{t9hop:.2f}_" in file and file.endswith("_0_ext.dat"):
                     given_ext_file = file
 
-            with open(given_ext_file, 'r') as csvfile:
+            with open("../"+given_ext_file, 'r') as csvfile:
                 plots = csv.reader(csvfile, delimiter=' ')
                 kx, ky, E = [], [], []
                 for j, row in enumerate(plots):
@@ -105,8 +107,8 @@ if __name__ == "__main__":
             os.system(PlotHofstadterFTIEntanglementSpectrum+given_file.replace(".dat", ".full.parent"))
 
     # clean up
-    ent_path = os.path.join(ener_path, "ent")
-    os.makedirs(ent_path, exist_ok=True)
-    for file in os.listdir("."):
-        if "task" in file or "par" in file or file.endswith(".vec") or file.endswith(".gs"):
-            shutil.move(os.path.join(ener_path, file), os.path.join(ent_path, file))
+    # ent_path = os.path.join(ener_path, "ent")
+    # os.makedirs(ent_path, exist_ok=True)
+    # for file in os.listdir("."):
+    #     if "task" in file or "par" in file or file.endswith(".vec") or file.endswith(".gs"):
+    #         shutil.move(os.path.join(ener_path, file), os.path.join(ent_path, file))

@@ -339,6 +339,8 @@ if __name__ == "__main__":
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax2.annotate(s='', xy=(2, 1.95), xytext=(2, 0), arrowprops=dict(arrowstyle='<->'))
     ax2.text(2.5, 0.9, "$\\Delta_\\mathrm{m.b.}$")
+    ax2.annotate(s='', xy=(5.5, 0.01), xytext=(5.5, 0), arrowprops=dict(arrowstyle='<->'))
+    ax2.text(6.5, -0.1, "$\\delta$")
 
     left, bottom, width, height = [0.3, 0.43, 0.1, 0.05]
     ax2_2 = fig.add_axes([left, bottom, width, height])
