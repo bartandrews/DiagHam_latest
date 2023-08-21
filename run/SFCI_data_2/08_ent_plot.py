@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     stats = "bosons"
     alpha = 0
-    q = 16
+    q = 81
     ts = np.linspace(-1, 1, 11)
     file_name = f"{stats}_alpha_{alpha}_q_{q}_ent"
 
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     fig = plt.figure()
     ax1 = plt.subplot(111)
 
-    sc = ax1.imshow(gaps, cmap='magma', origin='lower',
+    sc = ax1.imshow(gaps.T, cmap='magma', origin='lower',
                     extent=[plot_min, plot_max, plot_min, plot_max])
     ax1.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax1.scatter(1/7, -1/56, c='g', label="octic point")

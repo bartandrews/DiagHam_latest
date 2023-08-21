@@ -49,7 +49,7 @@ if __name__ == "__main__":
     fig = plt.figure()
     ax1 = plt.subplot(111)
 
-    sc = ax1.imshow(tisms, cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax1.imshow(tisms.T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max])
     ax1.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax1.scatter(1/7, -1/56, c='g', label="octic point")

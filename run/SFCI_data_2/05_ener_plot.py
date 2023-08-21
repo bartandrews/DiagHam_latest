@@ -16,11 +16,11 @@ if __name__ == "__main__":
 
     stats = "fermions"
     alpha = 0
-    q = 54
+    q = 96
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"{stats}_alpha_{alpha}_q_{q}"
 
-    scale_factor = q**2 if stats == "fermions" else q
+    scale_factor = q**2 / 2 if stats == "fermions" else q
 
     mb_data = f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha:g}/q_{q:g}/mb_ener_q_{q:g}.txt"
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     fig = plt.figure()
     ax1 = plt.subplot(111)
 
-    sc = ax1.imshow(gaps, cmap='magma', origin='lower',
+    sc = ax1.imshow(gaps.T, cmap='magma', origin='lower',
                     extent=[plot_min, plot_max, plot_min, plot_max])
     ax1.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax1.scatter(1/7, -1/56, c='g', label="octic point")

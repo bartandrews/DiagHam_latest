@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.gridspec as gridspec
 import matplotlib.ticker as ticker
+from matplotlib.ticker import FuncFormatter
 
 plt.rc('text', usetex=True)
 plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
@@ -24,14 +25,14 @@ if __name__ == "__main__":
         scale_power = 1  # power of q for many-body gap scaling
         scale_divisor = 1  # divisor for many-body gap
         cbtitle = "$q \\Delta_\\mathrm{m.b.}$"
-        cbtitle2 = "$q \\delta$"
+        cbtitle2 = "$q \\delta / 10^{-1}$"
         title_str = f"Bosons, $\\nu=1/2$, $V_{{ij}} = (1-\\alpha)\\delta_{{ij}} + \\alpha e^{{-|r_{{ij}}|^4}}$, $\\alpha={alpha}$"
     else:  # fermions
         qs = [24, 54, 96]
         scale_power = 2  # power of q for many-body gap scaling
         scale_divisor = 2  # divisor for many-body gap
         cbtitle = "$q^2 \\Delta_\\mathrm{m.b.}$"
-        cbtitle2 = "$\\log (q^2 \\delta)$"
+        cbtitle2 = "$q^2 \\delta / 10^{-5}$"
         title_str = f"Fermions, $\\nu=1/3$, $V_{{ij}} = (1-\\alpha)\\delta_{{\\langle ij \\rangle}} + \\alpha e^{{-|r_{{ij}}|^4}}$, $\\alpha={alpha}$"
 
     sp_data, mb_data, mb_ent_data = [], [], []
@@ -72,13 +73,13 @@ if __name__ == "__main__":
                 it9 = i % len(ts)
                 gaps[iq, it6, it9] = q**scale_power * float(row[2]) / scale_divisor
                 if stats == "bosons":
-                    spread[iq, it6, it9] = q**scale_power * float(row[3]) / scale_divisor
+                    spread[iq, it6, it9] = (q**scale_power * float(row[3]) / scale_divisor)*10
                 else:
-                    spread[iq, it6, it9] = np.log(q ** scale_power * float(row[3]) / scale_divisor)
+                    spread[iq, it6, it9] = (q ** scale_power * float(row[3]) / scale_divisor)*1e5
     if stats == "bosons":
         min_gap, max_gap = np.nanmin(gaps), np.nanmax(gaps)
     else:
-        min_gap, max_gap = np.nanmin(gaps), 2
+        min_gap, max_gap = np.nanmin(gaps), np.nanmax(gaps[:2])
     min_spread, max_spread = np.nanmin(spread), np.nanmax(spread)
     for iq, _ in enumerate(qs):
         with open(mb_ent_data[iq], 'r') as csvfile:
@@ -110,7 +111,7 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax0.imshow(tisms[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax0.imshow(tisms[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_tism, vmax=max_tism)
     ax0.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax0.scatter(1 / 7, -1 / 56, c='g', label="octic point")
@@ -135,7 +136,7 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax1.imshow(tisms[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax1.imshow(tisms[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_tism, vmax=max_tism)
     ax1.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax1.scatter(1 / 7, -1 / 56, c='g', label="octic point")
@@ -160,13 +161,18 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax2.imshow(tisms[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax2.imshow(tisms[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_tism, vmax=max_tism)
     ax2.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax2.scatter(1 / 7, -1 / 56, c='g', label="octic point")
+    if stats == "fermions":
+        ax2.axvline(0.25, c='r', ls='--')
+    else:
+        ax2.axvline(-0.05, c='r', ls='--')
     # #cbar = plt.colorbar(sc)
     cb_ax = fig.add_axes([.9, .744, .01, .176])
-    cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax)
+    fmt = lambda x, pos: '${:g}$'.format(x)
+    cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax, format=FuncFormatter(fmt))
     cbar.set_label('$\\langle \\mathcal{T} \\rangle / q$', fontsize=axlabel_fontsize)
 
     ax2.grid()
@@ -177,6 +183,8 @@ if __name__ == "__main__":
     ax2.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax2.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    if stats == "fermions":
+        ax2.plot(-0.15, 0.05, 'x', c='r')
 
     #################
     # Many-body gap #
@@ -192,7 +200,7 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax3.imshow(gaps[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax3.imshow(gaps[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_gap, vmax=max_gap)
     ax3.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax3.scatter(1 / 7, -1 / 56, c='g', label="octic point")
@@ -217,7 +225,7 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax4.imshow(gaps[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax4.imshow(gaps[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_gap, vmax=max_gap)
     ax4.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax4.scatter(1 / 7, -1 / 56, c='g', label="octic point")
@@ -242,16 +250,20 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax5.imshow(gaps[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax5.imshow(gaps[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_gap, vmax=max_gap)
     ax5.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax5.scatter(1 / 7, -1 / 56, c='g', label="octic point")
+    if stats == "fermions":
+        ax5.axvline(0.25, c='r', ls='--')
+    else:
+        ax5.axvline(-0.05, c='r', ls='--')
     # cbar = plt.colorbar(sc)
     cb_ax = fig.add_axes([.9, .532, .01, .176])
     if stats == "bosons":
-        cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax)
+        cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax, format=FuncFormatter(fmt))
     else:
-        cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax, extend='max')
+        cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax, extend='max', format=FuncFormatter(fmt))
         cbar.cmap.set_over('yellow')
     cbar.set_label(f'{cbtitle}', fontsize=axlabel_fontsize)
     ax5.grid()
@@ -262,6 +274,8 @@ if __name__ == "__main__":
     # ax5.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax5.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax5.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    if stats == "fermions":
+        ax5.plot(-0.15, 0.05, 'x', c='r')
 
     #####################
     # degeneracy spread #
@@ -277,7 +291,7 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax6.imshow(spread[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax6.imshow(spread[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_spread, vmax=max_spread)
     ax6.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax6.scatter(1 / 7, -1 / 56, c='g', label="octic point")
@@ -302,7 +316,7 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax7.imshow(spread[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax7.imshow(spread[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_spread, vmax=max_spread)
     ax7.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax7.scatter(1 / 7, -1 / 56, c='g', label="octic point")
@@ -327,13 +341,17 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax8.imshow(spread[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax8.imshow(spread[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_spread, vmax=max_spread)
     ax8.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax8.scatter(1 / 7, -1 / 56, c='g', label="octic point")
+    if stats == "fermions":
+        ax8.axvline(0.25, c='r', ls='--')
+    else:
+        ax8.axvline(-0.05, c='r', ls='--')
     # cbar = plt.colorbar(sc)
     cb_ax = fig.add_axes([.9, .321, .01, .176])
-    cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax)
+    cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax, format=FuncFormatter(fmt))
     cbar.set_label(f'{cbtitle2}', fontsize=axlabel_fontsize)
     ax8.grid()
     # ax8.set_xlabel('$t_6$', fontsize=axlabel_fontsize)
@@ -343,6 +361,8 @@ if __name__ == "__main__":
     # ax8.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax8.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax8.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    if stats == "fermions":
+        ax8.plot(-0.15, 0.05, 'x', c='r')
 
     ####################
     # Entanglement gap #
@@ -358,7 +378,7 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax9.imshow(ent_gaps[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax9.imshow(ent_gaps[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_ent_gap, vmax=max_ent_gap)
     ax9.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax9.scatter(1 / 7, -1 / 56, c='g', label="octic point")
@@ -383,7 +403,7 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax10.imshow(ent_gaps[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax10.imshow(ent_gaps[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_ent_gap, vmax=max_ent_gap)
     ax10.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax10.scatter(1 / 7, -1 / 56, c='g', label="octic point")
@@ -408,13 +428,17 @@ if __name__ == "__main__":
     # smooth plot
     itrpol_method = 'None'  # 'bicubic'
     # plot
-    sc = ax11.imshow(ent_gaps[iq], cmap='magma', origin='lower', interpolation=itrpol_method,
+    sc = ax11.imshow(ent_gaps[iq].T, cmap='magma', origin='lower', interpolation=itrpol_method,
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_ent_gap, vmax=max_ent_gap)
     ax11.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax11.scatter(1 / 7, -1 / 56, c='g', label="octic point")
+    if stats == "fermions":
+        ax11.axvline(0.25, c='r', ls='--')
+    else:
+        ax11.axvline(-0.05, c='r', ls='--')
     # cbar = plt.colorbar(sc)
     cb_ax = fig.add_axes([.9, .11, .01, .176])
-    cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax)
+    cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax, format=FuncFormatter(fmt))
     cbar.set_label('$\\Delta_\\xi$', fontsize=axlabel_fontsize)
     ax11.grid()
     ax11.set_xlabel('$t_6$', fontsize=axlabel_fontsize)
@@ -424,6 +448,8 @@ if __name__ == "__main__":
     # ax11.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax11.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax11.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    if stats == "fermions":
+        ax11.plot(-0.15, 0.05, 'x', c='r')
 
     label_fontsize = 13
     fig.text(0.06, 0.923, "(a)", fontsize=label_fontsize)

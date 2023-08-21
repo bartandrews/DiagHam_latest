@@ -205,8 +205,8 @@ def band_geom(t6, t9, q, grain, grain_r):
     # quantum geometry
     tism_int = np.sum(tisms) * dkx * dky / (2 * np.pi)
     dism_int = np.sum(disms) * dkx * dky / (2 * np.pi)
-    g_var_mean = (np.var(g_array[0, 0]) + np.var(g_array[0, 1]))/2
-    fs_fluc = np.log10(np.sqrt(g_var_mean))
+    g_var_sum = np.var(g_array[0, 0]) + np.var(g_array[0, 1])
+    fs_fluc = np.log10(np.sqrt(g_var_sum))
 
     # berry fluctuations
     A_BZ = np.sum(berry_fluxes) / np.average(berry_fluxes)
@@ -224,7 +224,7 @@ if __name__ == "__main__":
 
     t0 = perf_counter()
 
-    q_val = 96
+    q_val = 16
     grain_val = 100
     grain_r_val = 1000
     ts = np.linspace(-0.25, 0.25, 11)
