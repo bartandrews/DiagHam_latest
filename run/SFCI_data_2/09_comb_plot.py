@@ -15,7 +15,7 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    stats = "bosons"
+    stats = "fermions"
     alpha = 0
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"{stats}_alpha_{alpha}"
@@ -167,6 +167,8 @@ if __name__ == "__main__":
     ax2.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     if stats == "fermions":
         ax2.axvline(0.25, c='r', ls='--')
+        ax2.plot(-0.25, -0.25, 'x', c='b', zorder=5)
+        ax2.plot(0.25, 0.25, 'x', c='b', zorder=5)
     else:
         ax2.axvline(-0.05, c='r', ls='--')
     # #cbar = plt.colorbar(sc)
@@ -256,6 +258,8 @@ if __name__ == "__main__":
     ax5.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     if stats == "fermions":
         ax5.axvline(0.25, c='r', ls='--')
+        ax5.plot(-0.25, -0.25, 'x', c='b', zorder=5)
+        ax5.plot(0.25, 0.25, 'x', c='b', zorder=5)
     else:
         ax5.axvline(-0.05, c='r', ls='--')
     # cbar = plt.colorbar(sc)
@@ -347,6 +351,8 @@ if __name__ == "__main__":
     ax8.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     if stats == "fermions":
         ax8.axvline(0.25, c='r', ls='--')
+        ax8.plot(-0.25, -0.25, 'x', c='b', zorder=5)
+        ax8.plot(0.25, 0.25, 'x', c='b', zorder=5)
     else:
         ax8.axvline(-0.05, c='r', ls='--')
     # cbar = plt.colorbar(sc)
@@ -434,6 +440,8 @@ if __name__ == "__main__":
     ax11.scatter(1 / 7, -1 / 56, c='g', label="octic point")
     if stats == "fermions":
         ax11.axvline(0.25, c='r', ls='--')
+        ax11.plot(-0.25, -0.25, 'x', c='b', zorder=5)
+        ax11.plot(0.25, 0.25, 'x', c='b', zorder=5)
     else:
         ax11.axvline(-0.05, c='r', ls='--')
     # cbar = plt.colorbar(sc)

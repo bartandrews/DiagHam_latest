@@ -353,50 +353,50 @@ if __name__ == "__main__":
 
     ax2_2.plot([1, 2, 3], [1, 2, 3])
 
-    #########################
-    # entanglement spectrum #
-    #########################
-
-    ax3 = plt.subplot(gs[3])
-    ax3.set_title(f"$\\nu=1/3$, $n_\phi = 1/24$")
-    ax3.plot(lin_K_ent, ent, '+', c='k', markersize=2)
-    ax3.set_ylabel('$\\xi$')
-    ax3.set_xlabel('$k_x L_y + k_y$')
-    ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax3.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax3.annotate(s='', xy=(2, 16.5), xytext=(2, 9.5), arrowprops=dict(arrowstyle='<->'))
-    ax3.text(2.5, 12.4, "$\\Delta_\\xi$")
-    ax3.text(8, 11, "$(1,3)$ counting")
-
     #################
     # spectral flow #
     #################
 
     offset = np.min(np.array([gamma_E_0, gamma_E_2, gamma_E_4]))
 
-    ax4 = plt.subplot(gs[4])
-    ax4.set_title(f"$\\nu=1/3$, $n_\phi = 1/24$")
-    ax4.plot(gammas, np.subtract(gamma_E_0, offset)*1e10, 's', c='b', markersize=3, label="$0$")
-    ax4.plot(gammas, np.subtract(gamma_E_2, offset)*1e10, 'o', c='g', markersize=3, label="$2$")
-    ax4.plot(gammas, np.subtract(gamma_E_4, offset)*1e10, '+', c='r', markersize=3, label="$4$")
-    ax4.set_ylabel('$(E_\\mathrm{m.b.}-\\min_{\Phi}(E_{\\mathrm{m.b.},0}))/10^{-10}$')
-    ax4.set_xlabel('$\\Phi/2\pi$')
-    ax4.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax4.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    ax3 = plt.subplot(gs[3])
+    ax3.set_title(f"$\\nu=1/3$, $n_\phi = 1/24$")
+    ax3.plot(gammas, np.subtract(gamma_E_0, offset)*1e10, 's', c='b', markersize=3, label="$0$")
+    ax3.plot(gammas, np.subtract(gamma_E_2, offset)*1e10, 'o', c='g', markersize=3, label="$2$")
+    ax3.plot(gammas, np.subtract(gamma_E_4, offset)*1e10, '+', c='r', markersize=3, label="$4$")
+    ax3.set_ylabel('$(E_\\mathrm{m.b.}-\\min_{\Phi}(E_{\\mathrm{m.b.},0}))/10^{-10}$')
+    ax3.set_xlabel('$\\Phi/2\pi$')
+    ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    ax3.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
-    ax4.legend(loc='best', handletextpad=0.3, handlelength=0.5, labelspacing=0.1, borderpad=0.3,
+    ax3.legend(loc='best', handletextpad=0.3, handlelength=0.5, labelspacing=0.1, borderpad=0.3,
                framealpha=1, edgecolor='k', markerscale=0.8, fontsize=10, ncol=6, columnspacing=0.5, title='$k_y$')
 
-    im = plt.imread("/home/bart/Documents/papers/SFCI/torus.png")
-    left, bottom, width, height = [0.135, 0.11, 0.08, 0.05]
-    ax4_2 = fig.add_axes([left, bottom, width, height])
-    ax4_2.imshow(im)
-    ax4_2.set_ylim([341, -10])
-    ax4_2.axis('off')
-    ax4.annotate(s='', xy=(0.13, 3.5), xytext=(0.13, 0.8), arrowprops=dict(arrowstyle='->'))
-    ax4.text(0.1, 3.5, "$\\Phi$")
+    im = plt.imread("/home/bart/DiagHam_latest/run/SFCI_data_2/plots/spmb/torus.png")
+    left, bottom, width, height = [0.6, 0.4, 0.08, 0.05]  # [0.135, 0.11, 0.08, 0.05]
+    ax3_2 = fig.add_axes([left, bottom, width, height])
+    ax3_2.imshow(im)
+    ax3_2.set_ylim([341, -10])
+    ax3_2.axis('off')
+    ax3.annotate(s='', xy=(0.13, 3.5), xytext=(0.13, 0.8), arrowprops=dict(arrowstyle='->'))
+    ax3.text(0.1, 3.5, "$\\Phi$")
 
-    ax4.text(0.75, 0.8, "$k_x=0$")
+    ax3.text(0.75, 0.8, "$k_x=0$")
+
+    #########################
+    # entanglement spectrum #
+    #########################
+
+    ax4 = plt.subplot(gs[4])
+    ax4.set_title(f"$\\nu=1/3$, $n_\phi = 1/24$")
+    ax4.plot(lin_K_ent, ent, '+', c='k', markersize=2)
+    ax4.set_ylabel('$\\xi$')
+    ax4.set_xlabel('$k_x L_y + k_y$')
+    ax4.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    ax4.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    ax4.annotate(s='', xy=(2, 16.5), xytext=(2, 9.5), arrowprops=dict(arrowstyle='<->'))
+    ax4.text(2.5, 12.4, "$\\Delta_\\xi$")
+    ax4.text(8, 11, "$(1,3)$ counting")
 
     #####################
     # entanglement flow #
