@@ -22,7 +22,7 @@ def can_convert_to_float(string):
 if __name__ == "__main__":
 
     # construct many-body spectrum 1
-    mb_file = "fermions_hofstadter_X_6_Y_5_q_1_n_10_x_5_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0_ext.dat"
+    mb_file = "fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0_ext.dat"
     lin_K = []
     mb_E = []
     with open(mb_file, 'r') as csvfile:
@@ -33,7 +33,7 @@ if __name__ == "__main__":
                 mb_E.append(float(row[2])/2)
 
     # construct many-body spectrum 2
-    mb_file2 = "fermions_hofstadter_X_6_Y_5_q_1_n_10_x_5_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0_ext.dat"
+    mb_file2 = "fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0_ext.dat"
     lin_K2 = []
     mb_E2 = []
     with open(mb_file2, 'r') as csvfile:
@@ -44,7 +44,7 @@ if __name__ == "__main__":
                 mb_E2.append(float(row[2]) / 2)
 
     # construct entanglement spectrum 1
-    ent_file = "ent/fermions_hofstadter_X_12_Y_8_q_1_n_8_x_4_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0.na_4.parentspec"
+    ent_file = "ent/fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0.na_5.parentspec"
     lin_K_ent = []
     ent = []
     with open(ent_file, 'r') as csvfile:
@@ -55,7 +55,7 @@ if __name__ == "__main__":
                 ent.append(float(row[5]))
 
     # construct entanglement spectrum 2
-    ent_file2 = "fermions_hofstadter_X_12_Y_8_q_1_n_8_x_4_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0.na_4.parentspec"
+    ent_file2 = "ent/fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0.na_5.parentspec"
     lin_K_ent2 = []
     ent2 = []
     with open(ent_file2, 'r') as csvfile:
@@ -83,8 +83,8 @@ if __name__ == "__main__":
     ax0.set_xlabel('$k_x L_y + k_y$')
     ax0.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax0.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax0.annotate(s='', xy=(2, 1.32), xytext=(2, 0), arrowprops=dict(arrowstyle='<->'))
-    ax0.text(4, 0.6, "$q^2\\Delta_\\mathrm{m.b.}=1.22$")
+    ax0.annotate(s='', xy=(2, 0.085), xytext=(2, 0), arrowprops=dict(arrowstyle='<->'))
+    ax0.text(4, 0.035, "$q^2\\Delta_\\mathrm{m.b.}=1.26$")
     ax0.xaxis.set_visible(False)
 
     ax1 = plt.subplot(gs[1])
@@ -94,8 +94,8 @@ if __name__ == "__main__":
     ax1.set_xlabel('$k_x L_y + k_y$')
     ax1.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax1.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax1.annotate(s='', xy=(2, 0.06), xytext=(2, 0), arrowprops=dict(arrowstyle='<->'))
-    ax1.text(2.5, 0.05, "$\\Delta_\\mathrm{m.b.}$")
+    ax1.annotate(s='', xy=(2, 0.25), xytext=(2, 0), arrowprops=dict(arrowstyle='<->'))
+    ax1.text(4, 0.12, "$q^2 \\Delta_\\mathrm{m.b.} = 3.62$")
     ax1.xaxis.set_visible(False)
 
     ########################
@@ -108,8 +108,8 @@ if __name__ == "__main__":
     ax2.set_xlabel('$k_x L_y + k_y$')
     ax2.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax2.annotate(s='', xy=(2, 16.5), xytext=(2, 9.5), arrowprops=dict(arrowstyle='<->'))
-    ax2.text(2.5, 12.4, "$\\Delta_\\xi$")
+    ax2.annotate(s='', xy=(2, 19.5), xytext=(2, 12.5), arrowprops=dict(arrowstyle='<->'))
+    ax2.text(4, 15, "$\\Delta_\\xi=7.32$")
 
     ax3 = plt.subplot(gs[3])
     ax3.plot(lin_K_ent2, ent2, '+', c='k', markersize=2)
@@ -117,8 +117,8 @@ if __name__ == "__main__":
     ax3.set_xlabel('$k_x L_y + k_y$')
     ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax3.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax3.annotate(s='', xy=(2, 16.5), xytext=(2, 9.5), arrowprops=dict(arrowstyle='<->'))
-    ax3.text(2.5, 12.4, "$\\Delta_\\xi$")
+    ax3.annotate(s='', xy=(2, 23.05), xytext=(2, 12.5), arrowprops=dict(arrowstyle='<->'))
+    ax3.text(4, 17, "$\\Delta_\\xi=11.0$")
 
     plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/case_study/case_study.png",
                 bbox_inches='tight', dpi=600)

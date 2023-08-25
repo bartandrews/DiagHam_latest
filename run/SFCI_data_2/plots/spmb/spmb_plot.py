@@ -234,13 +234,13 @@ if __name__ == "__main__":
     for gamma in np.linspace(0, 1, 21):
         gammas_E_0, gammas_E_2, gammas_E_4 = [], [], []
         gammas.append(gamma)
-        flow_file = f"fermions_hofstadter_X_6_Y_4_q_1_n_8_x_4_y_6_t3_-0.11_t6_-0.15_t9_0.05_u_1_gx_{gamma:g}_gy_0.dat"
+        flow_file = f"fermions_hofstadter_X_6_Y_4_q_1_n_8_x_4_y_6_t3_-0.11_t6_-0.15_t9_0.05_u_1_gx_{gamma:g}_gy_0_ext.dat"
         with open(flow_file, 'r') as csvfile:
             plots = csv.reader(csvfile, delimiter=' ')
             for i, row in enumerate(plots):
                 if can_convert_to_float(row[0]):
                     if float(row[0]) == 0 and float(row[1]) == 0:
-                        gammas_E_0.append(float(row[2])/2)
+                        gammas_E_0.append(float(row[2]) / 2)
                     elif float(row[0]) == 0 and float(row[1]) == 2:
                         gammas_E_2.append(float(row[2]) / 2)
                     elif float(row[0]) == 0 and float(row[1]) == 4:
@@ -365,7 +365,7 @@ if __name__ == "__main__":
     ax3.plot(gammas, np.subtract(gamma_E_2, offset)*1e10, 'o', c='g', markersize=3, label="$2$")
     ax3.plot(gammas, np.subtract(gamma_E_4, offset)*1e10, '+', c='r', markersize=3, label="$4$")
     ax3.set_ylabel('$(E_\\mathrm{m.b.}-\\min_{\Phi}(E_{\\mathrm{m.b.},0}))/10^{-10}$')
-    ax3.set_xlabel('$\\Phi/2\pi$')
+    ax3.set_xlabel('$\\Phi/6\pi$')
     ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax3.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
