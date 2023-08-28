@@ -14,11 +14,11 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    q = 96
+    q = 16
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"q_{q}"
 
-    sp_data = f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_{q:g}.txt"
+    sp_data = f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_{q:g}_alt5.txt"
 
     ts_min = np.min(ts)
     ts_max = np.max(ts)
@@ -59,8 +59,8 @@ if __name__ == "__main__":
 
     plt.grid()
 
-    leg = ax1.legend(loc='best', ncol=3, handletextpad=0.5, handlelength=1, labelspacing=0,
-                     borderpad=0.35, framealpha=1, markerscale=0.8, fontsize=10, columnspacing=0.5)
+    # leg = ax1.legend(loc='best', ncol=3, handletextpad=0.5, handlelength=1, labelspacing=0,
+    #                  borderpad=0.35, framealpha=1, markerscale=0.8, fontsize=10, columnspacing=0.5)
 
     ax1.set_xlabel('$t_6$')
     ax1.set_ylabel('$t_9$')

@@ -137,41 +137,13 @@ def berry_curv(evecs_comb, band, ikx, iky, dkx_r, dky_r):
     return -2*np.imag(qgt(evecs_comb, band, ikx, iky, dkx_r, dky_r))
 
 
-# compute Berry curvature using link variables (faster)
-def berry_curv_link(evecs, band, ikx, iky):
-
-    # link variable
-    def U(var_num, _evecs, _band, _ikx, _iky):
-        vec1 = _evecs[_band, _ikx, _iky, :]
-        if var_num == 1:
-            vec2 = _evecs[_band, _ikx + 1, _iky, :]
-        elif var_num == 2:
-            vec2 = _evecs[_band, _ikx, _iky + 1, :]
-        else:
-            raise ValueError("link variable number must be in [1, 2].")
-        return np.conj(vec1).dot(vec2)
-
-    Berry_curv = - np.imag(np.log(U(1, evecs, band, ikx, iky)
-                                  * U(2, evecs, band, ikx+1, iky)
-                                  * U(1, evecs, band, ikx, iky+1)**-1
-                                  * U(2, evecs, band, ikx, iky)**-1))
-
-    return Berry_curv
-
-
 def TISM(evecs_comb, band, ikx, iky, dkx_r, dky_r):
     return (np.trace(fs_metric(evecs_comb, band, ikx, iky, dkx_r, dky_r))
             - np.abs(berry_curv(evecs_comb, band, ikx, iky, dkx_r, dky_r)[0, 1]))
 
 
-def DISM(evecs_comb, band, ikx, iky, dkx_r, dky_r):
-    return (np.linalg.det(fs_metric(evecs_comb, band, ikx, iky, dkx_r, dky_r))
-            - (berry_curv(evecs_comb, band, ikx, iky, dkx_r, dky_r)[0, 1])**2/4)
-
-
-def band_geom(t6, t9, q, grain, grain_r):
-    print(f"(t6, t9) = ({t6:g}, {t9:g})")
-    t3 = (-9*t6 - 16*t9 - 1)/4  # quartic plane
+def band_geom(t3, q, grain, grain_r):
+    print(f"t3 = {t3}")
 
     # define the mesh
     kx_list, ky_list = np.linspace(0, 2*np.pi/q, grain), np.linspace(0, 2*np.pi, grain)
@@ -179,63 +151,36 @@ def band_geom(t6, t9, q, grain, grain_r):
     dkx_r, dky_r = (kx_list[1] - kx_list[0])/grain_r, (ky_list[1] - ky_list[0])/grain_r  # reduced mesh (for qgt)
 
     # compute the eigenbasis
-    evals, evecs = H_eigbasis(t3, q, kx_list, ky_list, t6, t9)
-    _, evecs_x = H_eigbasis(t3, q, kx_list+dkx_r, ky_list, t6, t9)
-    _, evecs_y = H_eigbasis(t3, q, kx_list, ky_list+dky_r, t6, t9)
+    evals, evecs = H_eigbasis(t3, q, kx_list, ky_list)
+    _, evecs_x = H_eigbasis(t3, q, kx_list+dkx_r, ky_list)
+    _, evecs_y = H_eigbasis(t3, q, kx_list, ky_list+dky_r)
     evecs_comb = np.array([evecs, evecs_x, evecs_y])
 
     # initialize the arrays
     tisms = np.empty((len(kx_list)-1, len(ky_list)-1))
-    disms = np.empty((len(kx_list)-1, len(ky_list)-1))
-    berry_fluxes = np.zeros((len(kx_list)-1, len(ky_list)-1))
-    g_array = np.zeros((2, 2, len(kx_list)-1, len(ky_list)-1))
 
     # populate the arrays
     for ikx in range(len(kx_list)-1):
         for iky in range(len(ky_list)-1):
             tisms[ikx][iky] = TISM(evecs_comb, 0, ikx, iky, dkx_r, dky_r)
-            disms[ikx][iky] = DISM(evecs_comb, 0, ikx, iky, dkx_r, dky_r)
-            berry_fluxes[ikx, iky] = berry_curv_link(evecs, 0, ikx, iky)
-            # fs metric (real and symmetric)
-            g_array[0][0][ikx][iky] = fs_metric(evecs_comb, 0, ikx, iky, dkx_r, dky_r)[0, 0]
-            g_array[0][1][ikx][iky] = fs_metric(evecs_comb, 0, ikx, iky, dkx_r, dky_r)[0, 1]
-            g_array[1][0][ikx][iky] = g_array[0][1][ikx][iky]
-            g_array[1][1][ikx][iky] = g_array[0][0][ikx][iky]
 
     # quantum geometry
     tism_int = np.sum(tisms) * dkx * dky / (2 * np.pi)
-    dism_int = np.sum(disms) * dkx * dky / (2 * np.pi)
-    g_var_sum = np.var(g_array[0, 0]) + np.var(g_array[0, 1])
-    fs_fluc = np.log10(np.sqrt(g_var_sum))
 
-    # berry fluctuations
-    A_BZ = np.sum(berry_fluxes) / np.average(berry_fluxes)
-    berry_fluc = np.log10((A_BZ / (2 * np.pi)) * np.std(berry_fluxes))
-
-    # gap-to-width ratio
-    gap = np.min(evals[1]) - np.max(evals[0])
-    width = np.max(evals[0]) - np.min(evals[0])
-    gap_width = np.log10(gap) - np.log10(width)
-
-    return [t6, t9, tism_int, dism_int, berry_fluc, fs_fluc, gap_width]
+    return [t3, tism_int]
 
 
 if __name__ == "__main__":
 
     t0 = perf_counter()
 
-    q_val = 16
-    grain_val = 100  # 100
-    grain_r_val = 1000  # 1000
-    ts = np.linspace(-0.25, 0.25, 11)
+    q_val = 24
+    grain_val = 100
+    grain_r_val = 1000
+    ts = np.linspace(-0.15, -0.15, 1)
 
-    results = np.array(Parallel(n_jobs=6)(delayed(band_geom)(t6, t9, q_val, grain_val, grain_r_val) for t6 in ts for t9 in ts))
+    results = np.array(Parallel(n_jobs=1)(delayed(band_geom)(t3, q_val, grain_val, grain_r_val) for t3 in ts))
 
-    file = open(f"sp_data/q_{q_val}.txt", "w")
-    for i in range(np.shape(results)[0]):
-        file.write(f"{results[:, 0][i]:.2f}\t{results[:, 1][i]:.2f}\t"
-                   f"{results[:, 2][i]}\t{results[:, 3][i]}\t{results[:, 4][i]}\t"
-                   f"{results[:, 5][i]}\t{results[:, 6][i]}\n")
-    file.close()
+    print(results)
 
     print(f"Total time taken (seconds) = {perf_counter() - t0:.1f}")

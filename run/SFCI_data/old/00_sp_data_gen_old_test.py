@@ -68,9 +68,13 @@ def TISM(H_eigenvectors_arr, i, xi, yi):
 
 
 def TISM_int(t_3, q, i):
+
     k_x, k_y = np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi, grain)
+
     dx, dy = (k_x[1] - k_x[0]), (k_y[1] - k_y[0])
+
     tdx, tdy = (k_x[1] - k_x[0])/1000, (k_y[1] - k_y[0])/1000
+
     H_eigenvectors_arr_0 = H_eigenvectors2(t_3, q, np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi/q, grain))
     H_eigenvectors_arr_1 = H_eigenvectors2(t_3, q, np.linspace(0, 2 * np.pi/q, grain)+tdx, np.linspace(0, 2 * np.pi/q, grain))
     H_eigenvectors_arr_2 = H_eigenvectors2(t_3, q, np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi/q, grain)+tdy)
@@ -102,9 +106,6 @@ if __name__ == "__main__":
 
     for q in qs:
         k_x, k_y = np.linspace(0, 2 * np.pi/q, grain), np.linspace(0, 2 * np.pi, grain)
-        results = np.array(Parallel(n_jobs=6)(delayed(my_task)(q, t_temp) for t_temp in np.linspace(-0.25, 0, 26)))
+        results = np.array(Parallel(n_jobs=1)(delayed(my_task)(q, t_temp) for t_temp in np.linspace(-0.15, -0.15, 1)))
 
-    file = open(f"q_24.txt", "w")
-    for i, t3hop in enumerate(np.linspace(-0.25, 0, 26)):
-        file.write(f"{results[:, 0][i]:.2f}\t{results[:, 1][i]}\n")
-    file.close()
+    print(results)

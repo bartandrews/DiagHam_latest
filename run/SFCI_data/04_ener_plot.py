@@ -7,13 +7,13 @@ plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
 
 if __name__ == "__main__":
 
-    alpha = 0
+    alpha = 1
     stats = "fermions"
-    q = 24
-    scale_factor = q**2 if stats == "fermions" else q
-    file_name = "Fig10a"
+    q = 96
+    scale_factor = q**2 / 2 if stats == "fermions" else q
+    file_name = "Fig11c"
 
-    sp_data = f"/home/bart/DiagHam_latest/run/SFCI_data/sp_data/q_{q:g}.txt"
+    sp_data = f"/home/bart/DiagHam_latest/run/SFCI_data/old/sp_data/q_{q:g}.txt"
     mb_data = f"/home/bart/DiagHam_latest/run/SFCI_data/{stats}_alpha_{alpha:g}/q_{q:g}/mb_ener_q_{q:g}.txt"
 
     t3hop, tism = [], []
@@ -36,6 +36,7 @@ if __name__ == "__main__":
     ax1.set_xlim([-0.002, 0.016])
     # ax1.set_ylim([0.605, 0.618])  # bosons_alpha_0
     # ax1.set_ylim([1.520, 1.555])  # bosons_alpha_1
+    ax1.set_ylim([0.482, 0.522])
 
     cbar = plt.colorbar(sc)
     cbar.set_label('$t_3$')
