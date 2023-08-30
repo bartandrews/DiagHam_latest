@@ -15,7 +15,7 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    stats = "fermions"
+    stats = "bosons"
     alpha = 0
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"{stats}_alpha_{alpha}"
@@ -36,8 +36,9 @@ if __name__ == "__main__":
         title_str = f"Fermions, $\\nu=1/3$, $V_{{ij}} = (1-\\alpha)\\delta_{{\\langle ij \\rangle}} + \\alpha e^{{-|r_{{ij}}|^4}}$, $\\alpha={alpha}$"
 
     sp_data, mb_data, mb_ent_data = [], [], []
+    sp_data.append(f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_96.txt")
     for i, _ in enumerate(qs):
-        sp_data.append(f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_{qs[i]:g}.txt")
+        # sp_data.append(f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_{qs[i]:g}.txt")
         mb_data.append(f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha:g}/q_{qs[i]:g}/mb_ener_q_{qs[i]:g}.txt")
         mb_ent_data.append(f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha:g}/q_{qs[i]:g}/ent/mb_ent_q_{qs[i]:g}.txt")
 
@@ -57,12 +58,12 @@ if __name__ == "__main__":
 
     # single-particle quantities
     for iq, q in enumerate(qs):
-        with open(sp_data[iq], 'r') as csvfile:
+        with open(sp_data[0], 'r') as csvfile:
             plots = csv.reader(csvfile, delimiter='\t')
             for i, row in enumerate(plots):
                 it6 = int(i / len(ts))
                 it9 = i % len(ts)
-                tisms[iq, it6, it9] = float(row[2])/q
+                tisms[iq, it6, it9] = float(row[2])/96
     min_tism, max_tism = np.nanmin(tisms), np.nanmax(tisms)
     # many-body quantities
     for iq, q in enumerate(qs):

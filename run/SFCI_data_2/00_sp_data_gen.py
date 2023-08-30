@@ -224,12 +224,12 @@ if __name__ == "__main__":
 
     t0 = perf_counter()
 
-    q_val = 16
+    q_val = 111
     grain_val = 100  # 100
     grain_r_val = 1000  # 1000
     ts = np.linspace(-0.25, 0.25, 11)
 
-    results = np.array(Parallel(n_jobs=6)(delayed(band_geom)(t6, t9, q_val, grain_val, grain_r_val) for t6 in ts for t9 in ts))
+    results = np.array(Parallel(n_jobs=3)(delayed(band_geom)(t6, t9, q_val, grain_val, grain_r_val) for t6 in ts for t9 in ts))
 
     file = open(f"sp_data/q_{q_val}.txt", "w")
     for i in range(np.shape(results)[0]):

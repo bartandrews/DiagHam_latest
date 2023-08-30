@@ -14,11 +14,11 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    q = 16
+    q = 111
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"q_{q}"
 
-    sp_data = f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_{q:g}_alt5.txt"
+    sp_data = f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_{q:g}.txt"
 
     ts_min = np.min(ts)
     ts_max = np.max(ts)
@@ -36,7 +36,7 @@ if __name__ == "__main__":
         for i, row in enumerate(plots):
             it6 = int(i / len(ts))
             it9 = i % len(ts)
-            tisms[it6, it9] = float(row[2])
+            tisms[it6, it9] = float(row[2]) / q
 
     # remove outliers
     for i in range(ts_len):
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     ax1.scatter(1/7, -1/56, c='g', label="octic point")
 
     cbar = plt.colorbar(sc)
-    cbar.set_label('$\\langle \\mathcal{T} \\rangle$')
+    cbar.set_label('$\\langle \\mathcal{T} \\rangle / q$')
 
     plt.grid()
 
