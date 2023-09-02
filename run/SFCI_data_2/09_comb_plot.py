@@ -15,7 +15,7 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    stats = "bosons"
+    stats = "fermions"
     alpha = 0
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"{stats}_alpha_{alpha}"
@@ -27,6 +27,7 @@ if __name__ == "__main__":
         cbtitle = "$q \\Delta_\\mathrm{m.b.}$"
         cbtitle2 = "$q \\delta / 10^{-1}$"
         title_str = f"Bosons, $\\nu=1/2$, $V_{{ij}} = (1-\\alpha)\\delta_{{ij}} + \\alpha e^{{-|r_{{ij}}|^4}}$, $\\alpha={alpha}$"
+        ent_factor = 2
     else:  # fermions
         qs = [24, 54, 96]
         scale_power = 2  # power of q for many-body gap scaling
@@ -34,6 +35,7 @@ if __name__ == "__main__":
         cbtitle = "$q^2 \\Delta_\\mathrm{m.b.}$"
         cbtitle2 = "$q^2 \\delta / 10^{-5}$"
         title_str = f"Fermions, $\\nu=1/3$, $V_{{ij}} = (1-\\alpha)\\delta_{{\\langle ij \\rangle}} + \\alpha e^{{-|r_{{ij}}|^4}}$, $\\alpha={alpha}$"
+        ent_factor = 2
 
     sp_data, mb_data, mb_ent_data = [], [], []
     sp_data.append(f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_96.txt")
@@ -88,7 +90,7 @@ if __name__ == "__main__":
             for i, row in enumerate(plots):
                 it6 = int(i / len(ts))
                 it9 = i % len(ts)
-                ent_gaps[iq, it6, it9] = float(row[2])
+                ent_gaps[iq, it6, it9] = ent_factor*float(row[2])
     min_ent_gap, max_ent_gap = np.nanmin(ent_gaps), np.nanmax(ent_gaps)
 
     fig = plt.figure(figsize=(6, 8))

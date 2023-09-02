@@ -9,10 +9,10 @@ import numpy as np
 
 if __name__ == "__main__":
 
-    q_target = 120
+    q_target = 96
     q_err = 0
-    square_err = 0.2
-    N = 6
+    square_err = 0.4  # within 20%
+    N = 11
 
     for Lx in range(1, 100):
         for Ly in range(1, 100):
@@ -23,3 +23,7 @@ if __name__ == "__main__":
                             squareness = np.abs(1 - (Lx*lx)/(Ly*ly))
                             if squareness <= square_err:  # check square total system
                                 print(f"{lx}\t{ly}\t{Lx}\t{Ly}\t{Lx*lx}\t{Ly*ly}\t{lx*ly}\t{squareness}")
+
+# 1) continuum limit for each N = 6, 7, 8, 9, 10
+# 2) then 1/N scaling for each cont(q^2 * Delta)
+# 3) potentially repeat for ent gap

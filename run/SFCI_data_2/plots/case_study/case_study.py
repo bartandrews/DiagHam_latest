@@ -21,6 +21,8 @@ def can_convert_to_float(string):
 
 if __name__ == "__main__":
 
+    ent_factor = 2
+
     # construct many-body spectrum 1
     mb_file = "fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0_ext.dat"
     lin_K = []
@@ -52,7 +54,7 @@ if __name__ == "__main__":
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
                 lin_K_ent.append(float(row[3]))
-                ent.append(float(row[5]))
+                ent.append(ent_factor*float(row[5]))
 
     # construct entanglement spectrum 2
     ent_file2 = "ent/fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0.na_5.parentspec"
@@ -63,7 +65,7 @@ if __name__ == "__main__":
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
                 lin_K_ent2.append(float(row[3]))
-                ent2.append(float(row[5]))
+                ent2.append(ent_factor*float(row[5]))
 
     ##########
     # figure #
@@ -108,8 +110,8 @@ if __name__ == "__main__":
     ax2.set_xlabel('$k_x L_y + k_y$')
     ax2.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax2.annotate(s='', xy=(2, 19.5), xytext=(2, 12.5), arrowprops=dict(arrowstyle='<->'))
-    ax2.text(4, 15, "$\\Delta_\\xi=7.32$")
+    ax2.annotate(s='', xy=(2, ent_factor*19.5), xytext=(2, ent_factor*12.5), arrowprops=dict(arrowstyle='<->'))
+    ax2.text(4, ent_factor*15, "$\\Delta_\\xi=14.6$")
 
     ax3 = plt.subplot(gs[3])
     ax3.plot(lin_K_ent2, ent2, '+', c='k', markersize=2)
@@ -117,8 +119,8 @@ if __name__ == "__main__":
     ax3.set_xlabel('$k_x L_y + k_y$')
     ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax3.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax3.annotate(s='', xy=(2, 23.05), xytext=(2, 12.5), arrowprops=dict(arrowstyle='<->'))
-    ax3.text(4, 17, "$\\Delta_\\xi=11.0$")
+    ax3.annotate(s='', xy=(2, ent_factor*23.05), xytext=(2, ent_factor*12.5), arrowprops=dict(arrowstyle='<->'))
+    ax3.text(4, ent_factor*17, "$\\Delta_\\xi=22.0$")
 
     plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/case_study/case_study.png",
                 bbox_inches='tight', dpi=600)

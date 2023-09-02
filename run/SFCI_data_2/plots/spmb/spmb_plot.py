@@ -6,6 +6,8 @@ import csv
 from matplotlib.patches import Polygon
 from math import gcd
 from fractions import Fraction
+from pylab import *
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 plt.rc('text', usetex=True)
 plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
@@ -318,8 +320,16 @@ if __name__ == "__main__":
 
     ax1 = plt.subplot(gs[1])
     ax1.set_title(f"$n_\phi = p/{q_val}$")
-    sc = ax1.scatter(nphi_list, E_list, c=chern_list, cmap='jet', s=0.1, marker=',', vmin=-10, vmax=10)
-    # cbar = plt.colorbar(sc)
+
+    cmap = cm.get_cmap('jet', 21)
+    sc = ax1.scatter(nphi_list, E_list, c=chern_list, cmap=cmap, s=0.1, marker=',', vmin=-10, vmax=10)
+
+    # cb_ax = fig.add_axes([.91, .688, .01, .19])
+    divider = make_axes_locatable(ax1)
+    cax = divider.append_axes('right', size='3%', pad=0.05)
+    cbar = plt.colorbar(sc, cax=cax, extend='both')
+    cbar.set_label("$C$", labelpad=-3)
+
     ax1.set_ylabel('$E$')
     ax1.set_xlabel('$n_\phi$')
     # ax1.set_xlim([0, 1])
@@ -389,14 +399,15 @@ if __name__ == "__main__":
 
     ax4 = plt.subplot(gs[4])
     ax4.set_title(f"$\\nu=1/3$, $n_\phi = 1/24$")
-    ax4.plot(lin_K_ent, ent, '+', c='k', markersize=2)
-    ax4.set_ylabel('$\\xi$')
+    ent_factor = 2/10
+    ax4.plot(lin_K_ent, np.multiply(ent_factor, ent), '+', c='k', markersize=2)
+    ax4.set_ylabel('$\\xi/10$')
     ax4.set_xlabel('$k_x L_y + k_y$')
     ax4.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax4.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax4.annotate(s='', xy=(2, 16.5), xytext=(2, 9.5), arrowprops=dict(arrowstyle='<->'))
-    ax4.text(2.5, 12.4, "$\\Delta_\\xi$")
-    ax4.text(8, 11, "$(1,3)$ counting")
+    ax4.annotate(s='', xy=(2, ent_factor*16.5), xytext=(2, ent_factor*9.5), arrowprops=dict(arrowstyle='<->'))
+    ax4.text(2.5, ent_factor*12.4, "$\\Delta_\\xi$")
+    ax4.text(8, ent_factor*11, "$(1,3)$ counting")
 
     #####################
     # entanglement flow #
@@ -404,22 +415,22 @@ if __name__ == "__main__":
 
     ax5 = plt.subplot(gs[5])
     ax5.set_title(f"$\\nu=1/3$, $n_\phi = 1/24$")
-    ax5.plot(Nas, ents, '+', c='k', markersize=5)
-    ax5.set_ylabel('$\\xi$')
+    ax5.plot(Nas, np.multiply(ent_factor, ents), '+', c='k', markersize=5)
+    ax5.set_ylabel('$\\xi/10$')
     ax5.set_xlabel('$N_A$')
     ax5.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax5.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
-    metal0 = Polygon(((2, 5.5638343725871), (4, 9.4870246401184), (4,16.619647989528), (2, 15.003435206111)), fc=(0, 0, 0, 0.1))
-    metal1 = Polygon(((4, 9.4870246401184), (6, 5.5638343725871), (6, 15.003435206111), (4, 16.619647989528)), fc=(0, 0, 0, 0.1))
-    metal2 = Polygon(((1, 3.1780538302693), (2, 5.5638343725871), (2, 15.003435206111)), fc=(0, 0, 0, 0.1))
-    metal3 = Polygon(((6, 5.5638343725871), (7, 3.1780538302693), (6, 15.003435206111)), fc=(0, 0, 0, 0.1))
+    metal0 = Polygon(((2, ent_factor*5.5638343725871), (4, ent_factor*9.4870246401184), (4, ent_factor*16.619647989528), (2, ent_factor*15.003435206111)), fc=(0, 0, 0, 0.1))
+    metal1 = Polygon(((4, ent_factor*9.4870246401184), (6, ent_factor*5.5638343725871), (6, ent_factor*15.003435206111), (4, ent_factor*16.619647989528)), fc=(0, 0, 0, 0.1))
+    metal2 = Polygon(((1, ent_factor*3.1780538302693), (2, ent_factor*5.5638343725871), (2, ent_factor*15.003435206111)), fc=(0, 0, 0, 0.1))
+    metal3 = Polygon(((6, ent_factor*5.5638343725871), (7, ent_factor*3.1780538302693), (6, ent_factor*15.003435206111)), fc=(0, 0, 0, 0.1))
     ax5.add_artist(metal0)
     ax5.add_artist(metal1)
     ax5.add_artist(metal2)
     ax5.add_artist(metal3)
 
-    ax5.text(2.3, 11, "$(k_x, k_y) = (0, 0)$")
+    ax5.text(2.3, ent_factor*11, "$(k_x, k_y) = (0, 0)$")
 
     fig.text(0.05, 0.9, "(a)", fontsize=12)
     fig.text(0.5, 0.9, "(b)", fontsize=12)
@@ -428,5 +439,5 @@ if __name__ == "__main__":
     fig.text(0.05, 0.32, "(e)", fontsize=12)
     fig.text(0.5, 0.32, "(f)", fontsize=12)
 
-    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/spmb/spmb.png", bbox_inches='tight', dpi=600)
+    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/spmb/spmb_2.png", bbox_inches='tight', dpi=600)
     plt.show()

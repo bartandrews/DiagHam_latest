@@ -9,7 +9,8 @@ plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
 
 if __name__ == "__main__":
 
-    file_name = f"laughlin_2d"
+    file_name = f"laughlin_2d_2"
+    ent_factor = 2
 
     stats1 = "bosons"
     alpha1 = 0
@@ -77,7 +78,7 @@ if __name__ == "__main__":
         plots = csv.reader(csvfile, delimiter='\t')
         for row in plots:
             if float(row[0]) == t6_1:
-                ent1.append(float(row[2]))
+                ent1.append(ent_factor*float(row[2]))
     gap2, ent2 = [], []
     with open(mb_data2, 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter='\t')
@@ -88,13 +89,13 @@ if __name__ == "__main__":
         plots = csv.reader(csvfile, delimiter='\t')
         for row in plots:
             if float(row[0]) == t6_2:
-                ent2.append(float(row[2]))
+                ent2.append(ent_factor*float(row[2]))
 
     min_ent = np.min([ent1, ent2])
     max_ent = np.max([ent1, ent2])
     max_gap2 = np.max(gap2)
 
-    fig = plt.figure(figsize=(5, 5))
+    fig = plt.figure(figsize=(5, 7))
     gs = gridspec.GridSpec(6, 2, hspace=0, wspace=0, height_ratios=[3, 1, 1, 1, 1, 1])
 
     ##########
@@ -149,7 +150,7 @@ if __name__ == "__main__":
     ax8 = plt.subplot(gs[8], sharex=ax0)
     ax8.tick_params('x', direction='in', bottom=True)
     ax8.plot(t9hop1, berry_fluc1, '.-', zorder=5, c='k')
-    ax8.set_ylabel('$\\log(\\sigma_\\mathcal{B})$')
+    ax8.set_ylabel('$\\log(\\hat{\\sigma}_\\mathcal{B})$')
     # ax8.axvline(t9hop1[np.argmin(berry_fluc)], c='k', ls='--')
     ax8.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
 
@@ -197,36 +198,42 @@ if __name__ == "__main__":
     ax3.tick_params('x', direction='in', bottom=True)
     ax3.plot(t9hop2, tism2, '.-', zorder=5, c='k')
     # ax3.set_ylabel('$\\langle \\mathcal{T} \\rangle /q$')
-    ax3.axes.get_yaxis().set_visible(False)
+    # ax3.axes.get_yaxis().set_visible(False)
     ax3.axvline(t9hop2[np.argmin(tism2)], c='k', ls='--')
+    ax3.yaxis.tick_right()
 
     ax5 = plt.subplot(gs[5], sharex=ax1, sharey=ax4)
     ax5.tick_params('x', direction='in', bottom=True)
     ax5.plot(t9hop2, dism2, '.-', zorder=5, c='k')
     # ax5.set_ylabel('$\\langle \\mathcal{D} \\rangle /q$')
-    ax5.axes.get_yaxis().set_visible(False)
+    # ax5.axes.get_yaxis().set_visible(False)
     ax5.axvline(t9hop2[np.argmin(dism2)], c='k', ls='--')
+    ax5.yaxis.tick_right()
 
     ax7 = plt.subplot(gs[7], sharex=ax1, sharey=ax6)
     ax7.tick_params('x', direction='in', bottom=True)
     ax7.plot(t9hop2, fs_fluc2, '.-', zorder=5, c='k')
     # ax7.set_ylabel('$\\log(\\sigma_g)$')
-    ax7.axes.get_yaxis().set_visible(False)
+    # ax7.axes.get_yaxis().set_visible(False)
     # ax7.axvline(t9hop2[np.argmin(fs_fluc)], c='k', ls='--')
+    ax7.yaxis.tick_right()
 
     ax9 = plt.subplot(gs[9], sharex=ax1, sharey=ax8)
     ax9.tick_params('x', direction='in', bottom=True)
     ax9.plot(t9hop2, berry_fluc2, '.-', zorder=5, c='k')
     # ax9.set_ylabel('$\\log(\\sigma_\\mathcal{B})$')
-    ax9.axes.get_yaxis().set_visible(False)
+    # ax9.axes.get_yaxis().set_visible(False)
     # ax9.axvline(t9hop2[np.argmin(berry_fluc)], c='k', ls='--')
+    ax9.yaxis.tick_right()
 
     ax11 = plt.subplot(gs[11], sharex=ax1, sharey=ax10)
     ax11.plot(t9hop2, gap_width2, '.-', zorder=5, c='k')
     # ax11.set_ylabel('$\\log(\\Delta / W)$')
-    ax11.axes.get_yaxis().set_visible(False)
+    # ax11.axes.get_yaxis().set_visible(False)
     # ax11.axvline(t9hop2[np.argmax(gap_width)], c='k', ls='--')
     ax11.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
+    ax11.yaxis.tick_right()
+    # ax11.yaxis.set_label_position('right')
 
     ax11.set_xlabel('$t_9$')
 
