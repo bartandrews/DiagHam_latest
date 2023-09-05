@@ -8,6 +8,7 @@ from math import gcd
 from fractions import Fraction
 from pylab import *
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+# from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mark_inset)
 
 plt.rc('text', usetex=True)
 plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
@@ -314,6 +315,25 @@ if __name__ == "__main__":
         else:
             ax0.text(77, 0.95*eigenvalues[i][90], f"$C_{i + 1}={Chern_list[i]}$")
 
+    # inset axes....
+    axins = ax0.inset_axes([0.6, 0.16, 0.35, 0.2])
+    axins.plot(eigenvalues[0], c='r')
+    # subregion of the original image
+
+    # print(np.argmin(eigenvalues[0]), np.argmax(eigenvalues[0]))
+    x1, x2 = 30, 41
+    y1, y2 = np.min(eigenvalues[0][x1:x2]), np.max(eigenvalues[0][x1:x2])
+    axins.set_xlim(x1, x2)
+    axins.set_ylim(y1, y2)
+    axins.set_xticks([])
+    axins.set_xticklabels([])
+    axins.set_yticks([-3.032-0.00075, -3.032-0.00050, -3.032-0.00025])
+    axins.set_yticklabels(["$-7.5$", "$-5$", "$-2.5$"])
+    # axins.set_title("$(E_0-\\bar{E}_0)/10^{4}$", loc="left")
+    ax0.text(54, -0.55, "$\\times 10^{-4}$")
+
+    ax0.indicate_inset_zoom(axins, edgecolor="black")
+
     #############
     # butterfly #
     #############
@@ -439,5 +459,5 @@ if __name__ == "__main__":
     fig.text(0.05, 0.32, "(e)", fontsize=12)
     fig.text(0.5, 0.32, "(f)", fontsize=12)
 
-    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/spmb/spmb_2.png", bbox_inches='tight', dpi=600)
+    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/spmb/spmb_3.png", bbox_inches='tight', dpi=600)
     plt.show()
