@@ -44,8 +44,8 @@ def find_optimal_parameters(q_target, q_err, square_err, N):
 
 if __name__ == "__main__":
 
-    q_list = [96]
-    N_list = [6, 7, 8, 9, 10]
+    q_list = [98]
+    N_list = [6, 7, 8, 9]
 
     for q in q_list:
         gaps_left, gaps_right = [], []
@@ -53,9 +53,8 @@ if __name__ == "__main__":
         for N in N_list:
             print(f"(q, N) = ({q}, {N})")
 
-            # make directory
+            # change directory
             path = f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/finite_size/script_output/q_{q:g}/n{N:g}"
-            os.makedirs(path, exist_ok=True)
             os.chdir(path)
 
             X, Y, x, y = find_optimal_parameters(q, 0, 0.5, N)
@@ -65,19 +64,6 @@ if __name__ == "__main__":
                 break
 
             print(X, Y, x, y)
-
-            # generate the energy spectra
-            FCIHofstadterModel = "/home/bart/DiagHam_latest/build/FTI/src/Programs/FCI/FCIHofstadterModel "
-            os.system(f"{FCIHofstadterModel} -p {N} -X {X} -Y {Y} -x {x} -y {y} "
-                      f"--t3hop 1.31 --t6hop -0.25 --t9hop -0.25 -m 32000 "
-                      f"-S --processors 6 -n 5 --lanczos-precision 1e-10 "
-                      f"--u-potential 1 --v-potential 0 "
-                      f"--v2-potential 0 --v3-potential 0 --auto-addprojector > /dev/null")
-            os.system(f"{FCIHofstadterModel} -p {N} -X {X} -Y {Y} -x {x} -y {y} "
-                      f"--t3hop -1.81 --t6hop 0.25 --t9hop 0.25 -m 32000 "
-                      f"-S --processors 6 -n 5 --lanczos-precision 1e-10 "
-                      f"--u-potential 1 --v-potential 0 "
-                      f"--v2-potential 0 --v3-potential 0 --auto-addprojector > /dev/null")
 
             # plot the energy spectra
             PlotHofstadterSpectrum = "/home/bart/DiagHam_latest/scripts_bart/PlotHofstadterSpectrum.pl -s "
@@ -92,7 +78,7 @@ if __name__ == "__main__":
 
             # extract the gaps
             for file in os.listdir("."):
-                if f"t6_-0.25_t9_-0.25_" in file and file.endswith("_ext.dat"):
+                if "t6_-0.25_t9_-0.25_" in file and file.endswith("_ext.dat"):
                     given_ext_file = file
             with open(given_ext_file, 'r') as csvfile:
                 plots = csv.reader(csvfile, delimiter=' ')
@@ -101,13 +87,9 @@ if __name__ == "__main__":
                     if can_convert_to_float(row[0]):  # if value is a number
                         E.append(float(row[2]))
                 E = sorted(E)
-                # if np.abs(E[s]-E[s-1]) > np.abs(E[s-1]-E[s-2]):  # ensure m.b. gap > g.s. degeneracy
-                #     gap = np.abs(E[s]-E[s-1])
-                # else:
-                #     gap = np.nan
                 gaps_left.append(np.abs(E[3] - E[2]))
             for file in os.listdir("."):
-                if f"t6_0.25_t9_0.25_" in file and file.endswith("_ext.dat"):
+                if "t6_0.25_t9_0.25_" in file and file.endswith("_ext.dat"):
                     given_ext_file = file
             with open(given_ext_file, 'r') as csvfile:
                 plots = csv.reader(csvfile, delimiter=' ')
@@ -116,10 +98,6 @@ if __name__ == "__main__":
                     if can_convert_to_float(row[0]):  # if value is a number
                         E.append(float(row[2]))
                 E = sorted(E)
-                # if np.abs(E[s]-E[s-1]) > np.abs(E[s-1]-E[s-2]):  # ensure m.b. gap > g.s. degeneracy
-                #     gap = np.abs(E[s]-E[s-1])
-                # else:
-                #     gap = np.nan
                 gaps_right.append(np.abs(E[3] - E[2]))
             numbs.append(N)
 
@@ -128,13 +106,13 @@ if __name__ == "__main__":
         gs = gridspec.GridSpec(1, 2, wspace=0.5)
         #
         ax0 = plt.subplot(gs[0])
-        ax0.plot([1 / i for i in numbs], np.multiply(q**2, gaps_left), '.-')
+        ax0.plot([1 / i for i in numbs], np.multiply(q**2 / 2, gaps_left), '.-')
         ax0.set_ylabel('$q^2 \\Delta_\\mathrm{m.b.}$')
         ax0.set_xlabel('$1/N$')
         ax0.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
         ax0.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
         ax0.set_xlim(0)
-        ax0.set_ylim([0, 1.5])
+        ax0.set_ylim(0)
         #
         ax1 = plt.subplot(gs[1])
         ax1.plot([1 / i for i in numbs], np.multiply(q**2, gaps_right), '.-')
