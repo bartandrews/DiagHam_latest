@@ -47,8 +47,8 @@ if __name__ == "__main__":
     file = open(f"02_lattice_geom_script.sh", "w")
     file.write("#!/bin/bash\n\n")
 
-    q_list = [98]
-    N_list = [6, 7, 8, 9, 10]
+    q_list = [128]
+    N_list = [6, 7, 8, 9]
 
     for q in q_list:
         gaps_left, gaps_right = [], []
@@ -57,7 +57,7 @@ if __name__ == "__main__":
             print(f"(q, N) = ({q}, {N})")
 
             # make directory
-            path = f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/finite_size/script_output/q_{q:g}/n{N:g}"
+            path = f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/finite_size/script_output/q{q:g}/n{N:g}"
             file.write(f"mkdir -p {path}\n")
             file.write(f"cd {path}\n")
 

@@ -44,7 +44,7 @@ def find_optimal_parameters(q_target, q_err, square_err, N):
 
 if __name__ == "__main__":
 
-    q_list = [98]
+    q_list = [128]
     N_list = [6, 7, 8, 9]
 
     for q in q_list:
@@ -54,7 +54,7 @@ if __name__ == "__main__":
             print(f"(q, N) = ({q}, {N})")
 
             # change directory
-            path = f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/finite_size/script_output/q_{q:g}/n{N:g}"
+            path = f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/finite_size/script_output/q{q:g}/n{N:g}"
             os.chdir(path)
 
             X, Y, x, y = find_optimal_parameters(q, 0, 0.5, N)
@@ -115,7 +115,7 @@ if __name__ == "__main__":
         ax0.set_ylim(0)
         #
         ax1 = plt.subplot(gs[1])
-        ax1.plot([1 / i for i in numbs], np.multiply(q**2, gaps_right), '.-')
+        ax1.plot([1 / i for i in numbs], np.multiply(q**2 / 2, gaps_right), '.-')
         ax1.set_ylabel('$q^2 \\Delta_\\mathrm{m.b.}$')
         ax1.set_xlabel('$1/N$')
         ax1.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))

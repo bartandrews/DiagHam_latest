@@ -9,7 +9,7 @@ import numpy as np
 
 
 def find_optimal_config(q_target, N):
-    for square_err in np.linspace(0, 0.2, 21):
+    for square_err in np.linspace(0, 0.25, 26):
         for Lx in range(1, 100):
             for Ly in range(1, 100):
                 if Lx * Ly / N == 3 and Lx <= Ly:  # check filling
