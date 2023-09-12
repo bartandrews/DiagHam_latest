@@ -44,8 +44,8 @@ def find_optimal_parameters(q_target, q_err, square_err, N):
 
 if __name__ == "__main__":
 
-    q_list = [128]
-    N_list = [6, 7, 8, 9]
+    q_list = [96]
+    N_list = [6, 7, 8, 9, 10, 11]
 
     for q in q_list:
         gaps_left, gaps_right = [], []
