@@ -9,10 +9,10 @@ import numpy as np
 
 if __name__ == "__main__":
 
-    q_target = 96
-    q_err = 104
-    square_err = 0  # within 20%
-    N = 9
+    q_target = 120
+    q_err = 0
+    square_err = 0.2  # within 20%
+    N = 11
 
     for Lx in range(1, 100):
         for Ly in range(1, 100):

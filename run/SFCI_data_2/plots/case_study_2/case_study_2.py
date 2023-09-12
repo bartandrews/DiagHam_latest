@@ -25,7 +25,6 @@ if __name__ == "__main__":
     ent_factor = 2
     q = 96
 
-
     # construct many-body spectrum 1
     mb_file = "fermions_hofstadter_X_16_Y_6_q_1_n_11_x_3_y_11_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0_ext.dat"
     lin_K = []
@@ -49,10 +48,10 @@ if __name__ == "__main__":
                 mb_E2.append(float(row[2])/2)
 
     # construct entanglement spectrum 1
-    ent_file = "ent/fermions_hofstadter_X_16_Y_6_q_1_n_10_x_3_y_10_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0.na_5.parentspec"
+    ent_file = "ent/fermions_hofstadter_X_16_Y_6_q_1_n_11_x_3_y_11_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0.na_5.parentspec"
     lin_K_ent = []
     ent = []
-    with open(os.path.join(f"q{q}/n10", ent_file), 'r') as csvfile:
+    with open(os.path.join(f"q{q}/n11", ent_file), 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=' ')
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
@@ -138,7 +137,7 @@ if __name__ == "__main__":
     ent2 = [0.01073646]
 
     # extract data
-    fs_file = "finite_size.txt"
+    fs_file = "finite_size_q96.txt"
     invertN = []
     scaled_gap1, scaled_gap2 = [], []
     scaled_ent1, scaled_ent2 = [], []
