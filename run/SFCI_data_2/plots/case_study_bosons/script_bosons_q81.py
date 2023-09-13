@@ -22,7 +22,7 @@ def can_convert_to_float(string):
 if __name__ == "__main__":
 
     q = 81
-    numbs = [6, 7, 8, 9]
+    numbs = [6, 7, 8, 9, 10]
     gaps_left, gaps_right = [], []
     ent_left, ent_right = [], []
 
@@ -115,37 +115,26 @@ if __name__ == "__main__":
     ent_left.append(ent_E[1287] - ent_E[1286])  # 1287
 
     # extract many-body gap
-    # mb_file = f"q{q}/n10/fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0_ext.dat"
-    # mb_E = []
-    # with open(mb_file, 'r') as csvfile:
-    #     plots = csv.reader(csvfile, delimiter=' ')
-    #     for i, row in enumerate(plots):
-    #         if can_convert_to_float(row[0]):
-    #             mb_E.append(float(row[2]) / 2)
-    # mb_E = sorted(mb_E)
-    # gaps_left.append(mb_E[3] - mb_E[2])
-    #
-    # # extract ent gap
-    # ent_file = f"q{q}/n10/ent/fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0.na_5.parentspec"
-    # ent_E = []
-    # with open(ent_file, 'r') as csvfile:
-    #     plots = csv.reader(csvfile, delimiter=' ')
-    #     for i, row in enumerate(plots):
-    #         if can_convert_to_float(row[0]):
-    #             ent_E.append(float(row[5]) * 2)
-    # ent_E = sorted(ent_E)
-    # ent_left.append(ent_E[23256] - ent_E[23255])  # 23256
+    mb_file = f"q{q}/n10/bosons_hofstadter_X_9_Y_9_q_1_n_10_x_4_y_5_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0_ext.dat"
+    mb_E = []
+    with open(mb_file, 'r') as csvfile:
+        plots = csv.reader(csvfile, delimiter=' ')
+        for i, row in enumerate(plots):
+            if can_convert_to_float(row[0]):
+                mb_E.append(float(row[2]))
+    mb_E = sorted(mb_E)
+    gaps_left.append(mb_E[2] - mb_E[1])
 
-    # extract many-body gap
-    # mb_file = f"q{q}/n11/fermions_hofstadter_X_16_Y_6_q_1_n_11_x_3_y_11_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0_ext.dat"
-    # mb_E = []
-    # with open(mb_file, 'r') as csvfile:
-    #     plots = csv.reader(csvfile, delimiter=' ')
-    #     for i, row in enumerate(plots):
-    #         if can_convert_to_float(row[0]):
-    #             mb_E.append(float(row[2]) / 2)
-    # mb_E = sorted(mb_E)
-    # gaps_left.append(mb_E[3] - mb_E[2])
+    # extract ent gap
+    ent_file = f"q{q}/n10/ent/bosons_hofstadter_X_9_Y_9_q_1_n_10_x_4_y_5_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0.na_5.parentspec"
+    ent_E = []
+    with open(ent_file, 'r') as csvfile:
+        plots = csv.reader(csvfile, delimiter=' ')
+        for i, row in enumerate(plots):
+            if can_convert_to_float(row[0]):
+                ent_E.append(float(row[5]) * 2)
+    ent_E = sorted(ent_E)
+    ent_left.append(ent_E[4004] - ent_E[4003])  # 4004
 
     ####################################################################################################################
 
@@ -238,37 +227,26 @@ if __name__ == "__main__":
     ent_right.append(ent_E[1287] - ent_E[1286])  # 1287
 
     # extract many-body gap
-    # mb_file = f"q{q}/n10/fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0_ext.dat"
-    # mb_E = []
-    # with open(mb_file, 'r') as csvfile:
-    #     plots = csv.reader(csvfile, delimiter=' ')
-    #     for i, row in enumerate(plots):
-    #         if can_convert_to_float(row[0]):
-    #             mb_E.append(float(row[2]) / 2)
-    # mb_E = sorted(mb_E)
-    # gaps_right.append(mb_E[3] - mb_E[2])
-    #
-    # # extract ent gap
-    # ent_file = f"q{q}/n10/ent/fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0.na_5.parentspec"
-    # ent_E = []
-    # with open(ent_file, 'r') as csvfile:
-    #     plots = csv.reader(csvfile, delimiter=' ')
-    #     for i, row in enumerate(plots):
-    #         if can_convert_to_float(row[0]):
-    #             ent_E.append(float(row[5]) * 2)
-    # ent_E = sorted(ent_E)
-    # ent_right.append(ent_E[23256] - ent_E[23255])  # 23256
+    mb_file = f"q{q}/n10/bosons_hofstadter_X_9_Y_9_q_1_n_10_x_4_y_5_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0_ext.dat"
+    mb_E = []
+    with open(mb_file, 'r') as csvfile:
+        plots = csv.reader(csvfile, delimiter=' ')
+        for i, row in enumerate(plots):
+            if can_convert_to_float(row[0]):
+                mb_E.append(float(row[2]))
+    mb_E = sorted(mb_E)
+    gaps_right.append(mb_E[2] - mb_E[1])
 
-    # extract many-body gap
-    # mb_file = f"q{q}/n11/fermions_hofstadter_X_16_Y_6_q_1_n_11_x_3_y_11_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0_ext.dat"
-    # mb_E = []
-    # with open(mb_file, 'r') as csvfile:
-    #     plots = csv.reader(csvfile, delimiter=' ')
-    #     for i, row in enumerate(plots):
-    #         if can_convert_to_float(row[0]):
-    #             mb_E.append(float(row[2]) / 2)
-    # mb_E = sorted(mb_E)
-    # gaps_right.append(mb_E[3] - mb_E[2])
+    # extract ent gap
+    ent_file = f"q{q}/n10/ent/bosons_hofstadter_X_9_Y_9_q_1_n_10_x_4_y_5_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0.na_5.parentspec"
+    ent_E = []
+    with open(ent_file, 'r') as csvfile:
+        plots = csv.reader(csvfile, delimiter=' ')
+        for i, row in enumerate(plots):
+            if can_convert_to_float(row[0]):
+                ent_E.append(float(row[5]) * 2)
+    ent_E = sorted(ent_E)
+    ent_right.append(ent_E[4004] - ent_E[4003])  # 4004
 
     ####################################################################################################################
 

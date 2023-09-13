@@ -23,10 +23,10 @@ def can_convert_to_float(string):
 if __name__ == "__main__":
 
     # construct many-body spectrum 1
-    mb_file = "bosons_hofstadter_X_9_Y_9_q_1_n_9_x_3_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0_ext.dat"
+    mb_file = "bosons_hofstadter_X_9_Y_9_q_1_n_10_x_4_y_5_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0_ext.dat"
     lin_K = []
     mb_E = []
-    with open(os.path.join("q81/n9", mb_file), 'r') as csvfile:
+    with open(os.path.join("q81/n10", mb_file), 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=' ')
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
@@ -34,10 +34,10 @@ if __name__ == "__main__":
                 mb_E.append(float(row[2]))
 
     # construct many-body spectrum 2
-    mb_file2 = "bosons_hofstadter_X_9_Y_9_q_1_n_9_x_3_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0_ext.dat"
+    mb_file2 = "bosons_hofstadter_X_9_Y_9_q_1_n_10_x_4_y_5_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0_ext.dat"
     lin_K2 = []
     mb_E2 = []
-    with open(os.path.join("q81/n9", mb_file2), 'r') as csvfile:
+    with open(os.path.join("q81/n10", mb_file2), 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=' ')
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
@@ -45,10 +45,10 @@ if __name__ == "__main__":
                 mb_E2.append(float(row[2]))
 
     # construct entanglement spectrum 1
-    ent_file = "bosons_hofstadter_X_9_Y_9_q_1_n_9_x_3_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0.na_4.parentspec"
+    ent_file = "bosons_hofstadter_X_9_Y_9_q_1_n_10_x_4_y_5_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0.na_5.parentspec"
     lin_K_ent = []
     ent = []
-    with open(os.path.join("q81/n9/ent", ent_file), 'r') as csvfile:
+    with open(os.path.join("q81/n10/ent", ent_file), 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=' ')
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
@@ -56,10 +56,10 @@ if __name__ == "__main__":
                 ent.append(2*float(row[5]))
 
     # construct entanglement spectrum 2
-    ent_file2 = "bosons_hofstadter_X_9_Y_9_q_1_n_9_x_3_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0.na_4.parentspec"
+    ent_file2 = "bosons_hofstadter_X_9_Y_9_q_1_n_10_x_4_y_5_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0.na_5.parentspec"
     lin_K_ent2 = []
     ent2 = []
-    with open(os.path.join(f"q81/n9/ent", ent_file2), 'r') as csvfile:
+    with open(os.path.join(f"q81/n10/ent", ent_file2), 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=' ')
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
