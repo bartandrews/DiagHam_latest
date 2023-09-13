@@ -22,52 +22,49 @@ def can_convert_to_float(string):
 
 if __name__ == "__main__":
 
-    ent_factor = 2
-    q = 120
-
     # construct many-body spectrum 1
-    mb_file = "fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0_ext.dat"
+    mb_file = "bosons_hofstadter_X_9_Y_9_q_1_n_9_x_3_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0_ext.dat"
     lin_K = []
     mb_E = []
-    with open(os.path.join(f"../case_study", mb_file), 'r') as csvfile:
+    with open(os.path.join("q81/n9", mb_file), 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=' ')
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
                 lin_K.append(float(row[0])*6 + float(row[1]))
-                mb_E.append(float(row[2])/2)
+                mb_E.append(float(row[2]))
 
     # construct many-body spectrum 2
-    mb_file2 = "fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0_ext.dat"
+    mb_file2 = "bosons_hofstadter_X_9_Y_9_q_1_n_9_x_3_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0_ext.dat"
     lin_K2 = []
     mb_E2 = []
-    with open(os.path.join(f"../case_study", mb_file2), 'r') as csvfile:
+    with open(os.path.join("q81/n9", mb_file2), 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=' ')
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
                 lin_K2.append(float(row[0])*6 + float(row[1]))
-                mb_E2.append(float(row[2])/2)
+                mb_E2.append(float(row[2]))
 
     # construct entanglement spectrum 1
-    ent_file = "ent/fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0.na_5.parentspec"
+    ent_file = "bosons_hofstadter_X_9_Y_9_q_1_n_9_x_3_y_6_t3_1.31_t6_-0.25_t9_-0.25_u_1_gx_0_gy_0.na_4.parentspec"
     lin_K_ent = []
     ent = []
-    with open(os.path.join(f"q{q}/n10", ent_file), 'r') as csvfile:
+    with open(os.path.join("q81/n9/ent", ent_file), 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=' ')
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
                 lin_K_ent.append(float(row[3]))
-                ent.append(ent_factor*float(row[5]))
+                ent.append(2*float(row[5]))
 
     # construct entanglement spectrum 2
-    ent_file2 = "ent/fermions_hofstadter_X_12_Y_10_q_1_n_10_x_5_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0.na_5.parentspec"
+    ent_file2 = "bosons_hofstadter_X_9_Y_9_q_1_n_9_x_3_y_6_t3_-1.81_t6_0.25_t9_0.25_u_1_gx_0_gy_0.na_4.parentspec"
     lin_K_ent2 = []
     ent2 = []
-    with open(os.path.join(f"q{q}/n10", ent_file2), 'r') as csvfile:
+    with open(os.path.join(f"q81/n9/ent", ent_file2), 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=' ')
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
                 lin_K_ent2.append(float(row[3]))
-                ent2.append(ent_factor*float(row[5]))
+                ent2.append(2*float(row[5]))
 
     ##########
     # figure #
@@ -93,8 +90,8 @@ if __name__ == "__main__":
     ax0.set_xlabel('$k_x L_y + k_y$')
     ax0.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax0.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax0.annotate(s='', xy=(2, 0.085), xytext=(2, 0), arrowprops=dict(arrowstyle='<->'))
-    ax0.text(4, 0.035, "$q^2\\Delta_\\mathrm{m.b.}=1.26$")
+    # ax0.annotate(s='', xy=(2, 0.085), xytext=(2, 0), arrowprops=dict(arrowstyle='<->'))
+    # ax0.text(4, 0.035, "$q^2\\Delta_\\mathrm{m.b.}=1.26$")
     ax0.xaxis.set_visible(False)
 
     ax1 = plt.subplot(upper_inner_grid[1])
@@ -104,8 +101,8 @@ if __name__ == "__main__":
     ax1.set_xlabel('$k_x L_y + k_y$')
     ax1.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax1.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax1.annotate(s='', xy=(2, 0.25), xytext=(2, 0), arrowprops=dict(arrowstyle='<->'))
-    ax1.text(4, 0.12, "$q^2 \\Delta_\\mathrm{m.b.} = 3.62$")
+    # ax1.annotate(s='', xy=(2, 0.25), xytext=(2, 0), arrowprops=dict(arrowstyle='<->'))
+    # ax1.text(4, 0.12, "$q^2 \\Delta_\\mathrm{m.b.} = 3.62$")
     ax1.xaxis.set_visible(False)
 
     ########################
@@ -118,8 +115,8 @@ if __name__ == "__main__":
     ax2.set_xlabel('$k_x L_y + k_y$')
     ax2.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax2.annotate(s='', xy=(2, ent_factor * 19.5), xytext=(2, ent_factor * 12.5), arrowprops=dict(arrowstyle='<->'))
-    ax2.text(4, ent_factor * 15, "$\\Delta_\\xi=14.6$")
+    # ax2.annotate(s='', xy=(2, 2 * 19.5), xytext=(2, 2 * 12.5), arrowprops=dict(arrowstyle='<->'))
+    # ax2.text(4, 2 * 15, "$\\Delta_\\xi=14.6$")
 
     ax3 = plt.subplot(upper_inner_grid[3])
     ax3.plot(lin_K_ent2, ent2, '+', c='k', markersize=2)
@@ -127,19 +124,19 @@ if __name__ == "__main__":
     ax3.set_xlabel('$k_x L_y + k_y$')
     ax3.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax3.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax3.annotate(s='', xy=(2, ent_factor * 23.05), xytext=(2, ent_factor * 12.5), arrowprops=dict(arrowstyle='<->'))
-    ax3.text(4, ent_factor * 17, "$\\Delta_\\xi=22.0$")
+    # ax3.annotate(s='', xy=(2, 2 * 23.05), xytext=(2, 2 * 12.5), arrowprops=dict(arrowstyle='<->'))
+    # ax3.text(4, 2 * 17, "$\\Delta_\\xi=22.0$")
 
     #######################
     # finite-size scaling #
     #######################
 
     # extract data
-    fs_file = f"finite_size_q{q}.txt"
+    fs_file = f"data_bosons_q81.txt"
     invertN = []
     scaled_gap1, scaled_gap2 = [], []
     scaled_ent1, scaled_ent2 = [], []
-    with open(os.path.join(f"../finite_size", fs_file), 'r') as csvfile:
+    with open(fs_file, 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter='\t')
         for i, row in enumerate(plots):
             if can_convert_to_float(row[0]):
@@ -153,11 +150,11 @@ if __name__ == "__main__":
     ax4 = plt.subplot(lower_inner_grid[0])
     ax4.plot(invertN, scaled_gap1, '.-', color=color1)
     ax4.set_xlabel('$1/N$')
-    ax4.set_ylabel('$q^2 \\Delta_\\mathrm{m.b.}$', color=color1)
+    ax4.set_ylabel('$q \\Delta_\\mathrm{m.b.}$', color=color1)
     ax4.tick_params(axis='y', labelcolor=color1)
     ax4.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax4.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax4.axhline(1.29, ls='--')
+    ax4.axhline(0.616, ls='--')
     #
     color2 = 'C3'
     ax4_2 = ax4.twinx()
@@ -169,11 +166,11 @@ if __name__ == "__main__":
     ax5 = plt.subplot(lower_inner_grid[1])
     ax5.plot(invertN, scaled_gap2, '.-', color=color1)
     ax5.set_xlabel('$1/N$')
-    ax5.set_ylabel('$q^2 \\Delta_\\mathrm{m.b.}$', color=color1)
+    ax5.set_ylabel('$q \\Delta_\\mathrm{m.b.}$', color=color1)
     ax5.tick_params(axis='y', labelcolor=color1)
     ax5.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax5.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    ax5.axhline(1.29, ls='--')
+    ax5.axhline(0.616, ls='--')
     #
     ax5_2 = ax5.twinx()
     ax5_2.plot(invertN, scaled_ent2, '.-', zorder=5, color=color2)
@@ -183,6 +180,6 @@ if __name__ == "__main__":
 
     ###
 
-    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/case_study_3/case_study_3.png",
+    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/case_study_bosons/bosons_q81.png",
                 bbox_inches='tight', dpi=300)
     plt.show()

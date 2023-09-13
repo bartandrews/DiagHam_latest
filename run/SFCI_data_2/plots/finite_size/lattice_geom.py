@@ -9,14 +9,15 @@ import numpy as np
 
 if __name__ == "__main__":
 
-    q_target = 120
+    q_target = 81
     q_err = 0
-    square_err = 0.2  # within 20%
-    N = 11
+    square_err = 0.5  # within 20%
+    N = 10
+    s = 2
 
     for Lx in range(1, 100):
         for Ly in range(1, 100):
-            if Lx*Ly/N == 3 and Lx <= Ly:  # check filling
+            if Lx*Ly/N == s and Lx <= Ly:  # check filling
                 for lx in range(1, 100):
                     for ly in range(1, 100):
                         if 0 <= lx*ly-q_target <= q_err and lx >= ly:  # check nphi
