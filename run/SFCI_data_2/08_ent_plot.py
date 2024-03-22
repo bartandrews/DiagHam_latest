@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     stats = "bosons"
     alpha = 0
-    q = 144
+    q = 256
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"{stats}_alpha_{alpha}_q_{q}_ent"
 

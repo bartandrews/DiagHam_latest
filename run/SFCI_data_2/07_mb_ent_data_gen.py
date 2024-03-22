@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     stats = "bosons"  # "fermions" or "bosons"
     alpha = 0
-    q = 144
+    q = 256
     ts = np.linspace(-0.25, 0.25, 11)
     if stats == "bosons":
         exp_count = 660
