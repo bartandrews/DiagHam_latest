@@ -81,14 +81,14 @@ if __name__ == "__main__":
 
                 if stats == "fermions":
                     command = f"{FCIHofstadterModel} -p {p} -X {X} -Y {Y} -x {x} -y {y} " \
-                              f"--t3hop {t3hop:.2f} --t6hop {t6hop:.2f} --t9hop {t9hop:.2f} -m 32000 " \
+                              f"--t3hop {t3hop:.2f} --t6hop {t6hop:.2f} --t9hop {t9hop:.2f} -m 64000 " \
                               f"-S --processors 6 -n 5 --lanczos-precision 1e-10 " \
                               f"--u-potential {(1-alpha)+alpha*pot(1):g} --v-potential {alpha*pot(np.sqrt(2)):g} " \
                               f"--v2-potential {alpha*pot(2):g} --v3-potential {alpha*pot(np.sqrt(5)):g} " \
                               f"--only-kx {kx_min[i]} --only-ky {ky_min[i]} --eigenstate > /dev/null;"
                 else:  # stats == "bosons"
                     command = f"{FCIHofstadterModel} --boson -p {p} -X {X} -Y {Y} -x {x} -y {y} " \
-                              f"--t3hop {t3hop:.2f} --t6hop {t6hop:.2f} --t9hop {t9hop:.2f} -m 32000 " \
+                              f"--t3hop {t3hop:.2f} --t6hop {t6hop:.2f} --t9hop {t9hop:.2f} -m 64000 " \
                               f"-S --processors 6 -n 5 --lanczos-precision 1e-10 " \
                               f"--u-potential {1:g} --v-potential {alpha*pot(1):g} " \
                               f"--v2-potential {alpha*pot(np.sqrt(2)):g} --v3-potential {alpha*pot(2):g} " \
