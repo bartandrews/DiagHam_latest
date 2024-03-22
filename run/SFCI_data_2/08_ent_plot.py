@@ -16,8 +16,8 @@ if __name__ == "__main__":
 
     stats = "bosons"
     alpha = 0
-    q = 81
-    ts = np.linspace(-1, 1, 11)
+    q = 144
+    ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"{stats}_alpha_{alpha}_q_{q}_ent"
 
     mb_data = f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha:g}/q_{q:g}/ent/mb_ent_q_{q:g}.txt"
@@ -38,7 +38,7 @@ if __name__ == "__main__":
         for i, row in enumerate(plots):
             it6 = int(i / len(ts))
             it9 = i % len(ts)
-            gaps[it6, it9] = float(row[2])
+            gaps[it6, it9] = 2*float(row[2])
 
     fig = plt.figure()
     ax1 = plt.subplot(111)

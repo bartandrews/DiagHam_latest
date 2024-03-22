@@ -118,14 +118,21 @@ def qgt(evecs_comb, band, ikx, iky, dkx_r, dky_r):
     evec_0 = evecs_comb[0][band, ikx % len_kx_list, iky % len_ky_list, :]
     evec_x = evecs_comb[1][band, ikx % len_kx_list, iky % len_ky_list, :]
     evec_y = evecs_comb[2][band, ikx % len_kx_list, iky % len_ky_list, :]
-    grad = {}
-    grad.update({"x": (evec_x - evec_0) / dkx_r})
-    grad.update({"y": (evec_y - evec_0) / dky_r})
 
-    return np.array(
-        [[np.vdot(grad[u], grad[v])
-          - np.vdot(grad[u], evec_0) * np.vdot(evec_0, grad[v])
-          for u in ["x", "y"]] for v in ["x", "y"]])
+    tot_proj = np.outer(evec_0, np.conj(evec_0))
+    tot_proj_dkx = np.outer(evec_x, np.conj(evec_x))
+    tot_proj_dky = np.outer(evec_y, np.conj(evec_y))
+
+    grad_kx = np.subtract(tot_proj_dkx, tot_proj) / dkx_r
+    grad_ky = np.subtract(tot_proj_dky, tot_proj) / dky_r
+
+    tensor = np.zeros((2, 2), dtype=np.complex128)
+    tensor[0][0] = np.trace(np.matmul(tot_proj, np.matmul(grad_kx, grad_kx)))
+    tensor[0][1] = np.trace(np.matmul(tot_proj, np.matmul(grad_kx, grad_ky)))
+    tensor[1][0] = np.trace(np.matmul(tot_proj, np.matmul(grad_ky, grad_kx)))
+    tensor[1][1] = np.trace(np.matmul(tot_proj, np.matmul(grad_ky, grad_ky)))
+
+    return tensor
 
 
 def fs_metric(evecs_comb, band, ikx, iky, dkx_r, dky_r):
@@ -205,8 +212,8 @@ def band_geom(t6, t9, q, grain, grain_r):
     # quantum geometry
     tism_int = np.sum(tisms) * dkx * dky / (2 * np.pi)
     dism_int = np.sum(disms) * dkx * dky / (2 * np.pi)
-    g_var_sum = np.var(g_array[0, 0]) + np.var(g_array[0, 1])
-    fs_fluc = np.log10(np.sqrt(g_var_sum))
+    g_var_mean = (np.var(g_array[0, 0]) + np.var(g_array[0, 1]))/2
+    fs_fluc = np.log10(np.sqrt(g_var_mean))
 
     # berry fluctuations
     A_BZ = np.sum(berry_fluxes) / np.average(berry_fluxes)
@@ -217,25 +224,25 @@ def band_geom(t6, t9, q, grain, grain_r):
     width = np.max(evals[0]) - np.min(evals[0])
     gap_width = np.log10(gap) - np.log10(width)
 
-    return [t6, t9, tism_int, dism_int, berry_fluc, fs_fluc, gap_width]
+    return [t6, tism_int, dism_int, berry_fluc, fs_fluc, gap_width]
 
 
 if __name__ == "__main__":
 
     t0 = perf_counter()
 
-    q_val = 121
-    grain_val = 100  # 100
-    grain_r_val = 1000  # 1000
+    q_val = 100
+    grain_val = 100
+    grain_r_val = 1000
     ts = np.linspace(-0.25, 0.25, 11)
 
-    results = np.array(Parallel(n_jobs=6)(delayed(band_geom)(t6, t9, q_val, grain_val, grain_r_val) for t6 in ts for t9 in ts))
+    results = np.array(Parallel(n_jobs=1)(delayed(band_geom)(t6, 0, q_val, grain_val, grain_r_val) for t6 in ts))
 
-    file = open(f"sp_data/q_{q_val}.txt", "w")
+    file = open(f"sp_data_linear/q_{q_val}_proj.txt", "w")
     for i in range(np.shape(results)[0]):
         file.write(f"{results[:, 0][i]:.2f}\t{results[:, 1][i]:.2f}\t"
                    f"{results[:, 2][i]}\t{results[:, 3][i]}\t{results[:, 4][i]}\t"
-                   f"{results[:, 5][i]}\t{results[:, 6][i]}\n")
+                   f"{results[:, 5][i]}\n")
     file.close()
 
     print(f"Total time taken (seconds) = {perf_counter() - t0:.1f}")

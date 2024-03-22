@@ -118,14 +118,21 @@ def qgt(evecs_comb, band, ikx, iky, dkx_r, dky_r):
     evec_0 = evecs_comb[0][band, ikx % len_kx_list, iky % len_ky_list, :]
     evec_x = evecs_comb[1][band, ikx % len_kx_list, iky % len_ky_list, :]
     evec_y = evecs_comb[2][band, ikx % len_kx_list, iky % len_ky_list, :]
-    grad = {}
-    grad.update({"x": (evec_x - evec_0) / dkx_r})
-    grad.update({"y": (evec_y - evec_0) / dky_r})
 
-    return np.array(
-        [[np.vdot(grad[u], grad[v])
-          - np.vdot(grad[u], evec_0) * np.vdot(evec_0, grad[v])
-          for u in ["x", "y"]] for v in ["x", "y"]])
+    tot_proj = np.outer(evec_0, np.conj(evec_0))
+    tot_proj_dkx = np.outer(evec_x, np.conj(evec_x))
+    tot_proj_dky = np.outer(evec_y, np.conj(evec_y))
+
+    grad_kx = np.subtract(tot_proj_dkx, tot_proj) / dkx_r
+    grad_ky = np.subtract(tot_proj_dky, tot_proj) / dky_r
+
+    tensor = np.zeros((2, 2), dtype=np.complex128)
+    tensor[0][0] = np.trace(np.matmul(tot_proj, np.matmul(grad_kx, grad_kx)))
+    tensor[0][1] = np.trace(np.matmul(tot_proj, np.matmul(grad_kx, grad_ky)))
+    tensor[1][0] = np.trace(np.matmul(tot_proj, np.matmul(grad_ky, grad_kx)))
+    tensor[1][1] = np.trace(np.matmul(tot_proj, np.matmul(grad_ky, grad_ky)))
+
+    return tensor
 
 
 def fs_metric(evecs_comb, band, ikx, iky, dkx_r, dky_r):
@@ -224,14 +231,14 @@ if __name__ == "__main__":
 
     t0 = perf_counter()
 
-    q_val = 121
+    q_val = 100
     grain_val = 100  # 100
     grain_r_val = 1000  # 1000
     ts = np.linspace(-0.25, 0.25, 11)
 
     results = np.array(Parallel(n_jobs=6)(delayed(band_geom)(t6, t9, q_val, grain_val, grain_r_val) for t6 in ts for t9 in ts))
 
-    file = open(f"sp_data/q_{q_val}.txt", "w")
+    file = open(f"sp_data/q_{q_val}_proj.txt", "w")
     for i in range(np.shape(results)[0]):
         file.write(f"{results[:, 0][i]:.2f}\t{results[:, 1][i]:.2f}\t"
                    f"{results[:, 2][i]}\t{results[:, 3][i]}\t{results[:, 4][i]}\t"
