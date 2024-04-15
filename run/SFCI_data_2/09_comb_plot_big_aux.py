@@ -15,10 +15,10 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    stats = "bosons"
+    stats = "fermions"
     alpha = 0
     ts = np.linspace(-0.25, 0.25, 11)
-    file_name = f"{stats}_alpha_{alpha}_big_aux_3"
+    file_name = f"{stats}_alpha_{alpha}_big_aux"
 
     if stats == "bosons":
         qs = [100, 121, 144, 169, 196, 225, 256]
@@ -840,10 +840,10 @@ if __name__ == "__main__":
     #     ax27.plot(-0.15, 0.05, 'x', c='r')
 
     label_fontsize = 13
-    fig.text(0.095, 0.923, "$\mathrm{(a)}$", fontsize=label_fontsize)
-    fig.text(0.095, 0.71, "$\mathrm{(b)}$", fontsize=label_fontsize)
-    fig.text(0.095, 0.5, "$\mathrm{(c)}$", fontsize=label_fontsize)
-    fig.text(0.095, 0.285, "$\mathrm{(d)}$", fontsize=label_fontsize)
+    # fig.text(0.095, 0.923, "$\mathrm{(a)}$", fontsize=label_fontsize)
+    # fig.text(0.095, 0.71, "$\mathrm{(b)}$", fontsize=label_fontsize)
+    # fig.text(0.095, 0.5, "$\mathrm{(c)}$", fontsize=label_fontsize)
+    # fig.text(0.095, 0.285, "$\mathrm{(d)}$", fontsize=label_fontsize)
 
     plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/{file_name}.png", bbox_inches='tight', dpi=300)
     plt.show()
