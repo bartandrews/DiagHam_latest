@@ -14,15 +14,17 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    stats = "bosons"
+    stats = "fermions"
     alpha = 0
-    q = 256
+    q = 187
+    p = 8
+    numb_tag = f"_N_{p}" if p != 8 else ""
     ts = np.linspace(-0.25, 0.25, 11)
-    file_name = f"{stats}_alpha_{alpha}_q_{q}"
+    file_name = f"{stats}_alpha_{alpha}_q_{q}{numb_tag}_3"
 
     scale_factor = q**2 / 2 if stats == "fermions" else q
 
-    mb_data = f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha:g}/q_{q:g}/mb_ener_q_{q:g}.txt"
+    mb_data = f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha:g}{numb_tag}/q_{q:g}/mb_ener_q_{q:g}.txt"
 
     ts_min = np.min(ts)
     ts_max = np.max(ts)
@@ -56,8 +58,8 @@ if __name__ == "__main__":
 
     plt.grid()
 
-    leg = ax1.legend(loc='best', ncol=3, handletextpad=0.5, handlelength=1, labelspacing=0,
-                     borderpad=0.35, framealpha=1, markerscale=0.8, fontsize=10, columnspacing=0.5)
+    # leg = ax1.legend(loc='best', ncol=3, handletextpad=0.5, handlelength=1, labelspacing=0,
+    #                  borderpad=0.35, framealpha=1, markerscale=0.8, fontsize=10, columnspacing=0.5)
 
     ax1.set_xlabel('$t_6$')
     ax1.set_ylabel('$t_9$')

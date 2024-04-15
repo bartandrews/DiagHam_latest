@@ -103,7 +103,7 @@ if __name__ == "__main__":
     #####################
 
     ax0 = plt.subplot(upper_inner_grid[0])
-    ax0.set_title("(a) $\\langle \\mathcal{T} \\rangle = 0.0141$")
+    ax0.set_title("$\mathrm{(a)}$ $\\langle \\mathcal{T} \\rangle = 0.0141$")
     scaled_mb_E = np.subtract(mb_E, min(mb_E))*1e3
     ax0.plot(lin_K, scaled_mb_E, '+', c='k', markersize=5)
     ax0.set_ylabel('$(E_\\mathrm{m.b.} - E_{\\mathrm{m.b.},0})/10^{-3}$')
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     ax0.xaxis.set_visible(False)
 
     ax1 = plt.subplot(upper_inner_grid[1])
-    ax1.set_title("(b) $\\langle \\mathcal{T} \\rangle = 72.1$")
+    ax1.set_title("$\mathrm{(b)}$ $\\langle \\mathcal{T} \\rangle = 72.1$")
     scaled_mb_E2 = np.subtract(mb_E2, min(mb_E2))*1e3
     ax1.plot(lin_K2, scaled_mb_E2, '+', c='k', markersize=5)
     ax1.set_ylabel('$(E_\\mathrm{m.b.} - E_{\\mathrm{m.b.},0})/10^{-3}$')
@@ -222,6 +222,6 @@ if __name__ == "__main__":
 
     ###
 
-    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/case_study_fermions/fermions_q96.png",
+    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/case_study_fermions/fermions_q96_2.png",
                 bbox_inches='tight', dpi=300)
     plt.show()

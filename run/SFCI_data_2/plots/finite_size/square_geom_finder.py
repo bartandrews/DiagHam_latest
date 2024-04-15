@@ -18,7 +18,7 @@ def find_optimal_config(q_target, N):
                             if 0 <= lx * ly - q_target <= q_err and lx >= ly:  # check nphi
                                 squareness = np.abs(1 - (Lx * lx) / (Ly * ly))
                                 if squareness <= square_err:  # check square total system
-                                    # print(f"{lx}\t{ly}\t{Lx}\t{Ly}\t{Lx * lx}\t{Ly * ly}\t{lx * ly}\t{squareness}")
+                                    print(f"{lx}\t{ly}\t{Lx}\t{Ly}\t{Lx * lx}\t{Ly * ly}\t{lx * ly}\t{squareness}")
                                     return square_err
     return None
 
@@ -29,9 +29,9 @@ if __name__ == "__main__":
     # square_err = 0.2  # within 20%
     # N = 12
 
-    for q_target in range(96, 151):
+    for q_target in range(96, 400):
         value_arr = []
-        for N in range(6, 11):
+        for N in range(8, 9):
             value = find_optimal_config(q_target, N)
             value_arr.append(value)
         if None not in value_arr:

@@ -299,7 +299,7 @@ if __name__ == "__main__":
     xtick_vals.append(num_paths*points_per_path)
 
     ax0.set_xticks(xtick_vals)
-    ax0.set_xticklabels(["$\Gamma$", "$X$", "$S$", "$Y$", "$\Gamma$"])
+    ax0.set_xticklabels(["$\Gamma$", "$X$", "$M$", "$Y$", "$\Gamma$"])
 
     ax0.set_xlim([0, num_points])
     ax0.set_ylabel('$E$')
@@ -349,6 +349,11 @@ if __name__ == "__main__":
     cax = divider.append_axes('right', size='3%', pad=0.05)
     cbar = plt.colorbar(sc, cax=cax, extend='both')
     cbar.set_label("$C$", labelpad=-3)
+    tick_locs = np.linspace(-10, 10, 2 * 21 + 1)[1::10]
+    # cbar_tick_label = np.arange(-10, 10 + 1, 5)
+    cbar_tick_label = ["$-10$", "$-5$", "$0$", "$5$", "$10$"]
+    cbar.set_ticks(tick_locs)
+    cbar.set_ticklabels(cbar_tick_label)
 
     ax1.set_ylabel('$E$')
     ax1.set_xlabel('$n_\phi$')
@@ -452,12 +457,12 @@ if __name__ == "__main__":
 
     ax5.text(2.3, ent_factor*11, "$(k_x, k_y) = (0, 0)$")
 
-    fig.text(0.05, 0.9, "(a)", fontsize=12)
-    fig.text(0.5, 0.9, "(b)", fontsize=12)
-    fig.text(0.05, 0.61, "(c)", fontsize=12)
-    fig.text(0.5, 0.61, "(d)", fontsize=12)
-    fig.text(0.05, 0.32, "(e)", fontsize=12)
-    fig.text(0.5, 0.32, "(f)", fontsize=12)
+    fig.text(0.05, 0.9, "$\mathrm{(a)}$", fontsize=12)
+    fig.text(0.5, 0.9, "$\mathrm{(b)}$", fontsize=12)
+    fig.text(0.05, 0.61, "$\mathrm{(c)}$", fontsize=12)
+    fig.text(0.5, 0.61, "$\mathrm{(d)}$", fontsize=12)
+    fig.text(0.05, 0.32, "$\mathrm{(e)}$", fontsize=12)
+    fig.text(0.5, 0.32, "$\mathrm{(f)}$", fontsize=12)
 
-    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/spmb/spmb_3.png", bbox_inches='tight', dpi=600)
+    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/spmb/spmb_6.png", bbox_inches='tight', dpi=600)
     plt.show()

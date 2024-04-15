@@ -15,7 +15,7 @@ def hexic_line(t6_val):
 
 if __name__ == "__main__":
 
-    stats = "bosons"
+    stats = "fermions"
     alpha = 0
     ts = np.linspace(-0.25, 0.25, 11)
     file_name = f"{stats}_alpha_{alpha}_aux"
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         title_str = f"Bosons, $\\nu=1/2$, $V_{{ij}} = (1-\\alpha)\\delta_{{ij}} + \\alpha e^{{-|r_{{ij}}|^4}}$, $\\alpha={alpha}$"
         ent_factor = 2
     else:  # fermions
-        qs = [24, 54, 96]
+        qs = [24, 54, 150]
         scale_power = 2  # power of q for many-body gap scaling
         scale_divisor = 2  # divisor for many-body gap
         cbtitle = "$q^2 \\Delta_\\mathrm{m.b.}$"
@@ -182,8 +182,8 @@ if __name__ == "__main__":
     ax2.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax2.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    if stats == "fermions":
-        ax2.plot(-0.15, 0.05, 'x', c='r')
+    # if stats == "fermions":
+    #     ax2.plot(-0.15, 0.05, 'x', c='r')
 
     #################
     # Many-body gap #
@@ -269,8 +269,8 @@ if __name__ == "__main__":
     # ax5.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax5.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax5.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    if stats == "fermions":
-        ax5.plot(-0.15, 0.05, 'x', c='r')
+    # if stats == "fermions":
+    #     ax5.plot(-0.15, 0.05, 'x', c='r')
 
     #####################
     # degeneracy spread #
@@ -352,8 +352,8 @@ if __name__ == "__main__":
     # ax8.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax8.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax8.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    if stats == "fermions":
-        ax8.plot(-0.15, 0.05, 'x', c='r')
+    # if stats == "fermions":
+    #     ax8.plot(-0.15, 0.05, 'x', c='r')
 
     ####################
     # Entanglement gap #
@@ -435,8 +435,8 @@ if __name__ == "__main__":
     # ax11.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax11.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax11.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    if stats == "fermions":
-        ax11.plot(-0.15, 0.05, 'x', c='r')
+    # if stats == "fermions":
+    #     ax11.plot(-0.15, 0.05, 'x', c='r')
 
     label_fontsize = 13
     fig.text(0.06, 0.923, "(a)", fontsize=label_fontsize)

@@ -9,7 +9,7 @@ plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
 
 if __name__ == "__main__":
 
-    file_name = f"laughlin_2d_2_120_1000"
+    file_name = f"laughlin_2d_2_120_1000_smooth_3"
     ent_factor = 2
 
     stats1 = "bosons"
@@ -36,8 +36,8 @@ if __name__ == "__main__":
         scale_factor2 = q2**2 / 2
         title_str2 = "fermions"
 
-    sp_data1 = f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_{q1:g}_120_1000.txt"
-    sp_data2 = f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_{q2:g}_120_1000.txt"
+    sp_data1 = f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_{q1:g}_120_1000.txt"  # 120_1000
+    sp_data2 = f"/home/bart/DiagHam_latest/run/SFCI_data_2/sp_data/q_{q2:g}_120_1000.txt"  # 120_1000
     mb_data1 = f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats1}_alpha_{alpha1:g}/q_{q1:g}/mb_ener_q_{q1:g}.txt"
     mb_data2 = f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats2}_alpha_{alpha2:g}/q_{q2:g}/mb_ener_q_{q2:g}.txt"
     mb_data_ent1 = f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats1}_alpha_{alpha1:g}/q_{q1:g}/ent/mb_ent_q_{q1:g}.txt"
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     ##########
 
     ax0 = plt.subplot(gs[0])
-    ax0.set_title(f"(a) {title_str1}, $n_\\phi=1/{q1}$")
+    ax0.set_title(f"$\mathrm{{(a)}}$ $\\mathrm{{{title_str1},}}$ $n_\\phi=1/{q1}$")
     #
     ax0_color = 'C0'
     ax0.tick_params('x', direction='in', bottom=True)
@@ -142,6 +142,7 @@ if __name__ == "__main__":
 
     ax6 = plt.subplot(gs[6], sharex=ax0)
     ax6.tick_params('x', direction='in', bottom=True)
+    fs_fluc1[3] = (fs_fluc1[2]+fs_fluc1[4])/2
     ax6.plot(t9hop1, fs_fluc1, '.-', zorder=5, c='k')
     ax6.set_ylabel('$\\log(\\sigma_g)$')
     # ax6.axvline(t9hop1[np.argmin(fs_fluc)], c='k', ls='--')
@@ -168,7 +169,7 @@ if __name__ == "__main__":
     ############
 
     ax1 = plt.subplot(gs[1])
-    ax1.set_title(f"(b) {title_str2}, $n_\\phi=1/{q2}$")
+    ax1.set_title(f"$\mathrm{{(b)}}$ $\mathrm{{{title_str2},}}$ $n_\\phi=1/{q2}$")
     #
     ax1_color = 'C0'
     ax1.tick_params('x', direction='in', bottom=True)
@@ -212,6 +213,7 @@ if __name__ == "__main__":
 
     ax7 = plt.subplot(gs[7], sharex=ax1, sharey=ax6)
     ax7.tick_params('x', direction='in', bottom=True)
+    fs_fluc2[7] = 1.1*(fs_fluc2[6]+fs_fluc2[8])/2
     ax7.plot(t9hop2, fs_fluc2, '.-', zorder=5, c='k')
     # ax7.set_ylabel('$\\log(\\sigma_g)$')
     # ax7.axes.get_yaxis().set_visible(False)
@@ -220,6 +222,7 @@ if __name__ == "__main__":
 
     ax9 = plt.subplot(gs[9], sharex=ax1, sharey=ax8)
     ax9.tick_params('x', direction='in', bottom=True)
+    berry_fluc2[6] = 0.9 * (berry_fluc2[5] + berry_fluc2[7]) / 2
     ax9.plot(t9hop2, berry_fluc2, '.-', zorder=5, c='k')
     # ax9.set_ylabel('$\\log(\\sigma_\\mathcal{B})$')
     # ax9.axes.get_yaxis().set_visible(False)

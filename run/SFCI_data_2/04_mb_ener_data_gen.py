@@ -13,9 +13,11 @@ def can_convert_to_float(string):
 
 if __name__ == "__main__":
 
-    stats = "bosons"  # "fermions" or "bosons"
+    stats = "fermions"  # "fermions" or "bosons"
     alpha = 0
-    q = 256
+    q = 187
+    p = 8
+    numb_tag = f"_N_{p}" if p != 8 else ""
     ts = np.linspace(-0.25, 0.25, 11)
 
     if stats == "fermions":
@@ -23,7 +25,7 @@ if __name__ == "__main__":
     else:  # stats == "bosons"
         s = 2  # g.s. degeneracy
 
-    os.chdir(f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha}/q_{q:g}")
+    os.chdir(f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha}{numb_tag}/q_{q:g}")
     out_file = open(f"mb_ener_q_{q:g}.txt", "w")
 
     for t6hop in ts:

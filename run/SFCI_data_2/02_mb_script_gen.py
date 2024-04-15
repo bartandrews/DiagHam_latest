@@ -9,18 +9,19 @@ if __name__ == "__main__":
 
     stats = "fermions"  # "fermions" or "bosons"
     alpha = 0
-    p, X, Y, x, y = 8, 18, 12, 4, 6
+    p, X, Y, x, y = 8, 17, 11, 4, 6
     q = X * Y
+    numb_tag = f"_N_{p}" if p != 8 else ""
     ts = np.linspace(-0.25, 0.25, 11)
 
     FCIHofstadterModel = "~/DiagHam_latest/build/FTI/src/Programs/FCI/FCIHofstadterModel"
 
-    file = open(f"03_mb_ener_script.sh", "w")
+    file = open(f"03_mb_ener_script_{q}.sh", "w")
     file.write("#!/bin/bash\n\n")
 
     if stats == "fermions":
-        file.write(f"mkdir -p fermions_alpha_{alpha:g}\n")
-        file.write(f"cd fermions_alpha_{alpha:g}\n")
+        file.write(f"mkdir -p fermions_alpha_{alpha:g}{numb_tag}\n")
+        file.write(f"cd fermions_alpha_{alpha:g}{numb_tag}\n")
         file.write(f"mkdir -p q_{q:g}\n")
         file.write(f"cd q_{q:g}\n")
         for t6hop in ts:
@@ -28,13 +29,13 @@ if __name__ == "__main__":
                 t3hop = (-9*t6hop - 16*t9hop - 1)/4  # quartic plane
                 file.write(f"{FCIHofstadterModel} -p {p} -X {X} -Y {Y} -x {x} -y {y} "
                            f"--t3hop {t3hop:.2f} --t6hop {t6hop:.2f} --t9hop {t9hop:.2f} -m 64000 "
-                           f"-S --processors 6 -n 5 --lanczos-precision 1e-10 "
+                           f"-S --processors 6 -n 5 --lanczos-precision 1e-6 "
                            f"--u-potential {(1-alpha)+alpha*pot(1):g} --v-potential {alpha*pot(np.sqrt(2)):g} "
                            f"--v2-potential {alpha*pot(2):g} --v3-potential {alpha*pot(np.sqrt(5)):g} > /dev/null;\n")
         file.write(f"cd ../..\n")
     else:  # stats == "bosons"
-        file.write(f"mkdir -p bosons_alpha_{alpha:g}\n")
-        file.write(f"cd bosons_alpha_{alpha:g}\n")
+        file.write(f"mkdir -p bosons_alpha_{alpha:g}{numb_tag}\n")
+        file.write(f"cd bosons_alpha_{alpha:g}{numb_tag}\n")
         file.write(f"mkdir -p q_{q:g}\n")
         file.write(f"cd q_{q:g}\n")
         for t6hop in ts:

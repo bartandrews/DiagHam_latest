@@ -224,8 +224,8 @@ if __name__ == "__main__":
 
     t0 = perf_counter()
 
-    q_val = 96
-    grain_val = 160  # 100
+    q_val = 81
+    grain_val = 120  # 100
     grain_r_val = 1000  # 1000
     ts = np.linspace(-0.25, 0.25, 11)
 

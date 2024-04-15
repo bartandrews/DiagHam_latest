@@ -18,10 +18,11 @@ def pot(distance):
 
 if __name__ == "__main__":
 
-    stats = "bosons"  # "fermions" or "bosons"
+    stats = "fermions"  # "fermions" or "bosons"
     alpha = 0
-    p, X, Y, x, y = 8, 16, 16, 4, 4
+    p, X, Y, x, y = 8, 17, 11, 4, 6
     q = X*Y
+    numb_tag = f"_N_{p}" if p != 8 else ""
     ts = np.linspace(-0.25, 0.25, 11)
 
     if stats == "fermions":
@@ -29,7 +30,7 @@ if __name__ == "__main__":
     else:  # stats == "bosons"
         s = 2  # g.s. degeneracy
 
-    ener_path = f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha}/q_{q:g}"
+    ener_path = f"/home/bart/DiagHam_latest/run/SFCI_data_2/{stats}_alpha_{alpha}{numb_tag}/q_{q:g}"
     ent_path = os.path.join(ener_path, "ent")
     os.makedirs(ent_path, exist_ok=True)
     os.chdir(ent_path)
@@ -82,7 +83,7 @@ if __name__ == "__main__":
                 if stats == "fermions":
                     command = f"{FCIHofstadterModel} -p {p} -X {X} -Y {Y} -x {x} -y {y} " \
                               f"--t3hop {t3hop:.2f} --t6hop {t6hop:.2f} --t9hop {t9hop:.2f} -m 64000 " \
-                              f"-S --processors 6 -n 5 --lanczos-precision 1e-10 " \
+                              f"-S --processors 6 -n 5 --lanczos-precision 1e-6 " \
                               f"--u-potential {(1-alpha)+alpha*pot(1):g} --v-potential {alpha*pot(np.sqrt(2)):g} " \
                               f"--v2-potential {alpha*pot(2):g} --v3-potential {alpha*pot(np.sqrt(5)):g} " \
                               f"--only-kx {kx_min[i]} --only-ky {ky_min[i]} --eigenstate > /dev/null;"
