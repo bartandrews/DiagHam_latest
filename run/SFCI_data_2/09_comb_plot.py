@@ -18,7 +18,7 @@ if __name__ == "__main__":
     stats = "fermions"
     alpha = 0
     ts = np.linspace(-0.25, 0.25, 11)
-    file_name = f"{stats}_alpha_{alpha}_2"
+    file_name = f"{stats}_alpha_{alpha}_3_no_lines"
 
     if stats == "bosons":
         qs = [16, 49, 81]
@@ -168,12 +168,12 @@ if __name__ == "__main__":
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_tism, vmax=max_tism)
     ax2.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax2.scatter(1 / 7, -1 / 56, c='g', label="octic point")
-    if stats == "fermions":
-        ax2.axvline(0.25, c='r', ls='--')
-    else:
-        ax2.axvline(-0.05, c='r', ls='--')
-    ax2.plot(-0.25, -0.25, 'x', c='b', zorder=5)
-    ax2.plot(0.25, 0.25, 'x', c='b', zorder=5)
+    # if stats == "fermions":
+    #     ax2.axvline(0.25, c='r', ls='--')
+    # else:
+    #     ax2.axvline(-0.05, c='r', ls='--')
+    # ax2.plot(-0.25, -0.25, 'x', c='b', zorder=5)
+    # ax2.plot(0.25, 0.25, 'x', c='b', zorder=5)
     # #cbar = plt.colorbar(sc)
     cb_ax = fig.add_axes([.9, .744, .01, .176])
     fmt = lambda x, pos: '${:g}$'.format(x)
@@ -188,8 +188,8 @@ if __name__ == "__main__":
     ax2.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax2.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    if stats == "fermions":
-        ax2.plot(-0.15, 0.05, 'x', c='r')
+    # if stats == "fermions":
+    #     ax2.plot(-0.15, 0.05, 'x', c='r')
 
     #################
     # Many-body gap #
@@ -259,12 +259,12 @@ if __name__ == "__main__":
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_gap, vmax=max_gap)
     ax5.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax5.scatter(1 / 7, -1 / 56, c='g', label="octic point")
-    if stats == "fermions":
-        ax5.axvline(0.25, c='r', ls='--')
-    else:
-        ax5.axvline(-0.05, c='r', ls='--')
-    ax5.plot(-0.25, -0.25, 'x', c='b', zorder=5)
-    ax5.plot(0.25, 0.25, 'x', c='b', zorder=5)
+    # if stats == "fermions":
+    #     ax5.axvline(0.25, c='r', ls='--')
+    # else:
+    #     ax5.axvline(-0.05, c='r', ls='--')
+    # ax5.plot(-0.25, -0.25, 'x', c='b', zorder=5)
+    # ax5.plot(0.25, 0.25, 'x', c='b', zorder=5)
     # cbar = plt.colorbar(sc)
     cb_ax = fig.add_axes([.9, .532, .01, .176])
     if stats == "bosons":
@@ -281,8 +281,8 @@ if __name__ == "__main__":
     # ax5.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax5.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax5.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    if stats == "fermions":
-        ax5.plot(-0.15, 0.05, 'x', c='r')
+    # if stats == "fermions":
+    #     ax5.plot(-0.15, 0.05, 'x', c='r')
 
     #####################
     # degeneracy spread #
@@ -352,12 +352,12 @@ if __name__ == "__main__":
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_spread, vmax=max_spread)
     ax8.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax8.scatter(1 / 7, -1 / 56, c='g', label="octic point")
-    if stats == "fermions":
-        ax8.axvline(0.25, c='r', ls='--')
-    else:
-        ax8.axvline(-0.05, c='r', ls='--')
-    ax8.plot(-0.25, -0.25, 'x', c='b', zorder=5)
-    ax8.plot(0.25, 0.25, 'x', c='b', zorder=5)
+    # if stats == "fermions":
+    #     ax8.axvline(0.25, c='r', ls='--')
+    # else:
+    #     ax8.axvline(-0.05, c='r', ls='--')
+    # ax8.plot(-0.25, -0.25, 'x', c='b', zorder=5)
+    # ax8.plot(0.25, 0.25, 'x', c='b', zorder=5)
     # cbar = plt.colorbar(sc)
     cb_ax = fig.add_axes([.9, .321, .01, .176])
     cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax, format=FuncFormatter(fmt))
@@ -370,8 +370,8 @@ if __name__ == "__main__":
     # ax8.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax8.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax8.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    if stats == "fermions":
-        ax8.plot(-0.15, 0.05, 'x', c='r')
+    # if stats == "fermions":
+    #     ax8.plot(-0.15, 0.05, 'x', c='r')
 
     ####################
     # Entanglement gap #
@@ -441,12 +441,12 @@ if __name__ == "__main__":
                     extent=[plot_min, plot_max, plot_min, plot_max], vmin=min_ent_gap, vmax=max_ent_gap)
     ax11.plot(plot_ts, [hexic_line(i) for i in plot_ts], c='g', label="hexic line")
     ax11.scatter(1 / 7, -1 / 56, c='g', label="octic point")
-    if stats == "fermions":
-        ax11.axvline(0.25, c='r', ls='--')
-    else:
-        ax11.axvline(-0.05, c='r', ls='--')
-    ax11.plot(-0.25, -0.25, 'x', c='b', zorder=5)
-    ax11.plot(0.25, 0.25, 'x', c='b', zorder=5)
+    # if stats == "fermions":
+    #     ax11.axvline(0.25, c='r', ls='--')
+    # else:
+    #     ax11.axvline(-0.05, c='r', ls='--')
+    # ax11.plot(-0.25, -0.25, 'x', c='b', zorder=5)
+    # ax11.plot(0.25, 0.25, 'x', c='b', zorder=5)
     # cbar = plt.colorbar(sc)
     cb_ax = fig.add_axes([.9, .11, .01, .176])
     cbar = fig.colorbar(sc, orientation='vertical', cax=cb_ax, format=FuncFormatter(fmt))
@@ -459,14 +459,14 @@ if __name__ == "__main__":
     # ax11.set_title(f'$n_\\phi = 1/{qs[iq]}$', fontsize=title_fontsize)
     ax11.xaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
     ax11.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
-    if stats == "fermions":
-        ax11.plot(-0.15, 0.05, 'x', c='r')
+    # if stats == "fermions":
+    #     ax11.plot(-0.15, 0.05, 'x', c='r')
 
     label_fontsize = 13
-    fig.text(0.06, 0.923, "$\mathrm{(a)}$", fontsize=label_fontsize)
-    fig.text(0.06, 0.71, "$\mathrm{(b)}$", fontsize=label_fontsize)
-    fig.text(0.06, 0.5, "$\mathrm{(c)}$", fontsize=label_fontsize)
-    fig.text(0.06, 0.285, "$\mathrm{(d)}$", fontsize=label_fontsize)
+    #fig.text(0.06, 0.923, "$\mathrm{(a)}$", fontsize=label_fontsize)
+    #fig.text(0.06, 0.71, "$\mathrm{(b)}$", fontsize=label_fontsize)
+    #fig.text(0.06, 0.5, "$\mathrm{(c)}$", fontsize=label_fontsize)
+    #fig.text(0.06, 0.285, "$\mathrm{(d)}$", fontsize=label_fontsize)
 
     plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/{file_name}.png", bbox_inches='tight', dpi=300)
     plt.show()
