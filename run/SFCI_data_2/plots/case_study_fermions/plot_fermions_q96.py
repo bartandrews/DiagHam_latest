@@ -183,7 +183,7 @@ if __name__ == "__main__":
     #
     color2 = 'C3'
     ax4_2 = ax4.twinx()
-    ax4_2.plot(invertN, scaled_ent1, '.-', zorder=5, color=color2)
+    ax4_2.plot(invertN, scaled_ent1, '.-', zorder=5, color=color2, marker='x')
     ax4_2.set_ylabel(f'$\\Delta_\\xi$', color=color2)
     ax4_2.tick_params(axis='y', labelcolor=color2)
     ax4_2.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
@@ -201,7 +201,7 @@ if __name__ == "__main__":
     ax5.set_ylim(0)
     #
     ax5_2 = ax5.twinx()
-    ax5_2.plot(invertN, scaled_ent2, '.-', zorder=5, color=color2)
+    ax5_2.plot(invertN, scaled_ent2, '.-', zorder=5, color=color2, marker='x')
     ax5_2.set_ylabel(f'$\\Delta_\\xi$', color=color2)
     ax5_2.tick_params(axis='y', labelcolor=color2)
     ax5_2.yaxis.set_major_formatter(ticker.FormatStrFormatter('$%g$'))
@@ -222,6 +222,6 @@ if __name__ == "__main__":
 
     ###
 
-    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/case_study_fermions/fermions_q96_2.png",
+    plt.savefig(f"/home/bart/DiagHam_latest/run/SFCI_data_2/plots/case_study_fermions/fermions_q96_3.png",
                 bbox_inches='tight', dpi=300)
     plt.show()

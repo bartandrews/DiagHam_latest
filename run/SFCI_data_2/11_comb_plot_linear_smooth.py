@@ -9,7 +9,7 @@ plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
 
 if __name__ == "__main__":
 
-    file_name = f"laughlin_2d_2_120_1000_smooth_3"
+    file_name = f"laughlin_2d_2_120_1000_smooth_4"
     ent_factor = 2
 
     stats1 = "bosons"
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     #
     ax0_2_color = 'C3'
     ax0_2 = ax0.twinx()
-    ax0_2.plot(t9hop1, ent1, '.-', zorder=5, color=ax0_2_color)
+    ax0_2.plot(t9hop1, ent1, '.-', zorder=5, color=ax0_2_color, marker='x')
     ax0_2.set_ylim([int(min_ent), int(max_ent)+1])
     # ax0_2.set_ylabel(f'$\\Delta_\\xi$', color=ax0_2_color)
     # ax0_2.tick_params(axis='y', labelcolor=ax0_2_color)
@@ -187,7 +187,7 @@ if __name__ == "__main__":
     #
     ax1_2_color = 'C3'
     ax1_2 = ax1.twinx()
-    ax1_2.plot(t9hop2, ent2, '.-', zorder=5, color=ax1_2_color)
+    ax1_2.plot(t9hop2, ent2, '.-', zorder=5, color=ax1_2_color, marker='x')
     ax1_2.set_ylabel(f'$\\Delta_\\xi$', color=ax1_2_color)
     ax1_2.tick_params(axis='y', labelcolor=ax1_2_color)
     if np.max(ent2) < 1000:
